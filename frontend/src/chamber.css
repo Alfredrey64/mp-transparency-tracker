@@ -36,3 +36,13 @@ html[data-calm] .chm-plan[data-go="1"] .chm-seat { animation: none; }
 .chm-maj-l b { font-weight: 800; color: var(--c-ink); font-variant-numeric: lining-nums; }
 @media (prefers-reduced-motion: reduce) { .chm-plan[data-go="1"] .chm-count, .chm-maj[data-go="1"] .chm-maj-gov { animation: none; } }
 html[data-calm] .chm-plan[data-go="1"] .chm-count, html[data-calm] .chm-maj[data-go="1"] .chm-maj-gov { animation: none; }
+
+/* Phone: the side-on plan has room for bigger figures, and the party tags are made smaller so they do not crowd the plan. */
+.chm-plan[data-phone="1"] .chm-count-n { font-size: 30px; }
+.chm-plan[data-phone="1"] .chm-count-l { font-size: 11px; }
+@media (max-width: 560px) {
+  .chm-chips { gap: 6px; margin-top: 12px; }
+  .chm-chip { min-height: 30px; gap: 5px; padding: 3px 10px 3px 8px; font-size: 12px; }
+  .chm-chip-dot { width: 7px; height: 7px; }
+  .chm-chip-n { font-size: 11.5px; }
+}

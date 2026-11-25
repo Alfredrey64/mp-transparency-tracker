@@ -14,11 +14,13 @@ export function TwoRoutes({ firms }) {
 }
 
 // The tick on "On the public register" and the eye-slash on "Not on any register": a small round badge that sits on the pill's left end.
-const Tag = ({ w, h, fill, stroke, dash, c, glyph, children, tf, size = 13 }) => (
+// `lines` writes the words on two lines (for the narrow drawing), starting clear of the badge.
+const Tag = ({ w, h, fill, stroke, dash, c, glyph, children, tf, size = 13, lines, badge = h / 2 + 3 }) => (
   <g transform={tf}>
     <rect width={w} height={h} rx={h / 2} fill={fill} stroke={stroke} strokeWidth="2.500" strokeDasharray={dash} />
-    <Badge x={h / 2 - 1} y={h / 2} c={c} glyph={glyph} k={(h / 2 + 3) / 23} />
-    <text x={(w + h / 2) / 2} y={h / 2 + 5} textAnchor="middle" fontSize={size} fontWeight="800" fill={stroke === "#3F7D5C" ? "#2B5E43" : "#7A2E2E"} fontFamily={F}>{children}</text>
+    <Badge x={h / 2 - 1} y={h / 2} c={c} glyph={glyph} k={badge / 23} />
+    {lines ? lines.map((l, n) => <text key={l} x={(w + h / 2 + badge) / 2 + 2} y={h / 2 + (n ? 0 : -1) + (n ? 14 : -3) - (n ? 0 : 0)} textAnchor="middle" fontSize={size} fontWeight="800" fill={stroke === "#3F7D5C" ? "#2B5E43" : "#7A2E2E"} fontFamily={F}>{l}</text>)
+      : <text x={(w + h / 2) / 2} y={h / 2 + 5} textAnchor="middle" fontSize={size} fontWeight="800" fill={stroke === "#3F7D5C" ? "#2B5E43" : "#7A2E2E"} fontFamily={F}>{children}</text>}
   </g>
 );
 
@@ -56,8 +58,8 @@ function TwoRoutesTall({ firms }) {
         <Badge x={83} y={0} c="#5A7FA6" glyph="briefcase" k={0.8} />
       </g></g>
       <g className="dmx-in" style={{ "--d": 0.7 }}>
-        <Tag tf="translate(12 246)" w={166} h={32} fill="#E1F1E8" stroke="#3F7D5C" c="#3F7D5C" glyph="tick" size={12}>On the public register</Tag>
-        <Tag tf="translate(182 246)" w={166} h={32} fill="#F7E7E7" stroke="#9C3B3B" dash="6 4" c="#9C3B3B" glyph="hidden" size={12}>Not on any register</Tag>
+        <Tag tf="translate(12 240)" w={164} h={48} badge={17} lines={["On the public", "register"]} fill="#E1F1E8" stroke="#3F7D5C" c="#3F7D5C" glyph="tick" size={13.500}>On the public register</Tag>
+        <Tag tf="translate(184 240)" w={164} h={48} badge={17} lines={["Not on any", "register"]} fill="#F7E7E7" stroke="#9C3B3B" dash="6 4" c="#9C3B3B" glyph="hidden" size={13.500}>Not on any register</Tag>
       </g>
       <g transform="translate(90 336)"><g className="dmx-in" style={{ "--d": 0.9 }} filter="url(#lr-sh-t)">
         <rect width="180" height="120" rx="22" fill="#fff" stroke="#1B2438" strokeWidth="3.500" />

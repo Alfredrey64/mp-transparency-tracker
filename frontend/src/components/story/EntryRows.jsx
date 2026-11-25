@@ -29,8 +29,9 @@ function Strip({ strip }) {
 const SHOWN = 3;
 const sentence = (t) => (t ? t.charAt(0).toUpperCase() + t.slice(1) : "A stage");
 function Ladder({ stages }) {
+  const same = stages.every((s) => s.h === stages[0].h);
   return (
-    <span className="bl">
+    <span className="bl" data-same={same ? "1" : undefined}>
       {stages.slice(0, SHOWN).map((s, i) => (
         <span key={i} className="bl-step" data-house={houseName(s.h)}>
           <i aria-hidden="true" />

@@ -12,6 +12,7 @@ import AUTO_DETAILS from "../data/standardsReportAuto.json";
 import Loading from "./Loading";
 import DownloadCsvButton from "./DownloadCsvButton";
 import { GlanceCard, YearColumns } from "./Glance";
+import "../standards.css";
 
 // A hand-written entry wins; otherwise the wording read out of the report itself by fetch-standards-details.js.
 const detailFor = (id) => MANUAL_DETAILS[String(id)] ?? AUTO_DETAILS[String(id)] ?? null;
@@ -98,29 +99,27 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
   return (
     <motion.div
       layout
+      className="sr-card"
       initial={{ opacity: 0, y: 8 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.25, delay: Math.min(index, 10) * 0.02 }}
       style={{
-        display: "flex",
-        gap: 14,
-        alignItems: "flex-start",
         background: COLORS.paperCard,
         border: `1px solid ${COLORS.hairline}`,
         borderLeft: `4px solid ${color}`,
         borderRadius: 12,
-        padding: "18px 20px",
       }}
     >
       {politician?.thumbnail_url ? (
-        <img loading="lazy" decoding="async"
+        <img loading="lazy" decoding="async" className="sr-avatar"
           src={politician.thumbnail_url}
           alt=""
           style={{ flexShrink: 0, width: 44, height: 44, borderRadius: "50%", objectFit: "cover", background: COLORS.paper, border: `1px solid ${COLORS.hairline}` }}
         />
       ) : (
         <div
+          className="sr-avatar"
           style={{
             flexShrink: 0, width: 44, height: 44, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
             background: `${color}22`, color: readable(color), fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: 600,
@@ -129,9 +128,9 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
           {report.extracted_name?.split(/\s+/).map((w) => w[0]).slice(-2).join("").toUpperCase()}
         </div>
       )}
-      <div style={{ minWidth: 0, flex: 1 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 4 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
+      <div className="sr-main" style={{ minWidth: 0, flex: 1 }}>
+        <div className="sr-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 4 }}>
+          <div className="sr-who" style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
             <button
               onClick={clickable ? () => onSelectPolitician(politician) : undefined}
               style={{
@@ -144,19 +143,20 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
             </button>
             <OutcomeBadge outcome={outcome} />
           </div>
-          <span style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, flexShrink: 0 }}>{formatDate(report.publication_date)}</span>
+          <span className="sr-date" style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, flexShrink: 0 }}>{formatDate(report.publication_date)}</span>
         </div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 6 }}>
+        <div className="sr-party" style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginBottom: 6 }}>
           {politician ? (
             <>{politician.party} · currently sitting</>
           ) : (
             "No longer a current MP. This Parliament, or since left office"
           )}
         </div>
-        <div style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginBottom: 10 }}>{report.title}</div>
+        <div className="sr-title" style={{ fontFamily: FONT_BODY, fontSize: 11, color: COLORS.inkSoft, marginBottom: 10 }}>{report.title}</div>
 
         {detail ? (
           <div
+            className="sr-detail"
             style={{
               display: "flex",
               flexDirection: "column",
@@ -192,7 +192,7 @@ function ReportCard({ report, politician, onSelectPolitician, index }) {
           </div>
         )}
 
-        <a href={report.report_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accentText }}>
+        <a className="sr-link" href={report.report_url} target="_blank" rel="noreferrer" style={{ fontFamily: FONT_BODY, fontSize: 11.5, fontWeight: 700, color: COLORS.accentText }}>
           Read the Committee's report ↗
         </a>
       </div>

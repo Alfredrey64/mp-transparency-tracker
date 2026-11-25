@@ -1,0 +1,24 @@
+/* The conduct report cards (components/StandardsReports.jsx). */
+.sr-card { display: flex; gap: 14px; align-items: flex-start; padding: 18px 20px; }
+
+/* Phone: the face and the name share the top row; the outcome tag and the date sit under the name; everything else runs the full width of the card. */
+@media (max-width: 560px) {
+  .sr-card { flex-wrap: wrap; gap: 10px 12px; padding: 14px 14px 16px; }
+  .sr-main { display: contents; }
+  .sr-avatar { width: 42px !important; height: 42px !important; }
+  .sr-top { flex: 1 1 0; min-width: 0; margin: 0 !important; flex-direction: column; align-items: flex-start !important; justify-content: center !important; gap: 6px !important; }
+  .sr-who { gap: 6px 8px !important; }
+  .sr-who button { font-size: 18px !important; line-height: 1.2; }
+  .sr-date { order: 2; }
+  .sr-party, .sr-title, .sr-detail, .sr-link { flex: 0 0 100%; margin: 0 !important; box-sizing: border-box; }
+  .sr-party { padding-top: 10px; border-top: 1px solid var(--c-hairline); }
+  .sr-title { margin-top: -4px !important; }
+  .sr-detail { padding: 12px !important; }
+  .sr-link { display: inline-flex; align-items: center; min-height: 44px; }
+}
+
+@media (max-width: 560px) {
+  /* The outcome tag is a clear pill on the same left edge as the name, and a face with no photo gets a soft circle. */
+  .sr-who > span { background: color-mix(in srgb, currentColor 12%, var(--c-paper-card)) !important; border-color: color-mix(in srgb, currentColor 40%, transparent) !important; margin-left: 0; }
+  div.sr-avatar { background: color-mix(in srgb, var(--c-ink-soft) 16%, var(--c-paper-card)) !important; }
+}

@@ -58,18 +58,10 @@
 /* The people on Jobs and pay: a thin light edge with a darker one outside it, so each one stands out from a building of any colour behind them. */
 
 /* ---- On a phone ----
-   The Economy, tax and Environment pictures used to be shown whole and shrunk to 54px tall, which made the people, coins and turbines too small to read.
-   They now follow the public-services pictures: taller, cropped around the part that matters (--focus is how far along the picture the middle of the crop sits). */
+   Every picture is shown whole and scaled down to fit (see heroscene.css); --focus below is no longer used for a crop and is kept only so the values are not lost. */
 .hs-scene:is([data-kind="economy"], [data-kind="jobs"], [data-kind="finance"], [data-kind="taxes"], [data-kind="business"], [data-kind="energy"], [data-kind="nature"], [data-kind="water"], [data-kind="flood"]) { --focus: 0.5; }
 .hs-scene[data-kind="jobs"] { --focus: 0.4; }
 .hs-scene[data-kind="business"] { --focus: 0.36; }
 .hs-scene[data-kind="nature"] { --focus: 0.6; }
 .hs-scene[data-kind="flood"] { --focus: 0.62; }
 .hs-scene[data-kind="water"] { --focus: 0.72; }
-@media (max-width: 800px) {
-  .page-hero[data-scene]:has(.hs-scene:is([data-kind="economy"], [data-kind="jobs"], [data-kind="finance"], [data-kind="taxes"], [data-kind="business"], [data-kind="energy"], [data-kind="nature"], [data-kind="water"], [data-kind="flood"])) { --scene-h: clamp(112px, 26vw, 150px); }
-  .page-hero[data-scene]:has(.hs-scene:is([data-kind="economy"], [data-kind="jobs"], [data-kind="finance"], [data-kind="taxes"], [data-kind="business"], [data-kind="energy"], [data-kind="nature"], [data-kind="water"], [data-kind="flood"])) .hs-scene svg {
-    width: auto; max-width: none; height: 100%; aspect-ratio: 1440 / 200;
-    margin-left: max(min(calc(50% - var(--focus, 0.5) * var(--scene-h) * 7.2), 0px), calc(100% - var(--scene-h) * 7.2));
-  }
-}

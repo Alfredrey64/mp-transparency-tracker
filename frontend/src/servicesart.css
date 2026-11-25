@@ -148,13 +148,6 @@ html[data-calm] .sv-ring { opacity: 0 !important; }
 .hs-scene[data-kind="transport"] svg { overflow: visible; }
 .hs-scene[data-kind="crime"] { --focus: 0.6; }
 .hs-scene[data-kind="digital"] { --focus: 0.62; }
-@media (max-width: 800px) {
-  .page-hero[data-scene]:has(.hs-scene:is([data-kind="education"], [data-kind="transport"], [data-kind="justice"], [data-kind="crime"], [data-kind="digital"])) { --scene-h: clamp(112px, 24vw, 150px); }
-  .page-hero[data-scene]:has(.hs-scene:is([data-kind="education"], [data-kind="transport"], [data-kind="justice"], [data-kind="crime"], [data-kind="digital"])) .hs-scene svg {
-    width: auto; max-width: none; height: 100%; aspect-ratio: 1440 / 200;
-    margin-left: max(min(calc(50% - var(--focus, 0.5) * var(--scene-h) * 7.2), 0px), calc(100% - var(--scene-h) * 7.2));
-  }
-}
 
 /* The little labels in the Digital picture are unreadable at phone size, so they are left out there. */
 @media (max-width: 560px) { .sv-lbls { display: none; } }

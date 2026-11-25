@@ -14,27 +14,10 @@
 .page-hero[data-scene]:has(:is(.hs-scene[data-day], .fm-scene))::before { display: block; content: ""; position: absolute; z-index: -1; inset: 0 -100vmax; width: auto; aspect-ratio: auto; opacity: 1; translate: none; animation: none; background: linear-gradient(180deg, #174F96 0%, #2A74C4 62%, #86C0F0 100%); }
 .page-hero[data-scene]:has(:is(.hs-scene[data-day], .fm-scene)) :is(.page-hero-sub, .crumbs, .crumbs a) { color: #fff; }
 
-/* ---- On a small phone ----
-   A 1440 x 200 picture is too wide to show whole at 390px (it would be 54px tall), and cut to its middle it loses half its story. So it is shown whole in two rows, each its own piece of the landscape:
-   the left part of the picture, then the right part, each as wide as the screen and about 100px tall at 390px. --seam-w is how many of the picture's 1440 units each row covers (720 is an exact fold; a larger
-   number overlaps the rows a little, which was chosen per picture so that fewer things are cut at the seam). The second copy of the picture is only drawn here; everywhere else it is hidden.
-   (Between 520px and 800px the older cropped version, in dayscene.css and servicesart.css, still applies.) */
-.hs-scene svg.scene-row2, .fm-scene svg.scene-row2 { display: none; }
-.page-hero[data-scene] { --seam-w: 720; }
-.page-hero[data-scene]:has(.hs-scene[data-kind="taxes"]) { --seam-w: 768; }
-.page-hero[data-scene]:has(.hs-scene[data-kind="business"]) { --seam-w: 792; }
-.page-hero[data-scene]:has(.hs-scene[data-kind="education"]) { --seam-w: 780; }
-.page-hero[data-scene]:has(.hs-scene[data-kind="justice"]) { --seam-w: 756; }
-.page-hero[data-scene]:has(.hs-scene[data-kind="crime"]) { --seam-w: 748; }
-.page-hero[data-scene]:has(.hs-scene[data-kind="energy"]) { --seam-w: 780; }
-.page-hero[data-scene]:has(.hs-scene[data-kind="flood"]) { --seam-w: 754; }
-@media (max-width: 520px) {
-  .page-hero.page-hero.page-hero[data-scene]:has(.scene-row2) { --row-h: calc(100vw * 200 / var(--seam-w)); --scene-h: calc(var(--row-h) * 2 + 3px); }
-  .page-hero.page-hero.page-hero[data-scene] :is(.hs-scene, .fm-scene) { display: flex; flex-direction: column; gap: 3px; }
-  .page-hero.page-hero.page-hero[data-scene] :is(.hs-scene:not([data-kind="transport"]), .fm-scene) { overflow: hidden; }
-  .page-hero.page-hero.page-hero[data-scene] :is(.hs-scene, .fm-scene) svg.scene-row { display: block; flex: none; width: calc(100vw * 1440 / var(--seam-w)); max-width: none; height: var(--row-h); aspect-ratio: 1440 / 200; margin-left: 0; }
-  .page-hero.page-hero.page-hero[data-scene] :is(.hs-scene, .fm-scene) svg.scene-row2 { margin-left: calc(-100vw * (1440 - var(--seam-w)) / var(--seam-w)); overflow: hidden; }
-}
+/* ---- On a phone ----
+   The picture is always shown whole, scaled down to fit the width at its own shape (1440 x 200, so 13.9vw tall): it is never cropped to its middle or split into rows. The second copy of the picture that
+   used to be drawn for the two-row version is hidden. */
+.hs-scene svg.scene-row2, .fm-scene svg.scene-row2 { display: none !important; }
 
 /* The scene's animations are held at their first frame until the page has loaded and gone quiet (Scene in EconArt.jsx sets data-run="1"), so they do not compete with the page being built. */
 .hs-scene[data-run="0"] *, .hs-scene[data-run="0"] *::before, .hs-scene[data-run="0"] *::after { animation-play-state: paused !important; }

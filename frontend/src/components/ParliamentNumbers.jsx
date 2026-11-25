@@ -35,7 +35,7 @@ const HOUSES = {
 
 function HouseTabs({ active }) {
   return (
-    <nav aria-label="Choose a House" style={{ display: "inline-flex", gap: 4, padding: 4, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, marginTop: 20 }}>
+    <nav aria-label="Choose a House" className="pn-tabs" style={{ display: "inline-flex", gap: 4, padding: 4, background: COLORS.paperCard, border: `1px solid ${COLORS.hairline}`, borderRadius: 999, marginTop: 20 }}>
       {Object.entries(HOUSES).map(([key, h]) => {
         const on = key === active;
         return (
@@ -43,6 +43,7 @@ function HouseTabs({ active }) {
             key={key}
             href={h.hash}
             aria-current={on ? "page" : undefined}
+            className="pn-tab"
             style={{
               fontFamily: FONT_BODY, fontSize: 14, fontWeight: 700, textDecoration: "none", padding: "8px 20px", borderRadius: 999,
               background: on ? COLORS.accent : "transparent", color: on ? "#fff" : COLORS.inkSoft, transition: "background-color 0.15s, color 0.15s",

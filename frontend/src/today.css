@@ -121,3 +121,21 @@ button.td-next:hover { box-shadow: 0 0 0 4px rgba(92, 224, 160, 0.35); transform
 @media (max-width: 760px) { .td-top-main { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 520px) { .td-houses { grid-template-columns: minmax(0, 1fr); } .td-next { grid-template-columns: minmax(0, 1fr) auto; } .td-next-tag { grid-column: 1 / -1; justify-self: start; } }
 @media (max-width: 520px) { .dt { padding-left: 12px; } }
+
+/* Phone: the clock runs downwards, hours down the left and one column for each house, so nothing scrolls sideways or is cut off. */
+.dt-v { padding: 16px 14px 14px; }
+.dt-v figcaption { padding-right: 0; }
+.dtv-heads { display: grid; column-gap: 4px; margin-top: 4px; }
+.dtv-heads b { font: 800 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--lc); border-bottom: 3px solid var(--lc); padding: 0 0 4px 2px; }
+.dtv-plot { position: relative; display: grid; column-gap: 4px; margin: 14px 0 6px; }
+.dtv-axis { position: relative; }
+.dtv-axis span { position: absolute; left: 0; transform: translateY(-50%); font: 700 11px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); font-variant-numeric: lining-nums; }
+.dtv-grid { position: absolute; left: 44px; right: 0; height: 0; border-top: 1px solid var(--c-hairline); text-decoration: none; pointer-events: none; }
+.dtv-lane { position: relative; border-radius: 10px; background: color-mix(in srgb, var(--lc) 7%, var(--c-paper)); min-width: 0; }
+.dtv-dot { position: absolute; display: inline-flex; align-items: center; gap: 3px; transform: translateY(-50%); height: 26px; padding: 0; border: 0; background: none; color: var(--c-ink); cursor: pointer; font: inherit; max-width: calc(100% / var(--cols, 1) - 3px); }
+.dtv-dot i { flex: none; width: 15px; height: 15px; border-radius: 50%; background: var(--sc, var(--lc)); border: 3px solid var(--c-paper-card); box-shadow: 0 0 0 1.5px var(--sc, var(--lc)); }
+.dtv-dot .dt-t { font-size: 10.5px; letter-spacing: -0.01em; }
+.dtv-dot[data-past="1"] { opacity: 0.5; }
+.dtv-dot[data-next="1"] i { box-shadow: 0 0 0 2px var(--sc, var(--lc)), 0 0 0 6px color-mix(in srgb, var(--sc, var(--lc)) 25%, transparent); }
+.dtv-now { position: absolute; left: 44px; right: 0; height: 0; border-top: 2.5px solid var(--c-navy); z-index: 2; pointer-events: none; }
+.dtv-now span { position: absolute; left: -44px; top: 0; transform: translateY(-50%); padding: 1px 8px; border-radius: 999px; background: var(--c-navy); color: #fff; font: 700 11px "Figures", "Public Sans", system-ui, sans-serif; }

@@ -6,6 +6,7 @@ import { partyColour } from "../lib/format";
 import { CommonsBadge } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { useGo } from "./story/useGo";
+import { usePhone } from "../lib/usePhone";
 import "../chamber.css";
 
 const PER_ROW = 22;
@@ -29,7 +30,32 @@ function packSeats(n, originX, originY, growLeft) {
   return seats;
 }
 
+// On a phone the chamber is turned side-on: the Government's benches in a block at the top, the aisle across the middle and the Opposition's block under it, so the dots are big enough to see
+// and each side's total sits above its own block instead of in a corner among the seats.
+const P_W = 340;
+const P_PER = 19;
+const P_SP = 16.5;
+const P_ROW = 14;
+const P_X0 = (P_W - (P_PER - 1) * P_SP) / 2;
+
+function phonePlan(layout) {
+  const govRows = Math.max(1, Math.ceil(layout.govSeats.length / P_PER));
+  const oppRows = Math.max(1, Math.ceil(layout.oppSeats.length / P_PER));
+  const aisle = 118 + (govRows - 1) * P_ROW;
+  const oppTop = aisle + 104;
+  const gov = layout.govSeats.map((seat, i) => {
+    const row = Math.floor(i / P_PER);
+    return { ...seat, x: P_X0 + (i % P_PER) * P_SP, y: aisle - 14 - row * P_ROW, delay: +(row * 0.045 + (i % P_PER) * 0.01).toFixed(2) };
+  });
+  const opp = layout.oppSeats.map((seat, i) => {
+    const row = Math.floor(i / P_PER);
+    return { ...seat, x: P_X0 + (i % P_PER) * P_SP, y: oppTop + row * P_ROW, delay: +(row * 0.045 + (i % P_PER) * 0.01).toFixed(2) };
+  });
+  return { gov, opp, aisle, oppTop, govRows, oppRows, height: oppTop + oppRows * P_ROW + 12 };
+}
+
 export default function CommonsChamber() {
+  const phone = usePhone();
   const [politicians, setPoliticians] = useState(null);
   const [failed, setFailed] = useState(false);
   const [hover, setHover] = useState(null);
@@ -173,7 +199,44 @@ export default function CommonsChamber() {
         Live seat count from the current data, grouped by party. Hover a dot to see who it is.
       </div>
 
-      <div ref={goRef} className="chm-plan" data-go={go}>
+      <div ref={goRef} className="chm-plan" data-go={go} data-phone={phone ? "1" : undefined}>
+        {phone ? (() => {
+          const pp = phonePlan(layout);
+          const gc = layout.government?.color ?? COLORS.inkSoft;
+          const seatsP = [...pp.gov, ...pp.opp];
+          return (
+            <svg role="img" aria-label="Seating plan of the House of Commons, one dot for each MP, grouped by party. The Government benches are in the top block and the Opposition benches in the block below it." width="100%" viewBox={`0 0 ${P_W} ${pp.height}`} style={{ display: "block", margin: "0 auto" }}>
+              <rect x={2} y={2} width={P_W - 4} height={pp.height - 4} rx={16} fill={COLORS.paper} stroke={COLORS.hairline} strokeWidth={1} />
+              <path d={`M2 ${pp.aisle}V18a16 16 0 0 1 16-16H${P_W - 18}a16 16 0 0 1 16 16V${pp.aisle}Z`} fill={`${gc}0f`} />
+              <line x1={14} y1={pp.aisle} x2={P_W - 14} y2={pp.aisle} stroke={COLORS.hairline} strokeWidth={1.5} strokeDasharray="3 5" />
+              {/* Speaker's chair, at the head of the aisle */}
+              <rect x={P_W / 2 - 22} y={pp.aisle - 11} width={44} height={22} rx={5} fill={COLORS.ink} />
+              <text x={P_W / 2} y={pp.aisle + 3} textAnchor="middle" fontFamily={FONT_MONO} fontSize={8.5} letterSpacing={0.3} fill="#fff">SPEAKER</text>
+              {layout.speaker && <title>{layout.speaker.name}, Speaker</title>}
+              {/* The size of each side, above its own block */}
+              <g className="chm-count" aria-hidden="true">
+                <text x={P_X0 - 6} y={26} fontFamily={FONT_BODY} fontWeight={700} fontSize={13} fill={gc}>Government · {layout.government?.name}</text>
+                <text x={P_X0 - 6} y={62} className="chm-count-n" fill={gc}>{layout.govSeats.length}</text>
+                <text x={P_X0 + 66} y={56} className="chm-count-l" fill={COLORS.inkSoft}>{layout.government?.name} MPs,</text>
+                <text x={P_X0 + 66} y={70} className="chm-count-l" fill={COLORS.inkSoft}>the Government side</text>
+                <text x={P_X0 - 6} y={pp.aisle + 40} fontFamily={FONT_BODY} fontWeight={700} fontSize={13} fill={COLORS.inkSoft}>Opposition benches</text>
+                <text x={P_X0 - 6} y={pp.aisle + 76} className="chm-count-n" fill={COLORS.ink}>{layout.oppSeats.length}</text>
+                <text x={P_X0 + 66} y={pp.aisle + 70} className="chm-count-l" fill={COLORS.inkSoft}>MPs on the</text>
+                <text x={P_X0 + 66} y={pp.aisle + 84} className="chm-count-l" fill={COLORS.inkSoft}>Opposition benches</text>
+              </g>
+              {seatsP.map((seat) => {
+                const leader = seat.g === 0 ? layout.pm : layout.oppositionLeader;
+                const marked = leader && seat.mp.id === leader.id;
+                return (
+                  <circle key={seat.mp.id} className="chm-seat" cx={seat.x} cy={seat.y} r={marked ? 6.2 : 4.9} fill={seat.color} stroke={marked ? COLORS.ink : "#fff"} strokeWidth={marked ? 1.5 : 0.75} style={{ "--d": `${seat.delay}s`, "--sc": seat.color, opacity: active == null || active === seat.g ? 1 : 0.14 }}>
+                    <title>{seat.mp.name}, {seat.mp.party}{marked ? (seat.g === 0 ? " (Prime Minister)" : " (Leader of the Opposition)") : ""}</title>
+                  </circle>
+                );
+              })}
+            </svg>
+          );
+        })() : (
+          <>
         <svg
           role="img"
           aria-label="Seating plan of the House of Commons, one dot for each MP, grouped by party. The Government benches are on the right and the Opposition benches on the left."
@@ -259,6 +322,8 @@ export default function CommonsChamber() {
           )}
           </g>
         </svg>
+          </>
+        )}
       </div>
 
       <div className="chm-maj" data-go={go}>

@@ -111,14 +111,17 @@ function ContractWide() {
 
 function ContractTall() {
   const [ref, go, t0] = useGoMotion(0.15, 2.5);
-  const y = (i) => 20 + i * 160;
+  // On a phone the shortcut has its own horizontal pill between the first two stages (so every word reads the right way up); the red lane leaves the pill, goes round the stages it skips and arrives at the award.
+  const GAP = 72;
+  const y = (i) => 20 + i * 160 + (i >= 1 ? GAP : 0);
   const cy = (i) => y(i) + 66;
   const rail = 28;
-  const lane = `M ${rail} ${cy(0) + 12} C -30 ${cy(0) + 56}, -30 ${cy(3) - 56}, ${rail} ${cy(3) - 12}`;
+  const pc = y(0) + 132 + (GAP + 28) / 2;
+  const lane = `M 62 ${pc} H 8 C -22 ${pc}, -30 ${pc + 14}, -30 ${pc + 50} V ${cy(3) - 44} C -30 ${cy(3) - 8}, -10 ${cy(3)}, 14 ${cy(3)}`;
   const railPath = `M ${rail} ${cy(0)} V ${cy(4)}`;
   const DUR = 10;
   return (
-    <svg ref={ref} data-go={go} className="st-trail-tall dmx" viewBox="-34 0 394 880" aria-hidden="true">
+    <svg ref={ref} data-go={go} className="st-trail-tall dmx" viewBox="-34 0 394 952" aria-hidden="true">
       <defs><Shadow id="cr-sh-t" /><ArrowDef id="cr-ar-t" /></defs>
       <Ribbon d={railPath} c={BLUE} delay={0.9} />
       <Ribbon d={lane} c={RED} delay={1.5} arrow="url(#cr-ar-t)" />
@@ -146,9 +149,9 @@ function ContractTall() {
         </>
       )}
       <g className="dmx-in" style={{ "--d": 1.7 }}>
-        <g transform={`translate(-14 ${(cy(0) + cy(3)) / 2}) rotate(-90)`} filter="url(#cr-sh-t)"><rect x="-120" y="-16" width="240" height="32" rx="16" fill="#fff" stroke={RED} strokeWidth="3" strokeDasharray="6 4" /><text y="5" textAnchor="middle" fontSize="13" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Emergency shortcut: no competition</text></g>
-        <text x="180" y="826" textAnchor="middle" fontSize="16" fontWeight="800" fill={INK} fontFamily={S}>The shortcut skips the notice and the bidding.</text>
-        <text x="180" y="858" textAnchor="middle" fontSize="14" fontWeight="600" fill={SOFT} fontFamily={F}>In 2020, <tspan fontSize="22" fontWeight="800" fill={RED} fontFamily={S}>£10.5bn</tspan> of <tspan fontWeight="800" fill={INK}>£18.0bn</tspan> went this way.</text>
+        <g transform={`translate(62 ${pc - 25})`} filter="url(#cr-sh-t)"><rect width="294" height="50" rx="25" fill="#fff" stroke={RED} strokeWidth="3" strokeDasharray="6 4" /><text x="147" y="21" textAnchor="middle" fontSize="13.500" fontWeight="800" fill="#7A2E2E" fontFamily={F}>Emergency shortcut:</text><text x="147" y="39" textAnchor="middle" fontSize="13.500" fontWeight="800" fill="#7A2E2E" fontFamily={F}>a direct award, no competition</text></g>
+        <text x="180" y="898" textAnchor="middle" fontSize="16" fontWeight="800" fill={INK} fontFamily={S}>The shortcut skips the notice and the bidding.</text>
+        <text x="180" y="930" textAnchor="middle" fontSize="14" fontWeight="600" fill={SOFT} fontFamily={F}>In 2020, <tspan fontSize="22" fontWeight="800" fill={RED} fontFamily={S}>£10.5bn</tspan> of <tspan fontWeight="800" fill={INK}>£18.0bn</tspan> went this way.</text>
       </g>
     </svg>
   );

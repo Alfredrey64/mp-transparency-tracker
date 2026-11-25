@@ -13,3 +13,9 @@
   .hubtabs li { flex: 0 1 auto; min-width: 0; }
   .hubtabs-tab { min-height: 38px; padding: 0 13px; font-size: 13.5px; }
 }
+
+/* Parliament in numbers: on a phone the three House tabs share the full width, with each name centred (and wrapping to two lines if it must). */
+@media (max-width: 560px) {
+  .pn-tabs { display: flex !important; width: 100%; box-sizing: border-box; }
+  .pn-tab { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; text-align: center; min-height: 44px; padding: 6px 6px !important; font-size: 13.5px !important; line-height: 1.2; box-sizing: border-box; }
+}

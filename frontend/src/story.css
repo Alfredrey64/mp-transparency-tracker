@@ -1586,3 +1586,9 @@ html[data-calm] .st-rich li, html[data-calm] .st-rich .st-card-icon { transition
 .sa-flow .sa-link span::before { content: ""; width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--c-brand, var(--c-ink)); }
 .sa-flow[data-down="1"] .sa-link span { left: calc(50% + 30px); top: 50%; bottom: auto; transform: translateY(-50%); }
 @media (max-width: 700px) { .sa-flow .sa-link span { left: calc(50% + 30px); top: 50%; bottom: auto; transform: translateY(-50%); } }
+
+/* Phone: leave clear space between one pair (the coloured answer box) and the next pair's dashed box, so they read as separate pairs. */
+@media (max-width: 700px) {
+  .sa-hand ul { gap: 38px; }
+  .sa-hand li > i { margin-bottom: 6px; }
+}
