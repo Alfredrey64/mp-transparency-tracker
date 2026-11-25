@@ -85,7 +85,7 @@ const PAGE = {
       lede: "The Civil Service Code sets the standard every civil servant is held to.",
       colour: "#1F7A6E",
       blocks: [
-        { cards: [
+        { rich: true, cards: [
           { title: "Integrity", icon: IconShield, colour: "#2C5F9E", text: "Putting the obligations of public service above your own personal interests." },
           { title: "Honesty", icon: IconBook, colour: "#1F7A6E", text: "Being truthful and open." },
           { title: "Objectivity", icon: IconCompass, colour: "#A9701F", text: "Basing your advice and decisions on rigorous analysis of the evidence." },

@@ -3,7 +3,8 @@ import { useState } from "react";
 import ExplainerPage from "../story/ExplainerPage";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
-import { IconGavel, IconBook, IconRegister, IconVote } from "../icons";
+import { IconGavel, IconBook, IconRegister, IconVote, IconParliament, IconBills, IconScales } from "../icons";
+import { IconCrown } from "../newIcons";
 import { Hero, Dots } from "../story/Vivid";
 import InstrumentBrowser from "../story/InstrumentBrowser";
 import { SiFill, SiRoutes, SiNoAmend, SiHenry, SiCheckers, SiMonths, SiGrid, SiCase } from "../story/SiArt";
@@ -49,13 +50,15 @@ function build(data) {
       lede: "A few terms come up again and again. Each one is explained again where it matters.",
       colour: "#5E4B8B",
       blocks: [
-        { cards: [
-          { title: "Act", text: "A law passed by MPs and peers. It can include a power for a minister to fill in detail.", colour: "#2C7DA0" },
-          { title: "Statutory instrument (SI)", text: "The rules a minister writes using a power an Act gave them. It is real law.", colour: "#7B5BD6" },
-          { title: "Laid before Parliament", text: "Formally put in front of MPs and peers, so that Parliament can check it.", colour: "#C88A1E" },
-          { title: "Draft and made", text: "A draft is laid before it is law. A made instrument is already law when Parliament sees it.", colour: "#3F7D5C" },
-          { title: "Affirmative and negative", text: "Affirmative: Parliament has to approve it. Negative: it goes ahead unless a House objects.", colour: "#5B6784" },
-          { title: "Henry VIII power", text: "A power that lets a minister change an Act of Parliament itself.", colour: "#B3262E" },
+        { rich: true, cards: [
+          { title: "Act", icon: IconBills, text: "A law passed by MPs and peers. It can include a power for a minister to fill in detail.", colour: "#2C7DA0" },
+          { title: "Statutory instrument (SI)", icon: IconRegister, text: "The rules a minister writes using a power an Act gave them. It is real law.", colour: "#7B5BD6" },
+          { title: "Laid before Parliament", icon: IconParliament, text: "Formally put in front of MPs and peers, so that Parliament can check it.", colour: "#C88A1E" },
+        ] },
+        { rich: true, cards: [
+          { title: "Draft and made", icon: IconGavel, text: "A draft is laid before it is law. A made instrument is already law when Parliament sees it.", colour: "#3F7D5C" },
+          { title: "Affirmative and negative", icon: IconScales, text: "Affirmative: Parliament has to approve it. Negative: it goes ahead unless a House objects.", colour: "#5B6784" },
+          { title: "Henry VIII power", icon: IconCrown, text: "A power that lets a minister change an Act of Parliament itself.", colour: "#B3262E" },
         ] },
       ],
     },

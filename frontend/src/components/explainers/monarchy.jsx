@@ -1,7 +1,8 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconCrown } from "../newIcons";
-import { Flow, Handoff, Journey, Amounts } from "../story/StateArt";
+import { IconHouse, IconTransport, IconGroup } from "../icons";
+import { Handoff, Journey, Amounts } from "../story/StateArt";
 import { Hero } from "../story/Vivid";
 import { GrantPipe } from "../story/FlowArt";
 
@@ -19,7 +20,11 @@ const PAGE = {
       estate={{ value: "£487m", text: "Crown Estate profit used in the sum, 2025 to 2026. The Royal Trustees' review figure." }}
       now={{ value: "£137.9m", text: "Sovereign Grant, 2026 to 2027. To support the King's official duties.", pct: 100, button: "2026 to 2027" }}
       proposed={{ value: "£99.9m", text: "Proposed from 2027 to 2028. Needs new legislation, so not yet law.", pct: (99.9 / 137.9) * 100, button: "Proposed from 2027 to 2028" }}
-      duties={{ title: "Official duties", text: "What the grant supports" }}
+      duties={{ title: "Official duties", text: "What the grant pays for", items: [
+        { icon: IconHouse, title: "Royal palaces", text: "Looking after the Occupied Royal Palaces, used for formal entertaining and ceremonial events." },
+        { icon: IconTransport, title: "Royal travel", text: "Official engagements in the UK and overseas, by the King and other Royal Family members acting for him." },
+        { icon: IconGroup, title: "Household staff", text: "The pay of the Royal Household staff who support the King as Head of State." },
+      ] }}
     />}
   />,
   chapters: [
@@ -48,13 +53,10 @@ const PAGE = {
       lede: "A five-step formula in the Sovereign Grant Act 2011 decides the amount each year.",
       colour: "#1F7A6E",
       blocks: [
-        { node: <Flow down numbered items={[
-          { title: "Take 12% of the Crown Estate's profit", text: "The figure is the net surplus on the Crown Estate's income account for the financial year two years earlier. The percentage was cut from 25% to 12% after the 2023 review, because the Crown Estate's profit was expected to rise sharply.", colour: "#A9701F" },
-          { title: "Round it up", text: "To the next £100,000.", colour: "#5E4B8B" },
-          { title: "It can never fall", text: "The grant is the larger of that sum and the previous year's grant.", colour: "#2C5F9E" },
-          { title: "A reserve can reduce it", text: "If the Household's reserve fund is worth more than 50% of the resources it used that year, the Royal Trustees may reduce the grant.", colour: "#5E4B8B" },
-          { title: "The result is the grant", text: "The sum from the steps before, less any reduction, is the Sovereign Grant for the year.", colour: "#1F7A6E" },
-        ]} /> },
+        { text: [
+          "The picture at the top of the page shows the five steps. The figure used is the net surplus on the Crown Estate's income account for the financial year two years earlier. The percentage was cut from 25% to 12% after the 2023 review, because the Crown Estate's profit was expected to rise sharply.",
+          "The grant can never fall: it is the larger of that sum and the previous year's grant. The one thing that can reduce it is the reserve: if the Household's reserve fund is worth more than 50% of the resources it used that year, the Royal Trustees may reduce the grant. What is left, less any reduction, is the Sovereign Grant for the year.",
+        ] },
         { text: [<>The Crown Estate is a property business. The Grant itself is paid to the Royal Household out of money provided by Parliament, which is why it counts as public money. See <a href="#/funding">funding and independence</a> for how other bodies are funded.</>] },
       ],
     },
@@ -86,7 +88,7 @@ const PAGE = {
   ],
   sources: [
     { label: "GOV.UK: Sovereign Grant Act 2011, report of the Royal Trustees on the Sovereign Grant 2026 to 2027", url: "https://www.gov.uk/government/publications/sovereign-grant-act-2011-report-of-the-royal-trustees-on-the-sovereign-grant-2026-27", note: "The £137.9 million, and the five-step calculation." },
-    { label: "Report of the Royal Trustees: Sovereign Grant Review 2026 (PDF)", url: "https://assets.publishing.service.gov.uk/media/6a3cedc833bc5beefd3c49ae/Report_of_the_Royal_Trustees_Sovereign_Grant_Review_2026.pdf", note: "The 20.5 per cent, the £99.9 million, the £487 million, and the Buckingham Palace reservicing programme." },
+    { label: "Report of the Royal Trustees: Sovereign Grant Review 2026 (PDF)", url: "https://assets.publishing.service.gov.uk/media/6a3cedc833bc5beefd3c49ae/Report_of_the_Royal_Trustees_Sovereign_Grant_Review_2026.pdf", note: "The 20.5 per cent, the £99.9 million, the £487 million, what the Grant pays for, and the Buckingham Palace reservicing programme." },
     { label: "Sovereign Grant Act 2011, section 6", url: "https://www.legislation.gov.uk/ukpga/2011/15/section/6", note: "The five steps in the Act." },
   ],
   checked: "28 October 2026",

@@ -15,7 +15,7 @@ import "../../explainart.css";
 // ---- the funnel ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // One story travels through the funnel, stage by stage, and the stage it is at is the one that is lit: both come from the same step number, so the dot and the stages move together.
-// The grey dots left of the gate are the other things that happen; they stay where they are, because they are not covered.
+// The grey dots left of the gate are the other things that happen; they drift about where they are, because they are not covered. Only the one story goes through the gate.
 const STAGE_X = [100, 300, 500, 700, 900];
 const STAGE_Y = [85, 85, 85, 40, 60];
 const GREY = "#8A93A6";
@@ -41,10 +41,9 @@ export function StoryFunnel({ nodes, label }) {
     <section ref={ref} className="nfn" data-go={go} data-still={still ? "1" : "0"} style={{ "--n": nodes.length }} aria-label={label}>
       <svg className="nfn-svg" viewBox="0 -38 1000 232" aria-hidden="true">
         <defs>
-          <linearGradient id="nfnBand" x1="0" x2="1">
-            <stop offset="0" stopColor="#E2BE7A" stopOpacity="0.22" />
-            <stop offset="0.5" stopColor="#8DB7E8" stopOpacity="0.2" />
-            <stop offset="1" stopColor="#5E4B8B" stopOpacity="0.2" />
+          {/* one gradient across the whole funnel: grey where the events are not yet covered, then the colours of stages 2 to 5 in order, one shading into the next, which is how a view is formed */}
+          <linearGradient id="nfnBand" gradientUnits="userSpaceOnUse" x1="0" x2="1000" y1="0" y2="0">
+            {nodes.map((s, j) => <stop key={s.title} offset={STAGE_X[j] / 1000} stopColor={j === 0 ? GREY : s.colour} stopOpacity={j === 0 ? 0.22 : 0.42} />)}
           </linearGradient>
         </defs>
         {/* the funnel: wide where events come in, narrow at the newsroom's gate, wider again for the audience */}
@@ -61,7 +60,6 @@ export function StoryFunnel({ nodes, label }) {
         {/* the five stages, numbered above the funnel: the number for the stage the story is at lights up, and so do its words below */}
         {nodes.map((s, j) => (
           <g key={s.title} className="nfn-st" data-on={!still && j === step ? "1" : "0"} style={{ "--tc": s.colour }}>
-            <line x1={STAGE_X[j]} y1={-12} x2={STAGE_X[j]} y2={6} />
             <circle cx={STAGE_X[j]} cy={-22} r={15} />
             <text x={STAGE_X[j]} y={-16.5} textAnchor="middle">{j + 1}</text>
           </g>
@@ -72,7 +70,7 @@ export function StoryFunnel({ nodes, label }) {
           <text x={22 + String(REST.length + 1).length * 21 + 8} y={190} className="nfn-cl">things happen</text>
           <text x={332} y={190} className="nfn-cl">only a few are covered</text>
         </g>
-        {REST.map((d, i) => <circle key={i} className="nfn-rest" cx={d.x} cy={d.y} r="5.5" />)}
+        {REST.map((d, i) => <circle key={i} className="nfn-rest" cx={d.x} cy={d.y} r="5.5" style={{ "--dx": `${((i * 7) % 11) - 5}px`, "--dy": `${((i * 5) % 9) - 4}px`, "--t": `${3.4 + (i % 5) * 0.55}s`, "--w": `${-(i % 7) * 0.6}s` }} />)}
         {/* the one story that is followed */}
         <g className="nfn-tok" data-back={back ? "1" : "0"} style={{ transform: `translate(${STAGE_X[shown]}px, ${STAGE_Y[shown]}px)` }}>
           <circle className="nfn-dot" r="9" style={{ fill: shown >= 2 ? nodes[shown].colour : GREY }} />

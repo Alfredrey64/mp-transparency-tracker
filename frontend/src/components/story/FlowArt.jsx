@@ -179,15 +179,11 @@ const FORMULA = ["Take 12% of the Crown Estate's profit", "Round it up to the ne
 
 //   now / proposed  { value, text, pct }  the grant in force and the cut that has been proposed (pct is the proposed amount as a share of the current one, 0 to 100)
 //   estate { value, text }  the Crown Estate figure the page gives
+//   duties { title, text, items: [{ icon, title, text }] }  what the grant pays for
 // Wide pages lay the four stages out as rows (the words on the left, the working on the right) so the space in each box is used; very wide ones run them across; phones stack everything.
+// Only the coins travel between the cards (no arrows): money moving from one stage to the next.
 function Link() {
-  return (
-    <span className="fla-g-link" aria-hidden="true">
-      <svg className="fla-g-ah" viewBox="0 0 44 20"><path d="M3 10H31" className="fla-g-stem" /><path d="M27 3.5 38 10 27 16.5" className="fla-g-head" /></svg>
-      <svg className="fla-g-av" viewBox="0 0 20 44"><path d="M10 3V31" className="fla-g-stem" /><path d="M3.5 27 10 38 16.5 27" className="fla-g-head" /></svg>
-      <u /><u /><u />
-    </span>
-  );
+  return <span className="fla-g-link" aria-hidden="true"><u /><u /><u /></span>;
 }
 
 export function GrantPipe({ estate, now, proposed, label, duties }) {
@@ -240,6 +236,19 @@ export function GrantPipe({ estate, now, proposed, label, duties }) {
         <article className="fla-g-card fla-g-duties" style={{ "--tc": "#2C5F9E", "--at": "2s" }}>
           <span className="fla-g-ico" aria-hidden="true"><IconCrown size={26} /></span>
           <div className="fla-g-hd"><b>{duties.title}</b><small>{duties.text}</small></div>
+          <div className="fla-g-body">
+            <ul className="fla-g-duty">
+              {duties.items.map((d, i) => {
+                const Icon = d.icon;
+                return (
+                  <li key={d.title} style={{ "--s": `${2.4 + i * 0.35}s`, "--k": i }}>
+                    <span aria-hidden="true">{Icon && <Icon size={20} />}</span>
+                    <div><b>{d.title}</b><small>{d.text}</small></div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </article>
       </div>
     </section>

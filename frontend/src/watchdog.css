@@ -13,7 +13,7 @@
 
 .wdg-stops { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; position: relative; z-index: 1; }
 .wdg-stop { min-width: 0; }
-.wdg-btn { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; height: 100%; padding: 6px 10px 16px; border-radius: 18px; border: 1px solid transparent; background: transparent; color: inherit; font: inherit; text-align: center; cursor: pointer; transition: background 0.3s ease, border-color 0.3s ease; }
+.wdg-btn { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; height: 100%; padding: 26px 10px 18px; border-radius: 18px; border: 1px solid transparent; background: transparent; color: inherit; font: inherit; text-align: center; cursor: pointer; transition: background 0.3s ease, border-color 0.3s ease; }
 .wdg-btn:hover { background: rgba(255, 255, 255, 0.05); }
 .wdg-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
 .wdg-stop[data-on="1"] .wdg-btn { background: rgba(255, 255, 255, 0.09); border-color: color-mix(in srgb, var(--tc) 70%, transparent); }
@@ -49,7 +49,7 @@
 /* narrow: the stations stack, with the rail running down through their markers */
 @container (max-width: 720px) {
   .wdg-stops { grid-template-columns: 1fr; gap: 6px; }
-  .wdg-btn { flex-direction: row; align-items: flex-start; gap: 16px; padding: 12px 12px 12px 8px; text-align: left; }
+  .wdg-btn { flex-direction: row; align-items: flex-start; gap: 16px; padding: 20px 12px 20px 24px; text-align: left; }
   .wdg-words { align-items: flex-start; }
   .wdg-badge { margin-top: 4px; }
 }
@@ -81,6 +81,6 @@ html[data-calm] .wdg-loopline, html[data-calm] .wdg-tokin { animation: none !imp
 @media (max-width: 480px) { .wdc-steps b, .wdc-steps span { font-size: 12px; } }
 .wdg-words b svg { vertical-align: -3px; margin-right: 4px; color: var(--tc); }
 .wdg-words { flex: 1 1 auto; align-self: stretch; }
-.wdg-words em { margin-top: auto; }
+.wdg-words em { margin-top: auto; align-self: stretch; display: flex; align-items: center; justify-content: center; box-sizing: border-box; min-height: calc(3 * 1.4em + 12px); text-align: center; border-radius: 16px; }
 .wdg-words small { margin-bottom: 8px; }
-@container (max-width: 720px) { .wdg-words em { margin-top: 4px; } .wdg-words small { margin-bottom: 0; } }
+@container (max-width: 720px) { .wdg-words em { margin-top: 4px; align-self: flex-start; min-height: 0; text-align: left; border-radius: 999px; } .wdg-words small { margin-bottom: 0; } }

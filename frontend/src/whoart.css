@@ -8,6 +8,7 @@
 /* each card is a picture in a frame of the same height, then its number and words under a rule, so the three line up and every picture is centred in its box */
 .wta-pic { display: grid; place-items: center; height: clamp(150px, 17vw, 188px); padding: 6px 0 2px; }
 .wta-tx { margin-top: auto; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--c) 24%, var(--c-hairline)); }
+.wta-b .wta-pic, .wta-c .wta-pic { padding: 0 0 10px; } /* the picture sits midway between the top of the card and the line above the words */
 .wta-hemi { display: block; height: 100%; width: auto; max-width: 100%; }
 /* the half circle fills the width of its card, and the card's picture frame is as tall as the half circle needs */
 .wta-a .wta-pic { height: auto; aspect-ratio: 420 / 214; padding: 0; margin-bottom: 14px; }

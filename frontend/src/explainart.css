@@ -9,6 +9,8 @@
 .nfn-box rect { fill: #5E4B8B; opacity: 0.85; }
 .nfn-box .nfn-slot { fill: #fff; opacity: 0.9; }
 .nfn-rest { fill: #8A93A6; opacity: 0.5; }
+.nfn[data-go="1"][data-still="0"] .nfn-rest { animation: nfnDrift var(--t, 4s) ease-in-out var(--w, 0s) infinite alternate; }
+@keyframes nfnDrift { to { transform: translate(var(--dx, 3px), var(--dy, 3px)); } }
 /* the one story that is followed: it glides from stage to stage, and takes the colour of the stage it is at */
 .nfn-tok { transition: transform 0.9s cubic-bezier(0.45, 0, 0.2, 1); }
 .nfn-tok[data-back="1"] { transition: none; animation: nfnIn 0.5s ease; }
@@ -34,7 +36,6 @@
   .nfn-tx { align-items: flex-start; }
   .nfn-badge { flex: none; }
 }
-.nfn-st line { stroke: color-mix(in srgb, var(--c-ink-soft) 50%, transparent); stroke-width: 2; stroke-dasharray: 3 4; }
 .nfn-st circle { fill: color-mix(in srgb, var(--tc) 30%, var(--c-paper-card)); stroke: var(--tc); stroke-width: 3; }
 .nfn-st text { font: 800 15px "Figures", "Public Sans", system-ui, sans-serif; fill: var(--c-ink); font-variant-numeric: lining-nums; }
 .nfn-cn { font: 800 30px "Figures", "Newsreader", Georgia, serif; fill: var(--c-ink); font-variant-numeric: lining-nums; }

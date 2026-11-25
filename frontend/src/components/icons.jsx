@@ -671,9 +671,9 @@ export function IconRoute({ size = 17 }) {
 export function IconTopic({ size = 17 }) {
   return (
     <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 5h16v10H10l-4 4v-4H4V5Z" />
-      <circle cx="11.2" cy="9.4" r="2.3" />
-      <path d="m12.9 11.1 2 2" />
+      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v11a1.5 1.5 0 0 1-1.5 1.5H9l-4 4v-4H5.5A1.5 1.5 0 0 1 4 16.5Z" />
+      <circle cx="11.3" cy="10.2" r="2.8" />
+      <path d="m13.4 12.3 2 2" />
     </svg>
   );
 }
