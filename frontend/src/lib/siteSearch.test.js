@@ -49,3 +49,35 @@ describe("donors", () => {
     expect(findDonors("acme", index)).toHaveLength(1);
   });
 });
+
+import { findPages, buildSectionIndex, findSections } from "./siteSearch";
+
+describe("pages", () => {
+  const pages = [
+    { key: "nhs", label: "The NHS", hint: "Waiting times by region, A&E, staff", aka: ["waiting list"] },
+    { key: "voting", label: "How MPs voted", hint: "Every vote, in plain English", aka: ["divisions"] },
+    { key: "rebels", label: "MPs who defy their party", hint: "Who breaks ranks", aka: ["rebellion"] },
+  ];
+  const textsOf = (p) => [p.label, p.hint, ...(p.aka ?? [])];
+  it("takes the words in any order and puts a name match first", () => {
+    expect(findPages("times waiting", pages, textsOf).map((p) => p.key)).toEqual(["nhs"]);
+    expect(findPages("mps", pages, textsOf).map((p) => p.key)).toEqual(["rebels", "voting"]);
+    expect(findPages("rebellion", pages, textsOf).map((p) => p.key)).toEqual(["rebels"]);
+    expect(findPages("zzz", pages, textsOf)).toEqual([]);
+  });
+});
+
+describe("inside pages", () => {
+  const headings = {
+    statutoryInstruments: { title: "Laws made by ministers", heads: ["What are people worried about?", "Words you will meet on this page", "England", "Laws made by ministers"] },
+    housing: { title: "Housing", heads: ["Private rents index", "Words you will meet on this page"] },
+  };
+  const index = buildSectionIndex(headings, (k) => ({ statutoryInstruments: "Laws made by ministers", housing: "Housing" })[k], new Set(["private rents index"]));
+  it("lists real section headings only", () => {
+    expect(index.map((h) => h.label)).toEqual(["What are people worried about?", "Words you will meet on this page", "Words you will meet on this page"]);
+  });
+  it("finds a section by its words and says which page it is on", () => {
+    expect(findSections("worried", index)).toEqual([expect.objectContaining({ page: "statutoryInstruments", label: "What are people worried about?" })]);
+    expect(findSections("words meet housing", index).map((h) => h.page)).toEqual(["housing"]);
+  });
+});

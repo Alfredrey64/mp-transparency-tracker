@@ -1,4 +1,5 @@
 import { SECTIONS, collapseItems, hubLead } from "../data/sidebarSections";
+import { RELATED } from "../data/relatedPages";
 import { PageLink } from "./SiteHeader";
 import { useT } from "../lib/useLang";
 import "../sectionnav.css";
@@ -7,8 +8,21 @@ import "../sectionnav.css";
 // group's colour, so moving about a section never needs the menu. Pages that are not in a group (the tour, the legal pages) show nothing.
 const SHOWN = 8;
 
+// The pages related to this one in other menu groups, each with its own section's colour (see data/relatedPages.js).
+function relatedTo(view) {
+  const out = [];
+  for (const key of RELATED.get(view) ?? []) {
+    for (const section of SECTIONS) {
+      const item = section.items.find((i) => i.key === key);
+      if (item) { out.push({ item, accent: section.accent, section: section.label }); break; }
+    }
+  }
+  return out;
+}
+
 export default function SectionNav({ view, onNavigate }) {
   const t = useT();
+  const related = relatedTo(view);
   const found = (() => {
     for (const section of SECTIONS) {
       const items = collapseItems(section.items.filter((i) => i.key !== "start" && !i.standalone));
@@ -17,7 +31,23 @@ export default function SectionNav({ view, onNavigate }) {
     }
     return null;
   })();
-  if (!found || found.items.length < 2) return null;
+  const relatedNav = related.length > 0 && (
+    <nav className="sn sn-rel" aria-label={t("Related pages")}>
+      <div className="sn-head"><h2>{t("Related pages")}</h2><p>{t("Elsewhere on the site")}</p></div>
+      <div className="sn-grid">
+        {related.map(({ item, accent, section: where }) => {
+          const Icon = item.icon;
+          return (
+            <PageLink key={item.key} to={item.key} onNavigate={onNavigate} className="sn-card" style={{ "--sc": accent }}>
+              <span className="sn-icon" aria-hidden="true">{Icon && <Icon size={20} />}</span>
+              <span className="sn-text"><b>{t(item.label)}</b>{item.hint && <small>{t(item.hint)}</small>}<small className="sn-where">{t(where)}</small></span>
+            </PageLink>
+          );
+        })}
+      </div>
+    </nav>
+  );
+  if (!found || found.items.length < 2) return relatedNav || null;
   const { section, items, at } = found;
   const prev = items[(at - 1 + items.length) % items.length];
   const next = items[(at + 1) % items.length];
@@ -43,6 +73,7 @@ export default function SectionNav({ view, onNavigate }) {
     );
   };
   return (
+    <>
     <nav className="sn" aria-label={t("More in {name}", { name: t(section.label) })} style={{ "--sc": section.accent }}>
       <div className="sn-head">
         <span className="sn-dot" aria-hidden="true" />
@@ -56,5 +87,7 @@ export default function SectionNav({ view, onNavigate }) {
       </div>}
       <div className="sn-grid">{near.map((i) => card(i))}</div>
     </nav>
+    {relatedNav}
+    </>
   );
 }

@@ -100,3 +100,13 @@ GitHub no longer lets a workflow set `NODE_OPTIONS` through `$GITHUB_ENV`, so `c
 - **Acts passed** (`fetch-acts.js` → `frontend/src/data/acts.json`, daily, in the `lords_files` job of `fetch-data.yml`): reads legislation.gov.uk's own Atom feed of Public General Acts for this year and last, and keeps the saved file unless the list is complete against the feed's own yearly total. The Royal Assent date is the feed's `ukm:CreationDate`. Shown on How a law is made, in the chapter "The Acts that have become law in {year}".
 - **GP appointments** (`fetch-gp-appointments.js` → `frontend/src/data/gpAppointments.json`, daily but only downloads when NHS England has a newer monthly edition): the regional CSV from the "Appointments in General Practice" release, totalled by NHS area (integrated care board) and month. Refuses a file with fewer than 35 areas or an England total outside 20 to 80 million appointments a month. Shown on NHS → Seeing a GP.
 - **The grid right now** (`frontend/src/components/GridLive.jsx`): not saved in the repository at all. The visitor's browser asks api.carbonintensity.org.uk directly (allowed in `vercel.json` connect-src) every five minutes while the page is open, so there is no copy to go stale; if the service does not answer, the panel says so.
+
+## Site search: headings inside pages
+
+The search box finds sections inside pages from `frontend/src/data/pageHeadings.json`. It is rebuilt by a script, not typed. After adding a page, or changing a page's section headings, run a fresh build, serve it (`npx vite preview --port 4178 --strictPort`) and then:
+
+```bash
+node scripts/build-heading-index.mjs      # all pages; ONLY=a,b refreshes just those and keeps the rest
+```
+
+A unit test fails if a page is missing from the file, and the weekly check lists the file every 45 days (row `search-page-headings` in `scripts/hand-kept.mjs`). Cross-section "Related pages" links live in `src/data/relatedPages.js`; add a pair there when a new page has a close relative in another menu group.

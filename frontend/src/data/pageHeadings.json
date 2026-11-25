@@ -1,0 +1,1389 @@
+{
+ "about": {
+  "title": "About Domesday Live",
+  "heads": [
+   "What it is",
+   "Who runs it",
+   "How it is paid for",
+   "Where the figures come from",
+   "Get in touch"
+  ]
+ },
+ "accessibility": {
+  "title": "Accessibility",
+  "heads": [
+   "Change how the site looks and sounds",
+   "Our accessibility statement"
+  ]
+ },
+ "ageing": {
+  "title": "Ageing and pensions",
+  "heads": [
+   "The short version",
+   "The main figures",
+   "How the pension has changed",
+   "Where to look next"
+  ]
+ },
+ "answers": {
+  "title": "Ask a question",
+  "heads": [
+   "Popular questions"
+  ]
+ },
+ "appg": {
+  "title": "Cross-party groups",
+  "heads": [
+   "What is an APPG?",
+   "A few real examples",
+   "Registered financial benefits",
+   "Why this matters",
+   "The rules a group must follow",
+   "Look up any MP's memberships"
+  ]
+ },
+ "auditWatch": {
+  "title": "The spending watchdog",
+  "heads": [
+   "Who checks the money?",
+   "What the Office published this year",
+   "Every report, in the Office's words",
+   "What the Public Accounts Committee did with them",
+   "Where this comes from"
+  ]
+ },
+ "backbench": {
+  "title": "Backbench bills and motions",
+  "heads": [
+   "Four ways an MP or peer can try to make a law",
+   "How far do they get?",
+   "This session's ballot bills",
+   "Early day motions: what MPs put their names to",
+   "Who tables the most?",
+   "What you can do",
+   "Where this comes from"
+  ]
+ },
+ "brexit": {
+  "title": "Brexit",
+  "heads": [
+   "The short version",
+   "Ten years on",
+   "How things have changed",
+   "How to read this page",
+   "The main dates",
+   "Where experts agree and disagree"
+  ]
+ },
+ "budget": {
+  "title": "Taxes",
+  "heads": []
+ },
+ "business": {
+  "title": "Business and industry",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "Which industries are growing",
+   "Manufacturing: output",
+   "Construction: output",
+   "Shops and wholesale: output",
+   "Hotels, pubs and restaurants: output",
+   "Finance and insurance: output",
+   "Technology and communications: output",
+   "Health and social care: output",
+   "Transport and storage: output",
+   "Farming, forestry and fishing: output",
+   "Share of shopping done online",
+   "Spending online each week",
+   "Where this reaches Parliament"
+  ]
+ },
+ "byElections": {
+  "title": "By-elections",
+  "heads": []
+ },
+ "cabinet": {
+  "title": "Who's in Cabinet",
+  "heads": []
+ },
+ "calculators": {
+  "title": "Money calculators",
+  "heads": [
+   "What do you take home?",
+   "Where your £6,279 of tax goes"
+  ]
+ },
+ "care": {
+  "title": "Social care and childcare",
+  "heads": [
+   "The short version",
+   "The main figures",
+   "How things have changed",
+   "Where to look next"
+  ]
+ },
+ "civilService": {
+  "title": "The Civil Service",
+  "heads": [
+   "Who they are",
+   "Ministers, civil servants and special advisers",
+   "The four values",
+   "Where this meets the rest of the site",
+   "Where this comes from"
+  ]
+ },
+ "committeeReports": {
+  "title": "Committee reports and government replies",
+  "heads": [
+   "Who checks the government?",
+   "What happens after a report comes out?",
+   "Do replies arrive on time?",
+   "Which committees are waiting longest",
+   "Every report, in plain English",
+   "What you can do",
+   "Where this comes from"
+  ]
+ },
+ "committees": {
+  "title": "Who's scrutinising the government",
+  "heads": []
+ },
+ "compare": {
+  "title": "Compare MPs side by side",
+  "heads": []
+ },
+ "compareCouncils": {
+  "title": "Compare councils",
+  "heads": [
+   "Pick two councils to begin"
+  ]
+ },
+ "compareSeats": {
+  "title": "Compare constituencies",
+  "heads": [
+   "Pick two seats to begin"
+  ]
+ },
+ "constituency": {
+  "title": "Find your constituency",
+  "heads": []
+ },
+ "constitution": {
+  "title": "Courts and the constitution",
+  "heads": [
+   "No single document",
+   "What judges can do about an Act",
+   "Keeping judges independent",
+   "Where this comes from"
+  ]
+ },
+ "consultations": {
+  "title": "Have your say on new rules",
+  "heads": [
+   "What is a consultation?",
+   "Open now",
+   "Every open consultation",
+   "How to make your reply count",
+   "Where this comes from"
+  ]
+ },
+ "corrections": {
+  "title": "Corrections and contact",
+  "heads": [
+   "Contact",
+   "Report a mistake",
+   "What happens next",
+   "If you are named on this site",
+   "Corrections log"
+  ]
+ },
+ "councilComplaints": {
+  "title": "How councils handle complaints",
+  "heads": [
+   "What the Ombudsman does",
+   "What happened to complaints in 2025 to 2026",
+   "Look up your council",
+   "How to read the figures fairly",
+   "Where the most complaints were upheld",
+   "Slowest to do what the Ombudsman recommended",
+   "Where this comes from"
+  ]
+ },
+ "councilSpending": {
+  "title": "Where council money goes",
+  "heads": [
+   "The big items",
+   "When a council cannot balance its books",
+   "Check your own council",
+   "Where this comes from"
+  ]
+ },
+ "councillors": {
+  "title": "Your councillors",
+  "heads": []
+ },
+ "councils": {
+  "title": "Your council and your councillors",
+  "heads": [
+   "The key numbers",
+   "Who runs Britain's councils",
+   "72 councils changed hands since 2025",
+   "629 councillors changed party since 2025",
+   "How control has shifted",
+   "Councillors by party",
+   "When councils next vote",
+   "Every council"
+  ]
+ },
+ "crime": {
+  "title": "Crime in England and Wales",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "Crime by place",
+   "Crime by ethnic group, age, sex and income: who is involved?",
+   "What kinds of crime the police record",
+   "Recorded crime by type",
+   "All crime in the Crime Survey (excluding fraud)",
+   "Violence in the Crime Survey",
+   "Theft in the Crime Survey",
+   "Fraud in the Crime Survey",
+   "All crime recorded by the police (excluding fraud)",
+   "Violence against the person (police recorded)",
+   "Homicides (police recorded)",
+   "Possession of a knife or blade (police recorded)",
+   "Sexual offences (police recorded)",
+   "Robbery (police recorded)",
+   "Burglary (police recorded)",
+   "Theft (police recorded)",
+   "Shoplifting (police recorded)",
+   "Criminal damage and arson (police recorded)",
+   "Drug offences (police recorded)",
+   "Violence with injury in the Crime Survey",
+   "Burglary in the Crime Survey",
+   "Vehicle theft in the Crime Survey",
+   "Criminal damage in the Crime Survey",
+   "Theft from the person in the Crime Survey",
+   "Violence with injury (police recorded)",
+   "Stalking and harassment (police recorded)",
+   "Rape (police recorded)",
+   "Vehicle offences (police recorded)",
+   "Theft from the person (police recorded)",
+   "Bicycle theft (police recorded)",
+   "Public order offences (police recorded)",
+   "Possession of weapons (police recorded)",
+   "Where this reaches Parliament"
+  ]
+ },
+ "darkMoney": {
+  "title": "Dark money: donations with no named donor",
+  "heads": [
+   "Why donations are made public at all",
+   "What 'dark money' means here",
+   "How the unincorporated association loophole works",
+   "A real case: the DUP's £435,000 referendum campaign",
+   "Why this specific case can never be resolved",
+   "What this doesn't mean"
+  ]
+ },
+ "defence": {
+  "title": "Defence",
+  "heads": [
+   "The short version",
+   "The main figures",
+   "How things have changed",
+   "What has been promised",
+   "What would a target cost?"
+  ]
+ },
+ "departments": {
+  "title": "Spending by department",
+  "heads": [
+   "What these budgets are",
+   "The biggest budgets in 2028-29",
+   "Who is growing and who is squeezed",
+   "The whole picture",
+   "Follow the money further",
+   "Where this comes from"
+  ]
+ },
+ "deprivation": {
+  "title": "Deprivation",
+  "heads": [
+   "All four nations on one map",
+   "Overall deprivation, seat by seat"
+  ]
+ },
+ "devolved": {
+  "title": "Scotland, Wales and Northern Ireland",
+  "heads": []
+ },
+ "digital": {
+  "title": "Digital and online safety",
+  "heads": [
+   "How well connected the UK is",
+   "The Online Safety Act, so far",
+   "Children and social media: the plan",
+   "Artificial intelligence",
+   "Where this comes from"
+  ]
+ },
+ "donors": {
+  "title": "Who funds MPs",
+  "heads": []
+ },
+ "economy": {
+  "title": "How the economy is doing",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "Growth in the economy, each quarter",
+   "Growth in the economy, each year",
+   "Growth per person, each quarter",
+   "Size of the economy, each quarter",
+   "Household income per person, after inflation",
+   "Output per hour worked, change on a year earlier",
+   "Factory, energy and mining output",
+   "Services output",
+   "Shop sales (volume)",
+   "Share of income that households save",
+   "Business investment",
+   "Business investment, change on a year earlier",
+   "Business investment as a share of the economy",
+   "Government spending on services, change on a year earlier",
+   "All investment, change on a year earlier",
+   "Where this reaches Parliament"
+  ]
+ },
+ "education": {
+  "title": "Education",
+  "heads": [
+   "The short version",
+   "Schools in England",
+   "How things have changed",
+   "Teachers",
+   "Where to look next"
+  ]
+ },
+ "electionSpending": {
+  "title": "What election campaigns can spend",
+  "heads": [
+   "Two budgets, one election",
+   "The window when spending counts",
+   "What was spent in 2024",
+   "What the money bought",
+   "Campaigners who are not standing",
+   "After the vote: who checks, and how long it takes",
+   "What may change",
+   "Where this comes from"
+  ]
+ },
+ "energy": {
+  "title": "Net zero and energy bills",
+  "heads": [
+   "The short version",
+   "The main figures",
+   "How things have changed",
+   "Where the UK stands against its goals"
+  ]
+ },
+ "environment": {
+  "title": "Energy and the environment",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "Where the UK's greenhouse gases come from",
+   "Emissions by source over time",
+   "Greenhouse gas emissions",
+   "Carbon dioxide emissions",
+   "Energy used",
+   "Energy from non-fossil sources",
+   "Share of energy from non-fossil sources",
+   "Emissions from households",
+   "Emissions from power stations and the gas network",
+   "Emissions from manufacturing",
+   "Emissions from farming",
+   "Emissions from transport businesses",
+   "What the government promised",
+   "Where this reaches Parliament"
+  ]
+ },
+ "farming": {
+  "title": "Farming and food",
+  "heads": [
+   "What UK farming is worth",
+   "How much of our food is grown here",
+   "How English farmers are paid",
+   "Inheritance tax on farms",
+   "Food prices",
+   "Where this comes from"
+  ]
+ },
+ "flooding": {
+  "title": "Flooding and air quality",
+  "heads": [
+   "Flooding: how many homes are at risk",
+   "What is being spent on defences",
+   "Check your own postcode",
+   "Air quality: the 2025 results",
+   "Check a headline: \"40,000 deaths a year\"",
+   "Where this comes from"
+  ]
+ },
+ "followTheMoney": {
+  "title": "Trace a donor",
+  "heads": []
+ },
+ "foreignInfluence": {
+  "title": "The register of foreign influence",
+  "heads": [
+   "What has to be registered",
+   "Two tiers, two sets of rules",
+   "From a direction to a public record",
+   "The register today",
+   "What an entry shows, and what it hides",
+   "When an entry is held back",
+   "What it means for MPs and peers",
+   "Where it sits among the other rules",
+   "Where this comes from"
+  ]
+ },
+ "foreignPolicy": {
+  "title": "The UK abroad: aid and treaties",
+  "heads": [
+   "The aid budget",
+   "How a treaty is approved",
+   "Where this meets the rest of the site",
+   "Where this comes from"
+  ]
+ },
+ "formerMps": {
+  "title": "MPs who have just left",
+  "heads": []
+ },
+ "funding": {
+  "title": "Funding and independence",
+  "heads": [
+   "Who runs it",
+   "Who pays for it today",
+   "Rules that stay the same, however it is paid for",
+   "Where the facts come from",
+   "Spotted a mistake?",
+   "Funding log"
+  ]
+ },
+ "generalElection": {
+  "title": "General elections",
+  "heads": [
+   "Labour won 63% of the seats with 34% of the votes",
+   "Votes and seats, party by party",
+   "Who won where",
+   "Second places, and how safe the seats are",
+   "Why seats and votes do not match",
+   "Compared with 2019",
+   "The closest results"
+  ]
+ },
+ "getThingsDone": {
+  "title": "How to get something done",
+  "heads": [
+   "Who should I contact?",
+   "Start with the right person",
+   "Complain about a council",
+   "Complain about the NHS or a government department",
+   "Complain about the police",
+   "Ask for information",
+   "More help on this site",
+   "Where this comes from"
+  ]
+ },
+ "glossary": {
+  "title": "Jargon buster",
+  "heads": [
+   "Hustings",
+   "Which word is this?"
+  ]
+ },
+ "govContracts": {
+  "title": "Who wins government contracts?",
+  "heads": [
+   "How the rules are meant to work",
+   "When speed came first: the pandemic",
+   "The high-priority lane",
+   "How to look at contracts yourself",
+   "Where this comes from"
+  ]
+ },
+ "health": {
+  "title": "Health",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "How the NHS is doing against its targets",
+   "Deaths registered each week",
+   "People waiting for hospital treatment",
+   "Waiting list: share seen within 18 weeks",
+   "People waiting over a year",
+   "Typical wait for treatment",
+   "A&E: share seen within 4 hours",
+   "Major A&E departments: share seen within 4 hours",
+   "Cancer: treated within 62 days of an urgent referral",
+   "Cancer: told within 28 days of an urgent referral",
+   "Cancer: first treatment within 31 days of a decision",
+   "Ambulances: average response to emergencies",
+   "Ambulances: average response to life-threatening calls",
+   "NHS staff",
+   "People out of work with long-term sickness",
+   "Long-term sick, as a share of those not working or looking for work",
+   "What the government promised",
+   "Where this reaches Parliament"
+  ]
+ },
+ "history": {
+  "title": "Landmark votes and party history",
+  "heads": [
+   "The votes at a glance",
+   "Georgian Britain",
+   "Victorian Era",
+   "Edwardian Britain & the World Wars",
+   "The Post-War Consensus",
+   "Thatcher to New Labour",
+   "Coalition, Brexit & Beyond"
+  ]
+ },
+ "honours": {
+  "title": "Peerages and honours",
+  "heads": [
+   "Who is in the House of Lords today",
+   "How a person becomes a peer",
+   "What the law says about buying a title",
+   "Where to follow the money yourself",
+   "Where this comes from"
+  ]
+ },
+ "housing": {
+  "title": "Housing, house prices and rents",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "Homes by type and place",
+   "House prices across the UK",
+   "Average UK house price",
+   "House price change on a year earlier",
+   "Years of average pay to buy the average home",
+   "House price growth minus pay growth",
+   "Monthly mortgage payment on the average home",
+   "Mortgage payment as a share of average pay",
+   "England",
+   "Wales",
+   "Scotland",
+   "Northern Ireland",
+   "London",
+   "North East of England",
+   "Detached houses",
+   "Flats and maisonettes",
+   "Rents, change on a year earlier",
+   "Private rents index",
+   "Electricity, gas and other fuels",
+   "New homes added in England each year",
+   "New homes finished in England over 12 months",
+   "New homes started in England over 12 months",
+   "Semi-detached houses",
+   "Terraced houses",
+   "New-build homes",
+   "Existing homes",
+   "Homes sold each month",
+   "What the government promised",
+   "Where this reaches Parliament"
+  ]
+ },
+ "howBudgetWorks": {
+  "title": "How the Budget and the Spending Review work",
+  "heads": [
+   "What the Budget is",
+   "The Budget and the Spending Review are different",
+   "What Budget 2026 changed for households",
+   "Who checks the numbers",
+   "After the Budget",
+   "Where this comes from"
+  ]
+ },
+ "howElectionsWork": {
+  "title": "How elections work",
+  "heads": [
+   "One seat, one winner",
+   "Why votes and seats differ",
+   "Other voting systems in the UK",
+   "What happens at the count",
+   "Spoiled and rejected ballots",
+   "Recounts and ties",
+   "Deposits",
+   "Where this comes from"
+  ]
+ },
+ "howLawMade": {
+  "title": "How a law is made, step by step",
+  "heads": [
+   "Commons: First reading",
+   "Commons: Second reading",
+   "Commons: Committee stage",
+   "Commons: Report stage",
+   "Commons: Third reading",
+   "Lords: First reading",
+   "Lords: Second reading",
+   "Lords: Committee stage",
+   "Lords: Report stage",
+   "Lords: Third reading",
+   "Ping pong: the Houses trade changes",
+   "Royal Assent",
+   "What a bill is",
+   "One real Act: Non-Domestic Rating (Multipliers and Private Schools) Act",
+   "In the House of Commons",
+   "In the House of Lords",
+   "Ping pong",
+   "Where this comes from"
+  ]
+ },
+ "howPartyFundingWorks": {
+  "title": "How political funding rules work",
+  "heads": [
+   "What counts as a donation",
+   "Who is allowed to give",
+   "What a party must do when it gets a gift",
+   "When a gift is not allowed",
+   "What has to be reported, and when",
+   "Before a general election",
+   "Rules that may change",
+   "Where this comes from"
+  ]
+ },
+ "howitworks": {
+  "title": "How Parliament works",
+  "heads": [
+   "Who's in charge?",
+   "Who does what? The tiers of government",
+   "How a bill becomes law",
+   "How MPs are elected",
+   "The job of an MP",
+   "Find your MP"
+  ]
+ },
+ "howtovote": {
+  "title": "How to vote",
+  "heads": [
+   "Can I vote?",
+   "Four steps to voting",
+   "What happens after you vote"
+  ]
+ },
+ "immigration": {
+  "title": "Immigration and asylum",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "Why people are granted visas",
+   "Visas granted, by reason",
+   "Net migration",
+   "People arriving to live in the UK",
+   "People leaving the UK",
+   "Arrivals from outside Europe",
+   "Small boat arrivals each month",
+   "Small boat arrivals over 12 months",
+   "People claiming asylum",
+   "People awaiting an asylum decision",
+   "Asylum seekers in hotels",
+   "Asylum seekers receiving support",
+   "Share of asylum claims granted",
+   "Enforced returns",
+   "Voluntary returns",
+   "Work visas granted",
+   "Study visas granted",
+   "Family visas granted",
+   "What the government promised",
+   "Where this reaches Parliament"
+  ]
+ },
+ "indicators": {
+  "title": "Compare the numbers over time",
+  "heads": [
+   "Start with a question",
+   "Or build your own",
+   "Inflation (CPI)",
+   "Unemployment rate",
+   "Pay growth after inflation",
+   "Then and now"
+  ]
+ },
+ "inequality": {
+  "title": "Inequality",
+  "heads": [
+   "The short version",
+   "The main figures",
+   "Where, and compared with whom",
+   "How to read these figures",
+   "Income inequality since 1977",
+   "What stands out"
+  ]
+ },
+ "inquiries": {
+  "title": "Public inquiries",
+  "heads": [
+   "What a public inquiry is",
+   "Eight inquiries and what came of them",
+   "How long they take and what they cost",
+   "What happens to the recommendations",
+   "How to follow an inquiry",
+   "Where this comes from"
+  ]
+ },
+ "jobs": {
+  "title": "Jobs and pay",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "Who works where",
+   "Unemployment across the UK",
+   "Unemployment rate",
+   "Unemployment among 16 to 24 year olds",
+   "Employment rate",
+   "Number of people in work",
+   "Number of unemployed people",
+   "Economic inactivity rate",
+   "Redundancy rate",
+   "Job vacancies",
+   "Weekly hours of full-time workers",
+   "Average weekly pay",
+   "Pay growth on a year earlier",
+   "Pay growth after inflation",
+   "People working part-time",
+   "Self-employed people",
+   "Employees on temporary contracts",
+   "People unemployed for over a year",
+   "Young people in work (not in full-time education)",
+   "Average weekly pay in the public sector",
+   "Average weekly pay in the private sector",
+   "Working days lost to strikes over 12 months",
+   "Where this reaches Parliament"
+  ]
+ },
+ "justice": {
+  "title": "Courts, police and prisons",
+  "heads": [
+   "Courts: a record queue",
+   "Prisons",
+   "Police",
+   "Where this comes from"
+  ]
+ },
+ "list": {
+  "title": "What your MPs have declared",
+  "heads": []
+ },
+ "lobbyingRegister": {
+  "title": "The register of consultant lobbyists",
+  "heads": [
+   "What 'lobbying' actually means",
+   "What has to be registered",
+   "Search the register yourself",
+   "The big gap: in-house lobbyists aren't covered at all",
+   "The register in action: real recent investigations",
+   "Where this leaves you as a reader"
+  ]
+ },
+ "localElections": {
+  "title": "Local elections",
+  "heads": [
+   "When do I next vote?",
+   "Seats up for election, date by date",
+   "Every upcoming election date"
+  ]
+ },
+ "lords": {
+  "title": "Who's in the House of Lords",
+  "heads": []
+ },
+ "lordsVotes": {
+  "title": "How peers vote",
+  "heads": [
+   "What is a vote in the Lords?",
+   "How loyal is each party?",
+   "When the government lost",
+   "Votes where peers went against their party",
+   "Every peer's record"
+  ]
+ },
+ "marginals": {
+  "title": "Marginal seats",
+  "heads": [
+   "650 seats, from the closest to the safest",
+   "The six closest races",
+   "How close was your seat?",
+   "Three words used on this page",
+   "What if voters changed their minds?",
+   "How safe is each party's hold?",
+   "Every seat, from the closest to the safest"
+  ]
+ },
+ "mayors": {
+  "title": "Mayors and regional authorities",
+  "heads": [
+   "What a strategic authority is",
+   "What a mayor can do",
+   "London is the model",
+   "Where this comes from"
+  ]
+ },
+ "mediaLiteracy": {
+  "title": "How broadcast impartiality works",
+  "heads": [
+   "The big difference",
+   "What the Broadcasting Code actually requires",
+   "Quick check: broadcast or print?",
+   "Who owns and funds each broadcaster",
+   "When broadcasters have fallen short, and when they haven't",
+   "Where to find the official rulings",
+   "Four habits for reading any news",
+   "Where this comes from"
+  ]
+ },
+ "methodology": {
+  "title": "Where our data comes from",
+  "heads": [
+   "What this site is",
+   "Primary data sources",
+   "How often it updates",
+   "Where the automated matching can go wrong",
+   "Something look wrong?"
+  ]
+ },
+ "ministerialMeetings": {
+  "title": "Who's getting a minister's time",
+  "heads": [
+   "How to read this page",
+   "Ministers",
+   "Departments",
+   "June 2026 1",
+   "May 2026 3",
+   "April 2026 7",
+   "March 2026 1",
+   "February 2026 2",
+   "January 2026 4"
+  ]
+ },
+ "monarchy": {
+  "title": "The monarchy: role and money",
+  "heads": [
+   "What the King does",
+   "How the Sovereign Grant is worked out",
+   "Why a cut is proposed",
+   "Where this comes from"
+  ]
+ },
+ "myArea": {
+  "title": "Your area",
+  "heads": []
+ },
+ "myBallot": {
+  "title": "Who is on my ballot",
+  "heads": [
+   "Find your ballot"
+  ]
+ },
+ "myMP": {
+  "title": "Your MP in one place",
+  "heads": []
+ },
+ "nearYou": {
+  "title": "Schools and A&E near you",
+  "heads": [
+   "Find what is near you",
+   "How to read a school's inspection",
+   "How to read the A&E figures",
+   "What you can do",
+   "Where this comes from"
+  ]
+ },
+ "nhs": {
+  "title": "The NHS",
+  "heads": [
+   "The short version",
+   "The main figures",
+   "How things have changed",
+   "Where the NHS is against its standards"
+  ]
+ },
+ "numbers": {
+  "title": "The House of Commons, by the numbers",
+  "heads": []
+ },
+ "offices": {
+  "title": "Who has held this office?",
+  "heads": []
+ },
+ "parties": {
+  "title": "What the parties promise",
+  "heads": [
+   "Pick an issue, see who promises what",
+   "Each party's big promises"
+  ]
+ },
+ "partyFinances": {
+  "title": "Who funds the parties",
+  "heads": []
+ },
+ "partymatch": {
+  "title": "Which party matches you?",
+  "heads": []
+ },
+ "petitions": {
+  "title": "Public petitions to Parliament",
+  "heads": []
+ },
+ "planning": {
+  "title": "Planning: who decides what gets built",
+  "heads": [
+   "Who decides",
+   "What the latest figures show",
+   "What the 2025 Act changes",
+   "Where this comes from"
+  ]
+ },
+ "policeCommissioners": {
+  "title": "Police and crime commissioners",
+  "heads": [
+   "What the government has announced",
+   "The reasons given, and what is not settled",
+   "What to do now",
+   "Where this comes from"
+  ]
+ },
+ "polling": {
+  "title": "How to read an opinion poll",
+  "heads": [
+   "Labour, 4 July 2024",
+   "Reform UK, 4 July 2024",
+   "What a poll is",
+   "Votes are not seats",
+   "How the polls did in 2024",
+   "Reading a poll in the news",
+   "Where this comes from"
+  ]
+ },
+ "population": {
+  "title": "Population",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "Who lives where",
+   "Where the UK's people live",
+   "The four nations compared",
+   "UK population",
+   "How fast the UK population is growing",
+   "England",
+   "Scotland",
+   "Wales",
+   "Northern Ireland",
+   "Where this reaches Parliament"
+  ]
+ },
+ "prices": {
+  "title": "Prices and the cost of living",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "The cost of living for different households",
+   "Inflation by type of spending",
+   "Inflation (CPI)",
+   "Cost of living index (all households)",
+   "How fast the cost of living is rising",
+   "Pay growth minus the rise in the cost of living",
+   "Inflation including housing costs (CPIH)",
+   "Underlying inflation",
+   "Prices of services",
+   "Prices of goods",
+   "Food and non-alcoholic drinks",
+   "Electricity, gas and other fuels",
+   "Rents",
+   "Transport",
+   "Restaurants and hotels",
+   "Alcohol and tobacco",
+   "Clothing and shoes",
+   "Housing, water and fuels",
+   "Furniture and household goods",
+   "Health",
+   "Phones and communication",
+   "Recreation and culture",
+   "Education",
+   "Insurance and other services",
+   "Inflation (RPI)",
+   "Prices at the factory gate",
+   "Where this reaches Parliament"
+  ]
+ },
+ "privacy": {
+  "title": "Privacy Policy",
+  "heads": [
+   "The short version",
+   "What we don't do",
+   "What is stored, and where",
+   "Postcode lookups",
+   "Visit counts",
+   "Where the MP data comes from",
+   "Third-party links",
+   "Changes to this policy",
+   "Questions or corrections"
+  ]
+ },
+ "publicFinances": {
+  "title": "Public finances",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "National debt compared with the size of the economy",
+   "National debt in pounds",
+   "Government borrowing each month",
+   "Government borrowing over the past 12 months",
+   "Gap in day-to-day spending each month",
+   "Government investment each month",
+   "People working in the public sector",
+   "Where this reaches Parliament"
+  ]
+ },
+ "rankings": {
+  "title": "MP league tables",
+  "heads": []
+ },
+ "rates": {
+  "title": "Interest rates, mortgages and the pound",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "What a mortgage costs each month",
+   "Interest rates compared",
+   "Bank Rate",
+   "Two-year fixed mortgage rate",
+   "Five-year fixed mortgage rate",
+   "Two-year fixed mortgage rate for small deposits",
+   "Credit card interest rate",
+   "One-year fixed savings bond rate",
+   "UK government 10-year borrowing rate",
+   "The pound in US dollars",
+   "The pound in euros",
+   "The pound against a basket of currencies",
+   "Mortgages approved to buy a home",
+   "Mortgages approved to switch lender",
+   "Where this reaches Parliament"
+  ]
+ },
+ "rebels": {
+  "title": "Who votes against their own party",
+  "heads": []
+ },
+ "regions": {
+  "title": "Regions and nations",
+  "heads": [
+   "League table",
+   "London"
+  ]
+ },
+ "revolvingDoor": {
+  "title": "The revolving door between government and industry",
+  "heads": [
+   "Why this is called a 'revolving door'",
+   "What the business appointment rules are for",
+   "ACOBA has gone. Here is what replaced it",
+   "Why the old system struggled",
+   "Four real cases"
+  ]
+ },
+ "settings": {
+  "title": "Settings",
+  "heads": []
+ },
+ "speakerWhipsClerks": {
+  "title": "The Speaker, whips and clerks",
+  "heads": [
+   "The Speaker in the Chamber",
+   "How a Speaker is chosen",
+   "The Speaker's jobs in law",
+   "The whips",
+   "The Clerk and the clerks",
+   "Where this comes from"
+  ]
+ },
+ "spotMisleadingStats": {
+  "title": "How to spot a misleading statistic",
+  "heads": [
+   "Share of what?",
+   "The average and the middle",
+   "Percent, or percentage points?",
+   "Where does the chart start?",
+   "Questions to ask of any number",
+   "Where this comes from"
+  ]
+ },
+ "standards": {
+  "title": "When the standards system names an MP",
+  "heads": []
+ },
+ "start": {
+  "title": "From “who's my MP?” to “what are they up to?”",
+  "heads": [
+   "Find your MP",
+   "See what they've declared",
+   "See how they vote",
+   "See what they're asking ministers",
+   "Look at your area",
+   "Before you draw conclusions"
+  ]
+ },
+ "statutoryInstruments": {
+  "title": "Laws made by ministers",
+  "heads": [
+   "Why can a minister make a law?",
+   "Words you will meet on this page",
+   "Why not put it all in the Act?",
+   "How does Parliament still check them?",
+   "What are people worried about?",
+   "How many are there? 666 in 12 months",
+   "What the four names mean",
+   "Follow one real instrument",
+   "What has been made lately",
+   "What you can do",
+   "Where this comes from"
+  ]
+ },
+ "tax": {
+  "title": "Taxes",
+  "heads": [
+   "The main rates today",
+   "What these rates mean in pounds",
+   "Coming up",
+   "How much is collected and spent"
+  ]
+ },
+ "taxRates": {
+  "title": "Taxes",
+  "heads": [
+   "The main rates today",
+   "What these rates mean in pounds",
+   "Coming up",
+   "How much is collected and spent"
+  ]
+ },
+ "teacher": {
+  "title": "Teacher mode",
+  "heads": [
+   "A lesson you can present",
+   "Name the characters",
+   "The five chapters"
+  ]
+ },
+ "terms": {
+  "title": "Terms & Conditions",
+  "heads": [
+   "What this site is",
+   "Accuracy and data sources",
+   "Not legal, financial, or professional advice",
+   "Acceptable use",
+   "Limitation of liability",
+   "Corrections",
+   "Changes to these terms"
+  ]
+ },
+ "thinkTanks": {
+  "title": "Who funds the think tanks you hear from?",
+  "heads": [
+   "What a think tank is",
+   "Why there's no legal requirement to say",
+   "Who Funds You?: an independent scorecard, not ours",
+   "A sample, across the spectrum",
+   "Why this matters for what you see on the news"
+  ]
+ },
+ "thisWeek": {
+  "title": "What changed this week",
+  "heads": []
+ },
+ "timeline": {
+  "title": "Three centuries in one timeline",
+  "heads": [
+   "Georgian Britain",
+   "Victorian Era",
+   "Edwardian Britain & the World Wars",
+   "The Post-War Consensus",
+   "Thatcher to New Labour",
+   "Coalition, Brexit & Beyond"
+  ]
+ },
+ "topics": {
+  "title": "Who's asking about a topic",
+  "heads": [
+   "How it works",
+   "Start with a topic"
+  ]
+ },
+ "tracker": {
+  "title": "Has the government kept its word?",
+  "heads": [
+   "Every pledge, one by one"
+  ]
+ },
+ "trade": {
+  "title": "Trade with the world",
+  "heads": [
+   "The key points",
+   "Everything on this page",
+   "What the UK sells abroad",
+   "What the UK buys from abroad",
+   "Where the UK's goods exports go",
+   "Where the UK's goods imports come from",
+   "Exports of goods and services",
+   "Imports of goods and services",
+   "Trade balance",
+   "Current account, as a share of the economy",
+   "Exports of goods",
+   "Imports of goods",
+   "Trade balance in goods",
+   "Exports of services",
+   "Imports of services",
+   "Trade balance in services",
+   "Trade balance in goods with the EU",
+   "Trade balance in goods with the rest of the world",
+   "Share of goods exports that go to the EU",
+   "Where this reaches Parliament"
+  ]
+ },
+ "transport": {
+  "title": "Transport",
+  "heads": [
+   "The short version",
+   "The main figures",
+   "How things have changed",
+   "Where to look next"
+  ]
+ },
+ "trust": {
+  "title": "Trust in politics",
+  "heads": [
+   "The short version",
+   "The main figures",
+   "How voting has changed",
+   "Where to look next"
+  ]
+ },
+ "union": {
+  "title": "Devolution and the union",
+  "heads": [
+   "The short version",
+   "The main figures",
+   "Where to look next"
+  ]
+ },
+ "voting": {
+  "title": "How MPs voted",
+  "heads": []
+ },
+ "watchdogs": {
+  "title": "Watchdogs and inquiries",
+  "heads": [
+   "The National Audit Office",
+   "The Office for Budget Responsibility",
+   "Public inquiries",
+   "Where this comes from"
+  ]
+ },
+ "watchlist": {
+  "title": "What's changed for MPs and bills you follow",
+  "heads": []
+ },
+ "water": {
+  "title": "Water and sewage",
+  "heads": [
+   "What the 2025 data shows",
+   "How the companies were rated for 2024",
+   "What the law now requires",
+   "How to check for yourself",
+   "Where this comes from"
+  ]
+ },
+ "welfare": {
+  "title": "Welfare and benefits",
+  "heads": [
+   "Where the money goes",
+   "What the main benefits pay in 2026-27",
+   "How many people get each one",
+   "How the rates are set",
+   "What changed recently",
+   "Check a headline",
+   "Where this comes from"
+  ]
+ },
+ "whatsnew": {
+  "title": "What's new",
+  "heads": [
+   "Your area in numbers",
+   "Have your say on new rules",
+   "Schools and A&E near you",
+   "How councils handle complaints",
+   "The spending watchdog",
+   "Backbench bills and motions",
+   "Laws made by ministers, explained with pictures you can press",
+   "Spending by department map: names and figures now fit every block",
+   "Tax rates, pensions and care brought up to date with the 28 October Budget",
+   "Three page tops redrawn, each with a picture of its own",
+   "Election spending, rebuilt with calculators and diagrams",
+   "The foreign influence register, rebuilt",
+   "Fewer tabs, and every page in a group that fits it",
+   "How to spot a misleading statistic",
+   "How party funding rules work",
+   "How a law is made",
+   "How elections work",
+   "The Speaker, whips and clerks",
+   "Committee report cards now have colour and a reply clock",
+   "Follow a bill, a short printout of Your area, and spreadsheets of more lists",
+   "Laws made by ministers: the statutory instruments laid in the last 12 months",
+   "Quicker, gentler page changes and a round of accessibility fixes",
+   "Public inquiries: eight inquiries, why they started and what followed",
+   "Seats shown inside each devolved parliament",
+   "Light opening boxes, tidier diagrams and matching shading on select committees",
+   "A tidier menu, livelier How the state works pages and quicker page changes",
+   "About, corrections and contact pages",
+   "Changing page no longer flickers",
+   "Pages open cleanly, and diagrams and charts read properly on a phone",
+   "Data kept up to date again, and the latest school results",
+   "Britain in numbers pages come alive, and a few layout fixes",
+   "Your area has much more in it",
+   "Your area: every line of what your MP has been doing now explains itself",
+   "Your area: election columns, a council chamber and a clearer council tax chart",
+   "Your area: what your MP has been doing",
+   "A tidier header on laptop screens",
+   "Phone fixes and a data check",
+   "Your area: maps, charts and a section bar",
+   "Menus no longer cut off the last page",
+   "Water and sewage redrawn",
+   "The new pages no longer all look alike",
+   "Sixteen new explainer pages",
+   "Teacher mode game: Spot the spin",
+   "Class codes for the games",
+   "Compare councils",
+   "Who is on my ballot",
+   "Make the site easier to use",
+   "Refer to, print or report any page",
+   "Teacher mode: sixteen activities and games",
+   "Parties described by their main ideas",
+   "A fuller MP report card",
+   "Related pages grouped under one menu entry",
+   "What changed this week, Your area and Your councillors",
+   "Every Full Fact pledge on the Promises tracker",
+   "Teacher mode",
+   "Smoother pages and funding page",
+   "If we get something wrong"
+  ]
+ },
+ "writtenQuestions": {
+  "title": "What MPs are actually asking ministers",
+  "heads": []
+ }
+}

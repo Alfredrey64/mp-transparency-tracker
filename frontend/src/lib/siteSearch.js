@@ -42,6 +42,46 @@ export function buildMeasureIndex(series, refOf) {
   return out;
 }
 
+// Pages: every word typed must appear in the page's name, its one-line hint or its alternative names, so "waiting times nhs" finds the NHS page whatever the
+// order. A word on the page's name ranks above one found only in the hint. `textsOf(page)` lists the strings to search (names in the language being read as well).
+export function findPages(query, pages, textsOf, limit = 5) {
+  const words = wordsOf(query);
+  if (!words.length) return [];
+  const phrase = words.join(" ");
+  return pages
+    .map((page) => {
+      const [label, ...rest] = textsOf(page).map(norm);
+      const all = [label, ...rest].join(" ");
+      if (!words.every((w) => all.includes(w))) return null;
+      const score = label.startsWith(phrase) ? 0 : label.includes(phrase) ? 1 : words.every((w) => label.includes(w)) ? 2 : rest.some((r) => r.includes(phrase)) ? 3 : 4;
+      return { page, score, len: label.length };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.score - b.score || a.len - b.len)
+    .slice(0, limit)
+    .map((r) => r.page);
+}
+
+// Inside pages: the section headings every page shows (src/data/pageHeadings.json, made by scripts/build-heading-index.mjs). A heading is listed once, is
+// left out when it only repeats the page's name or is a statistic the measure search already lists, and a bare place name is never worth a result.
+const PLACES = new Set(["england", "wales", "scotland", "northern ireland", "london", "uk", "united kingdom", "great britain"]);
+export function buildSectionIndex(headings, labelOf, skipLabels = new Set()) {
+  const seen = new Set();
+  const out = [];
+  for (const [page, info] of Object.entries(headings)) {
+    const pageLabel = labelOf(page);
+    if (!pageLabel) continue;
+    for (const heading of info.heads ?? []) {
+      const key = norm(heading);
+      if (key.length < 8 || PLACES.has(key) || key === norm(pageLabel) || skipLabels.has(key) || seen.has(`${page}|${key}`)) continue;
+      seen.add(`${page}|${key}`);
+      out.push({ page, pageLabel, label: heading, text: norm(`${heading} ${pageLabel}`) });
+    }
+  }
+  return out;
+}
+export const findSections = (query, index, limit = 4) => rank(query, index, (h) => h.text, limit);
+
 export const findMeasures = (query, index, limit = 4) => rank(query, index, (m) => m.text, limit);
 
 export function buildCouncilIndex(councils) {

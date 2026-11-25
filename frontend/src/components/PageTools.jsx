@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "../pagetools.css";
+import { takeHeading } from "../lib/jumpToHeading";
 
 // A helper for every page, added from the outside so no page has to ask for it. "On this page": once a long page has been scrolled, a small button lists the page's own headings and jumps to any of them, lighting the one in view.
 const SKIP = ".page-hero, .sn, [role='dialog'], .site-footer, .t-root, .tm-sheet, .jc-card, .dp-stop";
@@ -43,6 +44,12 @@ export default function PageTools({ view, selected }) {
     if (!main || openNow.current) return;
     const next = scan(main);
     setHeads((prev) => (prev.map((h) => h.id).join("|") === next.map((h) => h.id).join("|") ? prev : next));
+    // A search result that pointed at a section of this page: scroll to it as soon as it has appeared.
+    const target = takeHeading(next);
+    if (target) {
+      const calm = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({ behavior: calm ? "auto" : "smooth", block: "start" });
+    }
   }, []);
 
   useEffect(() => {
@@ -53,7 +60,9 @@ export default function PageTools({ view, selected }) {
     const mo = new MutationObserver(later);
     mo.observe(main, { childList: true, subtree: true });
     later();
-    return () => { clearTimeout(timer); mo.disconnect(); };
+    // Search asks for a re-read when its result is a section of the page already open (nothing on the page changes, so nothing else would).
+    window.addEventListener("pt-refresh", later);
+    return () => { clearTimeout(timer); mo.disconnect(); window.removeEventListener("pt-refresh", later); };
   }, [view, selected, refresh]);
 
   useEffect(() => {

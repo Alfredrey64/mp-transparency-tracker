@@ -9,6 +9,7 @@
 
 // every: days between looks. stamp: a file that holds its own date, { file, key } (JSON). where: what to read. checked: "YYYY-MM-DD".
 export const HAND_KEPT = [
+  { id: "search-page-headings", files: ["pageHeadings.json"], every: 45, checked: "2026-11-25", what: "The section headings of every page, which let the site search find what is inside a page (rebuilt by script, not typed)", source: "run `npx vite preview --port 4178 --strictPort` against a fresh build, then `node scripts/build-heading-index.mjs`; commit src/data/pageHeadings.json" },
   { id: "salary-yardsticks", files: ["referenceFigures.js"], every: 90, checked: "2026-11-16", what: "Everyday yardsticks (average salary, and the other figures money is compared with)", source: "ONS ASHE bulletin (each October), ONS and DWP releases named in the file" },
   { id: "inequality-hand-figures", files: ["inequality.js"], every: 60, checked: "2026-11-16", what: "Gender, disability and wealth gaps typed from ONS bulletins", source: "ONS gender pay gap, disability pay gap and Wealth and Assets Survey releases (the yearly check only sees the first)" },
   { id: "foreign-influence-register", files: ["firsRegister.json"], every: 30, stamp: { file: "firsRegister.json", key: "checked" }, what: "Foreign Influence Registration Scheme register: counts and entries, counted by hand", source: "foreign-influence-registration-scheme.service.gov.uk public register (read it in the browser)" },
@@ -55,7 +56,7 @@ export const AUTOMATIC = [
 export const FIXED = [
   /^(ageing|care|defence|education|health|inequality|transport|trust|brexit|devolution|energy)\.js$/, // the page's own CHECKED date is watched (45 days); inequality.js is also a row above
   /^(generalElection2024|spending2024|electionHistory|electionMargins|electionSeatNames|electionsHistory|seatHexes|seatHexes2019|regionMap|regionalProfile)\.(js|json)$/,
-  /^(glossary\w*|pageGuides|siteMenu|sidebarSections|siteUpdates|explainerKeys|hubs|voteSteps|governmentTiers|compareStories|answers|landmarkExplainers|teacherExtras|teacherMode|partyMatchQuiz|partyMatchEvidence)\.js$/,
+  /^(glossary\w*|pageGuides|siteMenu|sidebarSections|siteUpdates|explainerKeys|hubs|relatedPages|voteSteps|governmentTiers|compareStories|answers|landmarkExplainers|teacherExtras|teacherMode|partyMatchQuiz|partyMatchEvidence)\.js$/,
   /^(ons[A-Z]\w+|regionMetrics)\.js$/, // series wiring and plain-English notes; the sector's CHECKED date is watched
   /^(taxEvents)\.js$/, // NEXT_BUDGET is watched by the weekly check (a Budget that has passed)
 ];

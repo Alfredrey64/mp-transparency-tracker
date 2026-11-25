@@ -3,8 +3,9 @@ import { supabase } from "../supabaseClient";
 import { MP_LIST_COLUMNS } from "../lib/mpRows";
 import { FONT_BODY } from "../theme";
 import { partyColour } from "../lib/format";
-import { IconSearch, IconGlossary } from "./icons";
-import { SECTIONS } from "../data/sidebarSections";
+import { IconSearch, IconGlossary, IconSettings, IconMethodology, IconShield, IconFeed, IconBook, IconAbout, IconPin } from "./icons";
+import { SECTIONS, SECTION_LABEL_BY_KEY, HUB_BY_PAGE } from "../data/sidebarSections";
+import { wantHeading } from "../lib/jumpToHeading";
 import { filtersForPhrase } from "../lib/careerFilters";
 import { navigate } from "../lib/route";
 import { useT } from "../lib/useLang";
@@ -28,7 +29,7 @@ function ResultGroup({ label, children }) {
   );
 }
 
-function ResultRow({ onClick, title, sub, dot }) {
+function ResultRow({ onClick, title, sub, dot, icon: Icon }) {
   return (
     <button
       type="button"
@@ -38,6 +39,7 @@ function ResultRow({ onClick, title, sub, dot }) {
       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
     >
       {dot && <span style={{ width: 6, height: 6, borderRadius: "50%", background: dot, flexShrink: 0 }} />}
+      {Icon && <span style={{ display: "flex", color: "var(--sb-soft)", flexShrink: 0 }}><Icon size={13} /></span>}
       <span style={{ minWidth: 0 }}>
         <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{title}</div>
         {sub && <div style={{ fontFamily: FONT_BODY, fontSize: 12, color: "var(--sb-soft)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sub}</div>}
@@ -52,7 +54,26 @@ function ResultRow({ onClick, title, sub, dot }) {
 // pulling it in here as well. PAGES skips "glossary" itself: a glossary
 // TERM match already offers exactly that destination, so the page entry
 // would just be a second, redundant way to say "go to the Glossary".
-const PAGES = SECTIONS.flatMap((s) => s.items).filter((i) => i.key !== "glossary");
+// The pages that live outside the menu (the footer's, and Settings) are searchable too.
+const EXTRA_PAGES = [
+  { key: "myMP", label: "Find your MP", hint: "Your MP, how they vote and what they have declared", icon: IconPin, aka: ["my mp", "who is my mp", "postcode", "represents me", "local mp"] },
+  { key: "watchlist", label: "My watchlist", hint: "What has changed for the MPs and bills you follow", icon: IconFeed, aka: ["follow", "following", "alerts", "bills i follow", "saved mps"] },
+  { key: "methodology", label: "Where our data comes from", hint: "Sources, how often they update, and where the matching can go wrong", icon: IconMethodology, aka: ["methodology", "sources", "data sources", "how it works", "how accurate", "api", "methods"] },
+  { key: "privacy", label: "Privacy policy", hint: "What is stored, and what is not", icon: IconShield, aka: ["privacy", "cookies", "data protection", "gdpr", "tracking", "analytics"] },
+  { key: "terms", label: "Terms and conditions", hint: "The rules for using the site", icon: IconBook, aka: ["terms", "terms of use", "legal", "conditions", "disclaimer"] },
+  { key: "accessibility", label: "Accessibility", hint: "Text size, motion, contrast and our accessibility statement", icon: IconAbout, aka: ["accessible", "screen reader", "dyslexia", "large text", "reduce motion", "contrast", "calm mode", "colour blind"] },
+  { key: "whatsnew", label: "What's new on this site", hint: "Pages and features added recently", icon: IconFeed, aka: ["changelog", "updates", "new features", "release notes", "latest additions"] },
+  { key: "settings", label: "Settings", hint: "Your choices for this site", icon: IconSettings, aka: ["preferences", "dark mode", "light mode", "theme", "text size", "options"] },
+];
+const PAGES = [...SECTIONS.flatMap((s) => s.items).filter((i) => i.key !== "glossary"), ...EXTRA_PAGES];
+const PAGE_LABEL = new Map(PAGES.map((p) => [p.key, p.label]));
+const PAGE_ICON = new Map(PAGES.map((p) => [p.key, p.icon]));
+// Where a page sits in the menus, shown under a result so a visitor learns where to look next time: "Understand it > How Parliament works".
+function whereIs(key) {
+  const section = SECTION_LABEL_BY_KEY.get(key);
+  const group = HUB_BY_PAGE.get(key)?.label;
+  return [section, group].filter(Boolean).join(" › ");
+}
 
 // Both tables are small enough (~650 MPs, ~100 bills) to keep entirely in
 // memory once fetched and filter client-side on every keystroke — a live
@@ -106,11 +127,16 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
     const answers = Promise.all([import("../data/answers"), import("../lib/answerSearch")]).then(([a, s]) => setAnswerTools({ answers: a.ANSWERS, find: s.findAnswers }));
     const site = Promise.all([
       import("../lib/siteSearch"), import("../data/onsSectors"), import("../data/councilsIndex.json"),
-      import("../data/donorSectors.json"), import("../data/partyDonorSectors.json"), import("../data/donorProfiles.json"),
-    ]).then(([ss, ons, councils, donorsA, donorsB, donorsC]) => {
+      import("../data/donorSectors.json"), import("../data/partyDonorSectors.json"), import("../data/donorProfiles.json"), import("../data/pageHeadings.json"), import("../data/pageGuides"),
+    ]).then(([ss, ons, councils, donorsA, donorsB, donorsC, headings, guides]) => {
+      const measures = ss.buildMeasureIndex(ons.ALL_SERIES, ons.refOf);
+      // A heading that only repeats a statistic's name, or another page's name, is left to those results.
+      const skip = new Set([...measures.map((m) => m.label), ...PAGE_LABEL.values()].map((l) => String(l).toLowerCase().replace(/[^a-z0-9£%& ]/g, " ").replace(/\s+/g, " ").trim()));
       setSiteTools({
         find: ss,
-        measures: ss.buildMeasureIndex(ons.ALL_SERIES, ons.refOf),
+        measures,
+        guides: guides.PAGE_GUIDES,
+        sections: ss.buildSectionIndex(headings.default, (k) => PAGE_LABEL.get(k), skip),
         councils: ss.buildCouncilIndex(councils.default.index),
         donors: ss.buildDonorIndex(Object.keys(donorsA.default), Object.keys(donorsB.default), Object.keys(donorsC.default)),
       });
@@ -167,7 +193,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (q.length < 2) return { mps: [], peers: [], seats: [], careers: [], offices: false, bills: [], pages: [], glossary: [], answers: [], measures: [], councils: [], donors: [], elections: [], taxes: [], trace: false };
+    if (q.length < 2) return { mps: [], peers: [], seats: [], careers: [], offices: false, bills: [], pages: [], sections: [], glossary: [], answers: [], measures: [], councils: [], donors: [], elections: [], taxes: [], trace: false };
     // A question, or at least a couple of words, rather than a name.
     const answers = answerTools && q.length >= 4 ? answerTools.find(q, answerTools.answers, 3) : [];
     const mps = politicians
@@ -175,8 +201,14 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
       .slice(0, 5);
     const matchedBills = bills.filter((b) => b.short_title?.toLowerCase().includes(q)).slice(0, 5);
     // Pages match on their English name and on their name in the language being read, so a Welsh search finds Welsh page names.
-    const pages = PAGES.filter((p) => [p.label, p.hint, t(p.label), t(p.hint), ...(p.aka ?? [])].some((w) => w?.toLowerCase().includes(q))).slice(0, 4);
-    const glossary = glossaryEntries.filter((g) => g.term.toLowerCase().includes(q) || (g.aliases ?? []).some((a) => a.toLowerCase().includes(q))).slice(0, 4);
+    const pages = siteTools
+      ? siteTools.find.findPages(q, PAGES, (p) => [t(p.label), p.label, t(p.hint), p.hint, ...(p.aka ?? []), siteTools.guides[p.key]?.what ?? ""], 5)
+      : PAGES.filter((p) => [p.label, p.hint, t(p.label), t(p.hint), ...(p.aka ?? [])].some((w) => w?.toLowerCase().includes(q))).slice(0, 5);
+    const sections = siteTools ? siteTools.find.findSections(q, siteTools.sections, 4) : [];
+    // Apostrophes and hyphens are ignored on both sides, so "kings speech" finds the King's Speech.
+    const plain = (x) => String(x).toLowerCase().replace(/[’'`-]/g, "").replace(/\s+/g, " ");
+    const pq = plain(q);
+    const glossary = glossaryEntries.filter((g) => plain(g.term).includes(pq) || (g.aliases ?? []).some((a) => plain(a).includes(pq))).slice(0, 4);
     const matchedPeers = peers.filter((p) => p.name?.toLowerCase().includes(q)).slice(0, 4);
     // Constituencies by name, one entry each, opening that seat's page.
     const seats = [...new Set(politicians.map((p) => p.constituency).filter(Boolean))].filter((c) => c.toLowerCase().includes(q)).slice(0, 3);
@@ -186,10 +218,10 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
     const donors = siteTools ? siteTools.find.findDonors(q, siteTools.donors, 3) : [];
     const elections = electionTools ? electionTools.find(q, electionTools.index, 5) : [];
     const taxes = taxTools ? taxTools.find(q, taxTools.index, 4) : [];
-    return { mps, peers: matchedPeers, seats, careers, offices: OFFICE_WORDS.test(q) && q.length >= 4, bills: matchedBills, pages, glossary, answers, measures, councils, donors, elections, taxes, trace: q.length >= 3 };
+    return { mps, peers: matchedPeers, seats, careers, offices: OFFICE_WORDS.test(q) && q.length >= 4, bills: matchedBills, pages, sections, glossary, answers, measures, councils, donors, elections, taxes, trace: q.length >= 3 };
   }, [politicians, peers, bills, glossaryEntries, answerTools, siteTools, electionTools, taxTools, query, t]);
 
-  const hasResults = results.mps.length > 0 || results.peers.length > 0 || results.seats.length > 0 || results.careers.length > 0 || results.offices || results.bills.length > 0 || results.pages.length > 0 || results.glossary.length > 0 || results.answers.length > 0 || results.measures.length > 0 || results.councils.length > 0 || results.donors.length > 0 || results.elections.length > 0 || results.taxes.length > 0 || results.trace;
+  const hasResults = results.mps.length > 0 || results.peers.length > 0 || results.seats.length > 0 || results.careers.length > 0 || results.offices || results.bills.length > 0 || results.pages.length > 0 || results.sections.length > 0 || results.glossary.length > 0 || results.answers.length > 0 || results.measures.length > 0 || results.councils.length > 0 || results.donors.length > 0 || results.elections.length > 0 || results.taxes.length > 0 || results.trace;
 
   // Said aloud by a screen reader as the results change, since the list appears without the focus moving to it.
   const resultCount = Object.values(results).reduce((n, v) => n + (Array.isArray(v) ? v.length : v ? 1 : 0), 0);
@@ -220,6 +252,15 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
 
   function selectPage(key) {
     onNavigate?.(key);
+    setQuery("");
+    setOpen(false);
+  }
+
+  // A section inside a page: open the page, then scroll to the section once it is there (PageTools does the scrolling).
+  function selectSection(h) {
+    wantHeading(h.label);
+    onNavigate?.(h.page);
+    setTimeout(() => window.dispatchEvent(new Event("pt-refresh")), 60);
     setQuery("");
     setOpen(false);
   }
@@ -388,7 +429,7 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
             </ResultGroup>
           )}
 
-          {(results.donors.length > 0 || results.trace) && (
+          {results.donors.length > 0 && (
             <ResultGroup label={t("Money")}>
               {results.donors.map((d) => (
                 <ResultRow key={d.name} onClick={() => openHash(`#/followTheMoney/${encodeURIComponent(d.name)}`)} title={d.name} sub={t("Trace everyone this donor has funded")} />
@@ -400,25 +441,19 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
           )}
 
           {results.pages.length > 0 && (
-            <div style={{ marginBottom: 4 }}>
-              <div style={{ fontFamily: FONT_BODY, fontSize: 12, fontWeight: 700, color: "var(--sb-faint)", padding: "4px 8px" }}>
-                {t("Pages")}
-              </div>
+            <ResultGroup label={t("Pages")}>
               {results.pages.map((p) => (
-                <button
-                  key={p.key}
-                  onClick={() => selectPage(p.key)}
-                  style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", background: "none", border: "none", padding: "7px 8px", borderRadius: 7, cursor: "pointer", textAlign: "left" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--sb-hover)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                >
-                  <span style={{ display: "flex", color: "var(--sb-soft)", flexShrink: 0 }}>
-                    <p.icon size={13} />
-                  </span>
-                  <div style={{ fontFamily: FONT_BODY, fontSize: 14, color: "var(--sb-strong)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t(p.label)}</div>
-                </button>
+                <ResultRow key={p.key} onClick={() => selectPage(p.key)} icon={p.icon} title={t(p.label)} sub={whereIs(p.key)} />
               ))}
-            </div>
+            </ResultGroup>
+          )}
+
+          {results.sections.length > 0 && (
+            <ResultGroup label={t("Inside pages")}>
+              {results.sections.map((h) => (
+                <ResultRow key={`${h.page}|${h.label}`} onClick={() => selectSection(h)} icon={PAGE_ICON.get(h.page)} title={h.label} sub={`In ${t(h.pageLabel)}`} />
+              ))}
+            </ResultGroup>
           )}
 
           {results.glossary.length > 0 && (
@@ -444,6 +479,18 @@ export default function GlobalSearch({ onSelectPolitician, onNavigate }) {
                 </button>
               ))}
             </div>
+          )}
+
+
+          {(results.donors.length === 0 && results.trace) && (
+            <ResultGroup label={t("Money")}>
+              {results.donors.map((d) => (
+                <ResultRow key={d.name} onClick={() => openHash(`#/followTheMoney/${encodeURIComponent(d.name)}`)} title={d.name} sub={t("Trace everyone this donor has funded")} />
+              ))}
+              {results.trace && (
+                <ResultRow onClick={() => openHash(`#/followTheMoney/${encodeURIComponent(query.trim())}`)} title={`Trace “${query.trim()}” as a donor`} sub={t("Search MPs' interests and party donations for this name")} />
+              )}
+            </ResultGroup>
           )}
         </div>
       )}
