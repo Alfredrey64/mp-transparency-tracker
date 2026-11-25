@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { m as motion } from "motion/react";
 import { COLORS, PAGE_PADDING, readable } from "../theme";
+import { supabase } from "../supabaseClient";
+import { partyColour } from "../lib/format";
+import { navigate } from "../lib/route";
 import { PageHeader } from "./shared";
-import { IconGroup } from "./icons";
-import { GlanceStrip } from "./GlanceStrip";
+import { IconGroup, IconTopic, IconCoin, IconBook, IconGavel, IconRegister } from "./icons";
+import Portrait from "./Portrait";
+import { useGo } from "./story/useGo";
 import "../appg.css";
 
-// Standard UK party colours, used only for the small notable-member dots
-// below — not the app-wide partyColour() helper, which expects a hex value
-// already looked up from a politician record rather than a party name.
+// Standard UK party colours, used only when a member cannot be found in the database (their own colour is used otherwise).
 const PARTY_DOT = {
   Labour: "#DC2626",
   "Labour (Co-op)": "#DC2626",
@@ -20,19 +22,106 @@ const PARTY_DOT = {
   "Non-affiliated": COLORS.inkSoft,
 };
 
-const initialsOf = (name) => String(name).replace(/ MP$/, "").replace(/^(Dr|Lord|Baroness|Rt Hon|Sir|Dame) /, "").split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+// The groups list their officers by name only. The names are looked up once in the MPs and peers tables, so each person gets their photo and a link to their profile; anyone who cannot be
+// found keeps their initials and no link, so a wrong guess never sends a reader to the wrong person. An MP is listed as "Name MP" and matches the table's "Name"; a peer matches by the
+// start of the name (the table says "Lord Kirkhope of Harrogate" where a register says "Lord Kirkhope").
+const isPeer = (name) => /^(Lord|Baroness|Lady) /.test(name);
+const mpName = (name) => name.replace(/ MP$/, "");
+const orSafe = (t) => String(t).replace(/[,()"\\*%]/g, " ").trim();
 
-// The people who run a group, as small pills: their initials in their party's colour, their name in bold, and what they do.
-function MemberList({ members }) {
+function useMembers(all) {
+  const [found, setFound] = useState({});
+  const key = all.join("|");
+  useEffect(() => {
+    let off = false;
+    const names = key.split("|");
+    const mps = names.filter((n) => !isPeer(n)).map(mpName);
+    const peers = names.filter(isPeer);
+    (async () => {
+      try {
+        const [a, b] = await Promise.all([
+          mps.length ? supabase.from("politicians").select("id, name, party_colour, thumbnail_url").in("name", mps) : { data: [] },
+          peers.length ? supabase.from("peers").select("id, name, party_colour, thumbnail_url").or(peers.map((n) => `name.ilike.${orSafe(n)}*`).join(",")) : { data: [] },
+        ]);
+        if (off) return;
+        const out = {};
+        for (const n of names) {
+          const row = isPeer(n) ? (b.data ?? []).filter((r) => r.name === n || r.name.startsWith(`${n} of `) || r.name.startsWith(`${n} `))[0] : (a.data ?? []).find((r) => r.name === mpName(n));
+          if (row) out[n] = { id: row.id, peer: isPeer(n), colour: row.party_colour, photo: row.thumbnail_url };
+        }
+        setFound(out);
+      } catch { /* the page works without the lookup */ }
+    })();
+    return () => { off = true; };
+  }, [key]);
+  return found;
+}
+
+const roleLabel = (r) => r.replace(/^./, (c) => c.toUpperCase());
+const isChair = (r) => /chair/.test(r) && !/vice/.test(r);
+
+// The people who run a group. The chair comes first and larger; each person is a button to their profile when they have been found.
+function MemberList({ members, found }) {
+  const ordered = [...members].sort((a, b) => Number(isChair(b.role)) - Number(isChair(a.role)));
   return (
-    <ul className="ap-members">
-      {members.map((m) => (
-        <li key={m.name} data-chair={/chair/.test(m.role) && !/vice/.test(m.role) ? "1" : "0"}>
-          <span className="ap-av" style={{ background: PARTY_DOT[m.party] ?? COLORS.inkSoft }} aria-hidden="true">{initialsOf(m.name)}</span>
-          <span><b>{m.name}</b><small>{m.role} · {m.party}</small></span>
-        </li>
-      ))}
+    <ul className="ap-people">
+      {ordered.map((m) => {
+        const f = found[m.name];
+        const colour = partyColour(f?.colour, PARTY_DOT[m.party] ?? COLORS.inkSoft);
+        const chair = isChair(m.role);
+        const body = (
+          <>
+            <Portrait name={m.name} photo={f?.photo} colour={colour} size={chair ? 72 : 56} className="ap-face" />
+            <span className="ap-who">
+              <b>{m.name}</b>
+              <small><i style={{ background: colour }} aria-hidden="true" />{m.party}</small>
+              <em>{roleLabel(m.role)}</em>
+            </span>
+          </>
+        );
+        return (
+          <li key={m.name} data-chair={chair ? "1" : "0"} style={{ "--pc": colour }}>
+            {f ? (
+              <button type="button" className="ap-person" onClick={() => navigate(f.peer ? `#/lords/${f.id}` : `#/mp/${f.id}`)} aria-label={`${m.name}, ${m.role}, ${m.party}. Open their profile.`}>{body}</button>
+            ) : <div className="ap-person">{body}</div>}
+          </li>
+        );
+      })}
     </ul>
+  );
+}
+
+// How a group comes about and what it can do, in four steps with a pulse that travels along the line when the picture scrolls into view. The words are the page's own.
+const FLOW = [
+  { icon: IconTopic, title: "A shared interest", text: "MPs and peers join up around one topic: a country, a health condition, an industry or a social issue.", colour: "#1E4FB8" },
+  { icon: IconGroup, title: "Members from several parties", text: "Cross-party by rule: officers must come from more than one political party.", colour: "#1FA97C" },
+  { icon: IconCoin, title: "Help from outside", text: "Running a group takes staff, called a secretariat. That help often comes from a charity, a trade body or a public affairs firm.", colour: "#E8741A" },
+  { icon: IconBook, title: "Events, inquiries and reports", text: "They host speakers, run inquiries and publish reports that shape how MPs and ministers think.", colour: "#7A5AF0" },
+];
+
+function GroupFlow() {
+  const [ref, go] = useGo(0.3);
+  return (
+    <section ref={ref} className="ap-flow" data-go={go} aria-labelledby="h-ap-what">
+      <h2 id="h-ap-what">What is an APPG?</h2>
+      <p className="ap-lead">All-party parliamentary groups are informal groups that MPs and peers join to focus on one topic. They are one of the earliest and least visible ways outside organisations get access to Parliament.</p>
+      <ol className="ap-steps">
+        {FLOW.map((f, i) => {
+          const Icon = f.icon;
+          return (
+            <li key={f.title} style={{ "--tc": f.colour, "--i": i }}>
+              <span className="ap-bd" aria-hidden="true"><Icon size={26} /><i>{i + 1}</i></span>
+              <b>{f.title}</b>
+              <p>{f.text}</p>
+            </li>
+          );
+        })}
+      </ol>
+      <div className="ap-limit">
+        <span className="ap-limit-ico" aria-hidden="true"><IconGavel size={22} /></span>
+        <div><b>No official power</b><span>A group cannot pass laws or make decisions for Parliament. Its influence is in who it brings together and what it gets in front of MPs and ministers.</span></div>
+      </div>
+    </section>
   );
 }
 
@@ -168,35 +257,24 @@ const RULES = [
 export default function AppgMemberships() {
   const [tag, setTag] = useState("All");
   const shown = APPG_EXAMPLES.filter((g) => tag === "All" || g.tag === tag);
+  const names = useMemo(() => [...new Set([...APPG_EXAMPLES, ...REGISTERED_BENEFITS].flatMap((g) => (g.members ?? []).map((m) => m.name)))], []);
+  const found = useMembers(names);
   return (
     <div className="editorial" style={{ padding: PAGE_PADDING }}>
       <PageHeader
         icon={IconGroup}
         title="Cross-party groups"
-        subtitle="All-party parliamentary groups (APPGs) are informal groups that MPs and peers join to focus on one topic. They are one of the earliest and least visible ways outside organisations get access to Parliament."
+        subtitle="All-party parliamentary groups (APPGs) are informal groups that MPs and peers join to focus on one topic."
         maxWidth={900}
       />
 
       <div className="editorial-body">
 
-      <GlanceStrip items={[
-        { value: "500+", label: "active groups", sub: "registered with Parliament", colour: "#1E4FB8" },
-        { value: "None", label: "power to pass laws", sub: "they advise and campaign", colour: "#E0367A" },
-        { value: "Cross-party", label: "by rule", sub: "officers from more than one party", colour: "#1FA97C" },
-      ]} />
-
-      <section className="ap-what" aria-labelledby="h-ap-what">
-        <h2 id="h-ap-what">What is an APPG?</h2>
-        <ol>
-          <li><span>1</span><div><b>A shared interest</b><p>MPs and peers join up around one topic: a country, a health condition, an industry or a social issue.</p></div></li>
-          <li><span>2</span><div><b>No official power</b><p>A group cannot pass laws or make decisions for Parliament.</p></div></li>
-          <li><span>3</span><div><b>But real influence</b><p>They host speakers, run inquiries and publish reports that shape how MPs and ministers think.</p></div></li>
-        </ol>
-      </section>
+      <GroupFlow />
 
       <section className="ap-sec" aria-labelledby="h-ap-ex">
         <h2 id="h-ap-ex">A few real examples</h2>
-        <p className="ap-lead">APPGs cover almost every topic. Pick a kind to filter.</p>
+        <p className="ap-lead">APPGs cover almost every topic. Pick a kind to filter, and tap anyone to open their profile.</p>
         <div className="ap-tags" role="group" aria-label="Kind of group">
           {TAGS.map((t) => <button key={t} type="button" aria-pressed={tag === t} onClick={() => setTag(t)}>{t}</button>)}
         </div>
@@ -209,12 +287,12 @@ export default function AppgMemberships() {
               transition={{ duration: 0.3, delay: Math.min(i, 5) * 0.05, ease: "easeOut" }}
               className="ap-card" style={{ "--gc": group.color }}
             >
-              <span className="ap-tag">{group.tag}</span>
+              <div className="ap-top"><span className="ap-tag">{group.tag}</span></div>
               <h3>{group.name}</h3>
               <p className="ap-desc">{group.desc}</p>
-              <div className="ap-run"><b>Who runs it</b><span>{group.secretariat}</span></div>
+              <div className="ap-run"><span className="ap-run-ico" aria-hidden="true"><IconRegister size={18} /></span><div><b>Who runs it</b><span>{group.secretariat}</span></div></div>
               <div className="ap-sub">Notable members</div>
-              <MemberList members={group.members} />
+              <MemberList members={group.members} found={found} />
             </motion.article>
           ))}
         </div>
@@ -235,7 +313,7 @@ export default function AppgMemberships() {
             >
               <h3>{b.group}</h3>
               <p className="ap-desc">{b.detail}</p>
-              {b.members ? <MemberList members={b.members} /> : <p className="ap-note">{b.note}</p>}
+              {b.members ? <MemberList members={b.members} found={found} /> : <p className="ap-note">{b.note}</p>}
               <a href={b.sourceUrl} target="_blank" rel="noreferrer" className="ap-src">Source ↗</a>
             </motion.article>
           ))}

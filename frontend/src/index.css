@@ -608,7 +608,6 @@ input::placeholder, textarea::placeholder { color: var(--c-ink-soft); opacity: 0
 @media (max-width: 350px) { .pl-careers:empty { height: 337px; } }
 
 /* Room kept for "Where bills currently stand" while the bills arrive, so the bills list below does not move down when it appears. */
-.acs-hold { margin-top: 36px; min-height: 900px; }
 .bj-hold { margin: 32px 0 36px; min-height: 512px; }
 @media (max-width: 1100px) { .bj-hold { min-height: 528px; } }
 @media (max-width: 900px) { .bj-hold { min-height: 550px; } }

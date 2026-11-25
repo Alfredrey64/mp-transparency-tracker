@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import { useEffect, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { useGo } from "./useGo";
 import { lowData } from "../../lib/lowData";
@@ -22,7 +23,7 @@ export function StoryFunnel({ nodes, label }) {
   const still = useReducedMotion() || lowData();
   return (
     <section ref={ref} className="nfn" data-go={go} data-still={still ? "1" : "0"} style={{ "--n": nodes.length }} aria-label={label}>
-      <svg className="nfn-svg" viewBox="0 0 1000 170" aria-hidden="true">
+      <svg className="nfn-svg" viewBox="0 -38 1000 232" aria-hidden="true">
         <defs>
           <linearGradient id="nfnBand" x1="0" x2="1">
             <stop offset="0" stopColor="#E2BE7A" stopOpacity="0.22" />
@@ -41,6 +42,21 @@ export function StoryFunnel({ nodes, label }) {
         {/* the audience: a person, and the ballot box at the end */}
         <g className="nfn-person"><circle cx="700" cy="70" r="14" /><path d="M672 124c0-18 12-30 28-30s28 12 28 30z" /></g>
         <g className="nfn-box"><rect x="866" y="82" width="68" height="52" rx="6" /><rect x="886" y="82" width="28" height="7" rx="3" className="nfn-slot" /></g>
+        {/* the five stages, numbered above the funnel: a number lights up for each in turn, and so does its words below */}
+        {nodes.map((s, j) => (
+          <g key={s.title} className="nfn-st" style={{ "--j": j, "--tc": s.colour }}>
+            <line x1={100 + j * 200} y1={-12} x2={100 + j * 200} y2={6} />
+            <circle cx={100 + j * 200} cy={-22} r={15} />
+            <text x={100 + j * 200} y={-16.5} textAnchor="middle">{j + 1}</text>
+          </g>
+        ))}
+        {/* what goes in and what comes through, counted from the events drawn */}
+        <g className="nfn-count" aria-hidden="true">
+          <text x={22} y={190} className="nfn-cn">{ENTRY.length}</text>
+          <text x={22 + String(ENTRY.length).length * 17} y={190} className="nfn-cl">things happen</text>
+          <text x={332} y={190} className="nfn-cn">{THROUGH.size}</text>
+          <text x={332 + String(THROUGH.size).length * 17} y={190} className="nfn-cl">are covered</text>
+        </g>
         {/* the events */}
         {ENTRY.map((y, i) => {
           const through = THROUGH.has(i);
@@ -65,6 +81,7 @@ export function StoryFunnel({ nodes, label }) {
           );
         })}
       </ol>
+      <p className="nfn-note">An illustration of the idea: the number of events is only there to show how few are chosen, and the colours show that the same event can be told in different ways.</p>
     </section>
   );
 }
@@ -75,44 +92,58 @@ export function StoryFunnel({ nodes, label }) {
 const DOTS = [28, 40, 50, 58, 66, 74, 82, 90, 200, 225, 248];
 const MID = [...DOTS].sort((a, b) => a - b)[Math.floor(DOTS.length / 2)];
 const MEAN = Math.round(DOTS.reduce((a, b) => a + b, 0) / DOTS.length);
+// The line: five points rising to the right. Drawn from zero it is squashed towards its top (every value is high against a zero base); from the low point it fills the picture.
+const LINE = [[20, 96], [70, 80], [120, 66], [170, 46], [220, 24]];
+const FLAT = 0.2;
 
 export function StatsLenses({ nodes, label }) {
   const [ref, go] = useGo(0.25);
   const still = useReducedMotion() || lowData();
+  // One reading at a time, swapping every few seconds while the picture is on screen. With calmer motion it stays on the first and both readings are written out.
+  const [phase, setPhase] = useState("a");
+  useEffect(() => {
+    if (go !== "1" || still) return undefined;
+    const t = setInterval(() => setPhase((p) => (p === "a" ? "b" : "a")), 3400);
+    return () => clearInterval(t);
+  }, [go, still]);
   const words = [["a small share", "a large share"], ["the middle", "the mean"], ["from zero", "from the low point"]];
   return (
-    <section ref={ref} className="slx" data-go={go} data-still={still ? "1" : "0"} aria-label={label}>
+    <section ref={ref} className="slx" data-go={go} data-still={still ? "1" : "0"} data-phase={phase} aria-label={label}>
       <ol className="slx-grid">
         {nodes.map((s, i) => {
-          const Icon = s.icon;
           return (
             <li key={s.title} className="slx-card" style={{ "--tc": s.colour, "--i": i }}>
-              <svg className="slx-pic" viewBox="0 0 260 120" aria-hidden="true">
+              <div className="slx-frame" aria-hidden="true">
                 {i === 0 && (
-                  <g className="slx-share">
-                    <rect className="slx-whole" x="10" y="42" width="240" height="36" rx="8" />
-                    <rect className="slx-part" x="10" y="42" width="60" height="36" rx="8" />
-                    <text className="slx-lab" x="10" y="100">the same count</text>
-                  </g>
+                  /* The same count (a solid bar) inside a whole that shrinks. The two are separate boxes, so neither is stretched: the bar stays the same size and always fits inside the dotted outline. */
+                  <div className="slx-share">
+                    <div className="slx-whole" />
+                    <div className="slx-part" />
+                    <span className="slx-lab">the same count</span>
+                  </div>
                 )}
                 {i === 1 && (
-                  <g className="slx-avg">
-                    <line x1="10" y1="60" x2="250" y2="60" className="slx-axis" />
-                    {DOTS.map((x, k) => <circle key={k} cx={x} cy="60" r="7" className={k >= DOTS.length - 3 ? "slx-dot slx-out" : "slx-dot"} />)}
-                    <g className="slx-mid"><path d={`M${MID} 76l-7 12h14z`} /><text x={MID} y="106" textAnchor="middle">middle</text></g>
-                    <g className="slx-mean"><path d={`M${MEAN} 76l-7 12h14z`} /><text x={MEAN} y="106" textAnchor="middle">mean</text></g>
-                  </g>
+                  <svg className="slx-pic" viewBox="0 0 260 120">
+                    <line x1="10" y1="62" x2="250" y2="62" className="slx-axis" />
+                    {DOTS.map((x, k) => <circle key={k} cx={x} cy="62" r="5.5" className={k >= DOTS.length - 3 ? "slx-dot slx-out" : "slx-dot"} />)}
+                    {/* the mean is marked above the line and the middle below it, so their labels never meet */}
+                    <g className="slx-mean"><path d={`M${MEAN} 52l-7-12h14z`} /><text x={MEAN} y="30" textAnchor="middle">mean</text></g>
+                    <g className="slx-mid"><path d={`M${MID} 72l-7 12h14z`} /><text x={MID} y="100" textAnchor="middle">middle</text></g>
+                  </svg>
                 )}
                 {i === 2 && (
-                  <g className="slx-axisg">
-                    <line x1="14" y1="104" x2="250" y2="104" className="slx-axis" />
-                    <g className="slx-line"><path d="M20 96L70 80L120 66L170 46L220 24" fill="none" strokeLinecap="round" strokeLinejoin="round" /><circle cx="220" cy="24" r="5" /></g>
-                    <text className="slx-lab" x="14" y="20">the same line</text>
-                  </g>
+                  <svg className="slx-pic" viewBox="0 0 260 120">
+                    <line x1="14" y1="100" x2="250" y2="100" className="slx-axis" />
+                    {/* only the line is stretched: the dot at its end stays where it is, and stays round */}
+                    <polyline className="slx-poly" points={LINE.map(([x, y]) => `${x},${y}`).join(" ")} fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ "--flat": FLAT, transformOrigin: "0 24px" }} vectorEffect="non-scaling-stroke" />
+                    <circle className="slx-end" cx="220" cy="24" r="6" />
+                    <text className="slx-lab" x="14" y="14">the same line</text>
+                    <text className="slx-lab slx-ax-a" x="14" y="114">the axis starts at zero</text>
+                    <text className="slx-lab slx-ax-b" x="14" y="114">the axis starts at the low point</text>
+                  </svg>
                 )}
-              </svg>
+              </div>
               <div className="slx-txt">
-                <span className="slx-badge" aria-hidden="true">{Icon && <Icon size={20} />}</span>
                 <b>{s.title}</b>
                 {s.text && <small>{s.text}</small>}
                 <span className="slx-read" aria-hidden={!still}>

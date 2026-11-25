@@ -50,3 +50,10 @@
 .cm-card-btn:focus-visible { outline: 3px solid var(--hc); outline-offset: -3px; border-radius: 18px; }
 @media (prefers-reduced-motion: reduce) { .cm-ico { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .cm-card { transition: none; } }
+
+/* Committee members who have a profile are buttons: the chip lifts and takes its party colour on hover. */
+.cm-chip-link { transition: transform 0.2s var(--ease-out), box-shadow 0.2s ease, border-color 0.2s ease; }
+.cm-chip-link:hover { transform: translateY(-1px); box-shadow: var(--shadow-1); border-color: var(--c-ink-soft) !important; }
+.cm-chip-link:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 2px; }
+.cm-chip-face { box-shadow: 0 0 0 1.5px var(--pc) !important; }
+@media (prefers-reduced-motion: reduce) { .cm-chip-link { transition: none; } }

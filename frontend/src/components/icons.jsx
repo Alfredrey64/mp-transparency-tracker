@@ -123,8 +123,9 @@ export function IconBriefcase({ size = 17 }) {
 export function IconMethodology({ size = 17 }) {
   return (
     <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="4.5" y="4" width="15" height="17" rx="1.8" />
-      <path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z" />
+      {/* the board's top edge breaks where the clip sits on it, and the clip rises just above the edge */}
+      <path d="M8 6H6.3a1.8 1.8 0 0 0-1.8 1.8v11.4A1.8 1.8 0 0 0 6.3 21h11.4a1.8 1.8 0 0 0 1.8-1.8V7.800A1.8 1.8 0 0 0 17.700 6H16" />
+      <rect x="8" y="3.5" width="8" height="4" rx="1.2" />
       <path d="m8.3 13 2 2 4.4-4.6" />
       <path d="M8.3 17.3h7.4" />
     </svg>

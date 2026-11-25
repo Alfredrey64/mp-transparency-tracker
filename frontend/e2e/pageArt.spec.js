@@ -1,14 +1,13 @@
 import { test, expect } from "@playwright/test";
 
-// The pictures and moves added on 24 November 2026: the Acts that have become law sit on the Bills page, the law and Speaker pages have their own pictures, and a popular question opens
+// The pictures and moves added on 24 November 2026: the Acts that have become law sit at the end of How a law is made (moved there from the Bills page on 25 November), the law and Speaker pages have their own pictures, and a popular question opens
 // its answer without the page jumping.
 
-test("the Acts that have become law are on the Bills page, not at the end of How a law is made", async ({ page }) => {
+test("the Acts that have become law are at the end of How a law is made, not on the Bills page", async ({ page }) => {
   await page.goto("/voting");
-  await expect(page.getByRole("heading", { name: /The Acts that have become law in \d{4}/ })).toBeVisible();
-  await page.goto("/howLawMade");
   await expect(page.getByRole("heading", { name: /The Acts that have become law/ })).toHaveCount(0);
-  await expect(page.locator('a[href="#/voting"]').first()).toBeVisible();
+  await page.goto("/howLawMade");
+  await expect(page.getByRole("heading", { name: /The Acts that have become law in \d{4}/ })).toBeVisible();
   await expect(page.locator(".lwr-st")).toHaveCount(12);
 });
 
@@ -45,8 +44,8 @@ test("How a law is made: pressing a stop on the route map shows its stage, and t
   await expect(page.locator(".lwp svg")).toBeVisible();
 });
 
-test("an Act's dot on the Bills page opens a card with what it did", async ({ page }) => {
-  await page.goto("/voting");
+test("an Act's dot on the How a law is made page opens a card with what it did", async ({ page }) => {
+  await page.goto("/howLawMade");
   const dot = page.locator(".acp-dot").first();
   await dot.scrollIntoViewIfNeeded();
   await dot.focus();

@@ -1564,3 +1564,21 @@
 .lwk { list-style: none; margin: 0 0 -6px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 18px; font: 700 13px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .lwk li { display: inline-flex; align-items: center; gap: 7px; }
 .lwk li::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--tc); }
+
+/* Cards with more to look at: a washed colour, a solid icon medallion, a large faint copy of the icon behind the words, and a lift when pointed at. Used where a row of plain white boxes is not enough. */
+.st-rich li { background: linear-gradient(155deg, color-mix(in srgb, var(--tc) 16%, var(--c-paper-card)) 0%, color-mix(in srgb, var(--tc) 4%, var(--c-paper-card)) 70%); border-color: color-mix(in srgb, var(--tc) 28%, var(--c-hairline)); box-shadow: var(--shadow-1), inset 0 4px 0 var(--tc); padding: 24px 22px 22px; transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s; }
+.st-rich li:hover { transform: translateY(-4px); box-shadow: var(--shadow-2, 0 14px 28px -12px rgba(15, 30, 60, 0.3)), inset 0 4px 0 var(--tc); }
+.st-rich .st-card-icon { width: 50px; height: 50px; border-radius: 50%; background: var(--tc); color: #fff; box-shadow: 0 0 0 6px color-mix(in srgb, var(--tc) 18%, transparent); transition: transform 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), box-shadow 0.35s; }
+.st-rich li:hover .st-card-icon { transform: rotate(-8deg) scale(1.08); box-shadow: 0 0 0 9px color-mix(in srgb, var(--tc) 20%, transparent); }
+.st-rich b { color: color-mix(in srgb, var(--tc) 72%, var(--c-ink)); font-size: 18px; }
+.st-rich p { position: relative; }
+.st-rich-mark { position: absolute; right: -14px; bottom: -22px; color: var(--tc); opacity: 0.09; transform: rotate(-9deg); pointer-events: none; }
+.st-rich b, .st-rich .st-card-icon { position: relative; }
+@media (prefers-reduced-motion: reduce) { .st-rich li, .st-rich .st-card-icon { transition: none; } .st-rich li:hover, .st-rich li:hover .st-card-icon { transform: none; } }
+html[data-calm] .st-rich li, html[data-calm] .st-rich .st-card-icon { transition: none; }
+
+/* The word on a connector ("oversees", "audits") reads as a label on the arrow, not a footnote: a small pill, in the ink colour, next to the line */
+.sa-flow .sa-link span, .sa-flow[data-down="1"] .sa-link span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px 4px 10px; border-radius: 999px; background: var(--c-paper-card); border: 1.5px solid color-mix(in srgb, var(--c-ink-soft) 40%, transparent); box-shadow: var(--shadow-1); font: 700 13.5px/1.2 "Figures", "Public Sans", system-ui, sans-serif; letter-spacing: 0.01em; color: var(--c-ink); }
+.sa-flow .sa-link span::before { content: ""; width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--c-brand, var(--c-ink)); }
+.sa-flow[data-down="1"] .sa-link span { left: calc(50% + 30px); top: 50%; bottom: auto; transform: translateY(-50%); }
+@media (max-width: 700px) { .sa-flow .sa-link span { left: calc(50% + 30px); top: 50%; bottom: auto; transform: translateY(-50%); } }

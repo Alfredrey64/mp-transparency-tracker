@@ -6,3 +6,10 @@
 .ab-tile b { font: 800 20px/1.2 "Newsreader", Georgia, serif; text-transform: capitalize; }
 .ab-tile small { font: 500 13px/1.4 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ab-note { margin: 20px 0 0; max-width: 640px; font: 400 14px/1.65 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+
+/* The three headline figures beside the big count: each in a box of its own. */
+.ab-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; flex: 2 1 340px; }
+.ab-stat { --tc: #1E4FB8; position: relative; display: grid; gap: 6px; align-content: center; min-height: 112px; padding: 18px 18px 16px 22px; border-radius: 16px; background: color-mix(in srgb, var(--tc) 7%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, var(--tc) 28%, var(--c-hairline)); box-shadow: var(--shadow-1); overflow: hidden; }
+.ab-stat::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--tc); }
+.ab-stat-n { font: 700 clamp(30px, 4.5vw, 40px)/1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums; color: var(--c-ink); }
+.ab-stat-l { font: 600 13.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }

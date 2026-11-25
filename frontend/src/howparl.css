@@ -61,8 +61,8 @@
 
 /* ---- The two Houses, a dot for every member --------------------------------------------------------------------------------------------------------------------------- */
 .hwk-houses { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 14px; margin-top: 16px; }
-.hwk-house { padding: 16px 16px 14px; border-radius: 16px; background: var(--c-paper); border: 1px solid color-mix(in srgb, var(--hc) 26%, var(--c-hairline)); border-top: 4px solid var(--hc); }
-.hwk-house-top { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
+.hwk-house { display: flex; flex-direction: column; padding: 16px 16px 14px; border-radius: 16px; background: var(--c-paper); border: 1px solid color-mix(in srgb, var(--hc) 26%, var(--c-hairline)); border-top: 4px solid var(--hc); }
+.hwk-house-top { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; min-height: 40px; }
 .hwk-house-top h4 { margin: 0; font: 700 15px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .hwk-house-top p { margin: 1px 0 0; font: 400 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .hwk-lords { flex-shrink: 0; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--hc); color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.22); }
@@ -70,7 +70,7 @@
 .hwk-houses[data-go="0"] .hwk-dot { opacity: 0; }
 .hwk-houses[data-go="1"] .hwk-dot { animation: hwk-dot 0.5s var(--ease-out) both; animation-delay: calc(var(--i) * 1.3ms); }
 @keyframes hwk-dot { from { opacity: 0; } }
-.hwk-house-n { margin: 10px 0 0; font: 400 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.hwk-house-n { margin: auto 0 0; padding-top: 10px; display: flex; align-items: baseline; font: 400 13px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .hwk-house-n b { font: 700 24px "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); margin-right: 5px; }
 .hwk-houses-note { grid-column: 1 / -1; margin: 0; font: 400 11.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 

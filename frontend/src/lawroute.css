@@ -10,8 +10,8 @@
 .lwr-rail { right: calc(50% / var(--n)); background: color-mix(in srgb, var(--c-ink-soft) 22%, var(--c-paper)); }
 .lwr-prog { width: calc(var(--i) * 100% / var(--n)); background: var(--cc); transition: width 1s var(--ease), background-color 0.5s; }
 .lwr-stops { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); position: relative; z-index: 1; }
-.lwr-st { display: grid; justify-items: center; align-content: start; gap: 8px; width: 100%; padding: 0 1px 4px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: center; }
-.lwr-dot { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; box-sizing: border-box; background: var(--c-paper-card); border: 5px solid var(--c); color: #fff; transition: background-color 0.5s var(--ease), transform 0.5s var(--ease), box-shadow 0.5s var(--ease); }
+.lwr-st { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 8px; width: 100%; padding: 0 1px 4px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: center; }
+.lwr-dot { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; box-sizing: border-box; background: var(--c-paper-card); border: 5px solid var(--c); color: #fff; transition: background-color 0.5s var(--ease), transform 0.5s var(--ease), box-shadow 0.5s var(--ease); }
 .lwr-dot svg { width: 16px; height: 16px; }
 .lwr-st[data-state="done"] .lwr-dot { background: var(--c); }
 .lwr-st[data-state="now"] .lwr-dot { transform: scale(1.22); box-shadow: 0 0 0 7px color-mix(in srgb, var(--c) 20%, transparent); }
@@ -22,8 +22,8 @@
 .lwr-lab b { font-weight: 800; color: var(--c-ink); }
 .lwr-st[data-state="todo"] .lwr-lab b { color: var(--c-ink-soft); }
 .lwr-lab-flat { display: none; }
-.lwr-token { position: absolute; z-index: 2; top: -1px; left: calc((var(--i) + 0.5) * 100% / var(--n)); width: 0; transition: left 1s var(--ease); pointer-events: none; }
-.lwr-hop { position: absolute; left: -17px; top: 0; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #fff; border: 3px solid var(--cc); box-sizing: border-box; box-shadow: 0 8px 14px -6px rgba(10, 20, 50, 0.55); animation: lwrHop 1s var(--ease) both; transition: border-color 0.5s; }
+.lwr-token { position: absolute; z-index: 2; top: 0; left: calc((var(--i) + 0.5) * 100% / var(--n)); width: 0; height: 32px; transition: left 1s var(--ease); pointer-events: none; }
+.lwr-hop { position: absolute; left: -16px; top: 0; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: #fff; border: 3px solid var(--cc); box-sizing: border-box; box-shadow: 0 6px 12px -5px rgba(10, 20, 50, 0.5); animation: lwrHop 1s var(--ease) both; transition: border-color 0.5s; }
 .lwr[data-go="0"] .lwr-token { opacity: 0; }
 
 /* the card under the line: every stop's words sit in one cell, so the card is as tall as the longest and never jumps */
@@ -43,7 +43,8 @@
 .lwr-ctl button:disabled { opacity: 0.4; cursor: default; }
 .lwr-ctl .lwr-pri { background: var(--cc); border-color: var(--cc); color: #fff; }
 .lwr figcaption { max-width: 640px; margin: 12px auto 6px; text-align: center; font: 500 13.5px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-@keyframes lwrHop { 0% { transform: translateY(0); } 40% { transform: translateY(-12px) scale(1.08); } 100% { transform: translateY(0); } }
+/* the bill pulses as it sets off and as it arrives; it never leaves the line, so it is always on the centre of the stop it is heading for */
+@keyframes lwrHop { 0% { transform: scale(1); } 35% { transform: scale(1.14); } 100% { transform: scale(1); } }
 
 /* On a phone the line runs down the screen: one row for each stop, the bill moving along beside them. */
 @media (max-width: 700px) {
@@ -52,12 +53,13 @@
   .lwr-rail { height: calc((var(--n) - 1) * 48px); }
   .lwr-prog { height: calc(var(--i) * 48px); transition: height 1s var(--ease), background-color 0.5s; }
   .lwr-stops { grid-template-columns: minmax(0, 1fr); }
-  .lwr-st { grid-template-columns: 32px minmax(0, 1fr); justify-items: start; align-items: center; gap: 14px; height: 48px; padding: 0; text-align: left; }
+  .lwr-st { flex-direction: row; align-items: center; justify-content: flex-start; gap: 14px; height: 48px; padding: 0; text-align: left; }
+  .lwr-lab-flat { min-width: 0; }
   .lwr-lab { display: none; }
   .lwr-lab-flat { display: block; font: 700 14.5px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
   .lwr-lab-flat em { display: block; font: 800 11px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: color-mix(in srgb, var(--c) 78%, var(--c-ink)); }
   .lwr-st[data-state="todo"] .lwr-lab-flat { color: var(--c-ink-soft); }
-  .lwr-token { left: 16px; top: calc(var(--i) * 48px + 7px); transition: top 1s var(--ease); }
+  .lwr-token { left: 16px; top: calc(var(--i) * 48px + 8px); transition: top 1s var(--ease); }
   .lwr-map { max-width: 360px; padding: 0 4px; }
 }
 @media (prefers-reduced-motion: reduce) {

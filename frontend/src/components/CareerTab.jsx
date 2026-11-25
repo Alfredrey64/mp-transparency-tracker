@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { YearsMeaning } from "./MpMeaning";
 import { COLORS, FONT_BODY, FONT_DISPLAY, numeric, readable } from "../theme";
 import { loadCareerDetail } from "../lib/careerDetail";
@@ -26,6 +27,34 @@ function textOn(hex) {
   return 0.299 * r + 0.587 * g + 0.114 * b > 160 ? "#1b1b1b" : "#fff";
 }
 
+// The card that opens over a bar when you point at it or touch it: the name of the post or spell, what it was in, the dates and how long it lasted. It is drawn on the page itself
+// (not clipped by the chart's own scrolling box) and kept inside the window.
+function BarCard({ tip }) {
+  const ref = useRef(null);
+  const [pos, setPos] = useState(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !tip) return;
+    const w = el.offsetWidth;
+    const h = el.offsetHeight;
+    const vw = document.documentElement.clientWidth;
+    const left = Math.min(Math.max(8, tip.x - w / 2), vw - 8 - w);
+    const above = tip.top - h - 10 >= 8;
+    setPos({ left, top: above ? tip.top - h - 10 : tip.bottom + 10, above, arrow: Math.min(Math.max(tip.x - left, 14), w - 14) });
+  }, [tip]);
+  if (!tip) return null;
+  return createPortal(
+    <div ref={ref} className="cl-tip" role="tooltip" data-ready={pos ? "1" : "0"} data-above={pos?.above ? "1" : "0"} style={{ left: pos ? pos.left : -9999, top: pos ? pos.top : 0, "--tc": tip.colour, "--arrow": `${pos?.arrow ?? 20}px` }}>
+      <span className="cl-tip-lane">{tip.lane}</span>
+      <b className="cl-tip-name">{tip.label}</b>
+      {tip.note && <span className="cl-tip-note">{tip.note}</span>}
+      <span className="cl-tip-when">{tip.when}</span>
+      {tip.length && <span className="cl-tip-len">{tip.length}</span>}
+    </div>,
+    document.body,
+  );
+}
+
 function Swimlanes({ detail, now }) {
   const lanes = useMemo(() => buildLanes(detail, now), [detail, now]);
   const range = useMemo(() => chartRange(lanes, now), [lanes, now]);
@@ -34,6 +63,25 @@ function Swimlanes({ detail, now }) {
   const pos = (t) => `${((t - range.from) / span) * 100}%`;
   const lost = detail.l.filter((l) => l[1]);
   const [ref, go] = useGo(0.15);
+  const [tip, setTip] = useState(null);
+  // Pointing at or touching a bar opens its card; leaving, scrolling, pressing elsewhere or Escape closes it.
+  useEffect(() => {
+    if (!tip) return undefined;
+    const close = () => setTip(null);
+    const key = (e) => { if (e.key === "Escape") close(); };
+    const away = (e) => { if (!e.target.closest?.(".career-bar")) close(); };
+    window.addEventListener("scroll", close, true);
+    window.addEventListener("resize", close);
+    document.addEventListener("keydown", key);
+    document.addEventListener("pointerdown", away);
+    return () => { window.removeEventListener("scroll", close, true); window.removeEventListener("resize", close); document.removeEventListener("keydown", key); document.removeEventListener("pointerdown", away); };
+  }, [tip]);
+  const open = (e, item, lane, colour) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const from = new Date(item.from).toISOString().slice(0, 10);
+    const to = item.ongoing ? null : new Date(item.to).toISOString().slice(0, 10);
+    setTip({ x: r.left + r.width / 2, top: r.top, bottom: r.bottom, label: item.label, note: item.note ?? null, lane: lane.label, colour, when: `${monthYear(from)} to ${to ? monthYear(to) : "now"}`, length: duration(from, to, now) });
+  };
 
   if (lanes.length === 0 && lost.length === 0) return null;
   return (
@@ -59,12 +107,15 @@ function Swimlanes({ detail, now }) {
               {lane.items.map((item, i) => {
                 const colour = lane.key === "party" ? partyColourByName(item.label) : lane.key === "seat" ? (i % 2 ? "#6D64E8" : "#1E4FB8") : LANE_COLOURS[lane.key];
                 const widthPct = ((item.to - item.from) / span) * 100;
-                const tip = `${item.label}${item.note ? ` (${item.note})` : ""}: ${monthYear(new Date(item.from).toISOString().slice(0, 10))} to ${item.ongoing ? "now" : monthYear(new Date(item.to).toISOString().slice(0, 10))}`;
+                const tipText = `${item.label}${item.note ? ` (${item.note})` : ""}: ${monthYear(new Date(item.from).toISOString().slice(0, 10))} to ${item.ongoing ? "now" : monthYear(new Date(item.to).toISOString().slice(0, 10))}`;
                 return (
                   <div
                     key={`${item.label}-${item.from}-${i}`}
                     className="career-bar keep-line" data-on={item.ongoing ? "1" : "0"}
-                    title={tip}
+                    role="img" aria-label={tipText}
+                    onPointerEnter={(e) => { if (e.pointerType === "mouse") open(e, item, lane, colour); }}
+                    onPointerLeave={(e) => { if (e.pointerType === "mouse") setTip(null); }}
+                    onPointerUp={(e) => { if (e.pointerType !== "mouse") open(e, item, lane, colour); }}
                     style={{
                       position: "absolute", left: pos(item.from), width: `${Math.max(widthPct, 0.5)}%`, top: item.row * ROW + 2, height: ROW - 6,
                       background: colour, color: textOn(colour), borderRadius: item.ongoing ? "4px 10px 10px 4px" : 4, padding: "0 6px", boxSizing: "border-box",
@@ -79,6 +130,8 @@ function Swimlanes({ detail, now }) {
             </div>
           </div>
         ))}
+
+        <BarCard tip={tip} />
 
         {lost.length > 0 && (
           <div style={{ display: "grid", gridTemplateColumns: `${LABEL_W}px minmax(0, 1fr)`, gap: 10, alignItems: "center", padding: "8px 0 2px", borderTop: `1px solid ${COLORS.hairline}` }}>

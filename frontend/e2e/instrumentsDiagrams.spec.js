@@ -33,7 +33,7 @@ test("the Act and instrument picture, the month chart, the four names and the re
   await page.goto("/statutoryInstruments");
   const fill = page.locator(".sif");
   await fill.scrollIntoViewIfNeeded();
-  await fill.getByRole("button", { name: /With the minister/ }).click();
+  await fill.getByRole("button", { name: /The gap is filled/ }).click();
   await expect(fill.locator(".sif-say")).toContainText("fills the gap");
 
   const months = page.locator(".sim");

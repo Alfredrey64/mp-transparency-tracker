@@ -4,6 +4,7 @@ import { IconAudit } from "../newIcons";
 import { IconTrend, IconSearch, IconManifesto, IconLedger, IconScales } from "../icons";
 import { Flow } from "../story/StateArt";
 import { Hero } from "../story/Vivid";
+import { WatchZones } from "../story/FlowArt";
 
 const PAGE = {
   look: "vivid",
@@ -14,11 +15,11 @@ const PAGE = {
   lead: <Hero
     colours={["#0E2230", "#1F7A6E", "#2C5F9E"]}
     why="Ministers answer to Parliament, but Parliament cannot check every account or sum. These bodies exist to do that, and each is deliberately kept at a distance from the government of the day."
-    stops={[
-      { icon: IconTrend, title: "Checks the sums", text: "The Office for Budget Responsibility, an official forecaster set up by law", colour: "#E2BE7A" },
-      { icon: IconAudit, title: "Audits the accounts", text: "The National Audit Office, the public spending watchdog", colour: "#8DB7E8" },
-      { icon: IconSearch, title: "Looks into what went wrong", text: "Public inquiries, set up by a minister with legal powers", colour: "#E59AA6" },
-    ]}
+    extra={<WatchZones label="Three watchdogs, each checking a different moment in what the government does" nodes={[
+      { icon: IconTrend, title: "Checks the sums", text: "The Office for Budget Responsibility, an official forecaster set up by law", colour: "#B7791F" },
+      { icon: IconAudit, title: "Audits the accounts", text: "The National Audit Office, the public spending watchdog", colour: "#2C5F9E" },
+      { icon: IconSearch, title: "Looks into what went wrong", text: "Public inquiries, set up by a minister with legal powers", colour: "#9A3F55" },
+    ]} />}
     figures={[
       { value: "about 400", label: "Accounts the National Audit Office audits each year", sub: "Plus about 60 value-for-money reports" },
       { value: "2 a year", label: "Forecasts the Office for Budget Responsibility must make", sub: "At least, by law" },

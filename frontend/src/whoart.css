@@ -7,8 +7,11 @@
 
 /* each card is a picture in a frame of the same height, then its number and words under a rule, so the three line up and every picture is centred in its box */
 .wta-pic { display: grid; place-items: center; height: clamp(150px, 17vw, 188px); padding: 6px 0 2px; }
-.wta-tx { margin-top: 12px; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--c) 24%, var(--c-hairline)); }
+.wta-tx { margin-top: auto; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--c) 24%, var(--c-hairline)); }
 .wta-hemi { display: block; height: 100%; width: auto; max-width: 100%; }
+/* the half circle fills the width of its card, and the card's picture frame is as tall as the half circle needs */
+.wta-a .wta-pic { height: auto; aspect-ratio: 420 / 214; padding: 0; margin-bottom: 14px; }
+.wta-a .wta-hemi { width: 100%; height: 100%; }
 .wta-seat { fill: color-mix(in srgb, var(--c-ink) 17%, transparent); }
 .wta-seat.wta-on { fill: var(--c); }
 .wta-top[data-go="1"] .wta-seat { animation: wtaPop 0.5s cubic-bezier(0.3, 1.5, 0.5, 1) backwards; animation-delay: calc(var(--i) * 2.2ms); transform-box: fill-box; transform-origin: center; }
@@ -29,8 +32,19 @@
 .wta-top[data-go="1"] .wta-per { animation: wtaRise 0.6s cubic-bezier(0.3, 1.4, 0.5, 1) backwards; animation-delay: calc(var(--i) * 90ms + 300ms); transform-origin: bottom; }
 .wta-top:not([data-go="1"]) .wta-per { opacity: 0; }
 @keyframes wtaRise { from { opacity: 0; transform: translateY(14px) scale(0.8); } }
-@media (max-width: 980px) { .wta-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .wta-a { grid-column: 1 / -1; } }
-@media (max-width: 560px) { .wta-top { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 980px) {
+  .wta-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  /* the wide card sits the picture beside its words, so the half circle can use the room instead of floating in the middle of it */
+  .wta-a { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: clamp(18px, 4vw, 40px); }
+  .wta-a .wta-pic { flex: 1.25 1 0; min-width: 0; margin-bottom: 0; }
+  .wta-a .wta-tx { flex: 1 1 0; min-width: 0; margin-top: 0; padding-top: 0; border-top: 0; padding-left: clamp(18px, 4vw, 40px); border-left: 1px solid color-mix(in srgb, var(--c) 24%, var(--c-hairline)); }
+}
+@media (max-width: 560px) {
+  .wta-top { grid-template-columns: minmax(0, 1fr); }
+  .wta-a { flex-direction: column; align-items: stretch; gap: 0; }
+  .wta-a .wta-pic { flex: none; margin-bottom: 14px; }
+  .wta-a .wta-tx { margin-top: auto; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--c) 24%, var(--c-hairline)); border-left: 0; padding-left: 0; }
+}
 
 /* rings */
 .wta-rings-fig, .wta-rib-fig { margin: 0; padding: clamp(16px, 2.4vw, 24px); border-radius: 22px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }

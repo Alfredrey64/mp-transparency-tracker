@@ -110,13 +110,13 @@ const PAGE = {
       lede: "Every party at Westminster has whips: MPs or peers it appoints to inform and organise its own members in Parliament.",
       colour: "#2C5F9E",
       blocks: [
-        { cards: [
+        { rich: true, cards: [
           { title: "Getting members to vote", icon: IconVote, colour: "#2C5F9E", text: "A whip's job includes making sure members turn up to vote in divisions, and vote in line with party policy." },
           { title: "Keeping members informed", icon: IconBook, colour: "#5E4B8B", text: "Whips keep their members supplied with information about the business of the House." },
           { title: "Counting the votes", icon: IconScales, colour: "#A9701F", text: "Whips frequently act as tellers: the people who count the votes in a division." },
           { title: "Arranging absences", icon: IconGroup, colour: "#1F7A6E", text: "Where they can, whips arrange for a member who cannot attend a division to be \"paired\" with someone on the other side, so neither vote is lost." },
         ] },
-        { cards: [
+        { rich: true, cards: [
           { title: "Suggesting committee members", icon: IconManifesto, colour: "#9A3F55", text: "Whips suggest which of their members should serve on general and certain select committees." },
           { title: "Go-betweens", icon: IconRegister, colour: "#2F4A6B", text: "They carry the views of the party leaders to their MPs, and the MPs' views back to the leaders." },
           { title: "Proxy votes", icon: IconVote, colour: "#1F7A6E", text: "Whips commonly hold proxy votes for members of their party who are entitled to one, though a member can choose someone else to hold it." },

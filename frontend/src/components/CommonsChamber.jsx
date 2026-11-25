@@ -58,10 +58,13 @@ export default function CommonsChamber() {
     const speaker = politicians.find((p) => p.party === "Speaker");
     const rest = politicians.filter((p) => p.party !== "Speaker");
 
+    // Labour (Co-op) MPs are Labour MPs (the Co-operative Party works with Labour), so they sit with Labour in the plan; otherwise 43 government MPs would be drawn on the opposition benches.
+    const groupName = (party) => (party === "Labour (Co-op)" ? "Labour" : party);
     const byParty = new Map();
     for (const p of rest) {
-      if (!byParty.has(p.party)) byParty.set(p.party, []);
-      byParty.get(p.party).push(p);
+      const key = groupName(p.party);
+      if (!byParty.has(key)) byParty.set(key, []);
+      byParty.get(key).push(p);
     }
     const partyGroups = [...byParty.entries()]
       .map(([name, members]) => ({ name, members, color: partyColour(members[0]?.party_colour, COLORS.inkSoft) }))
@@ -140,6 +143,9 @@ export default function CommonsChamber() {
   }
 
   const active = hover ?? pinned;
+  // The Speaker does not vote, so a majority of the MPs who do: the seats drawn plus the Speaker, divided in half, plus one.
+  const total = layout.govSeats.length + layout.oppSeats.length + (layout.speaker ? 1 : 0);
+  const majority = Math.floor(total / 2) + 1;
   const chamberHeight = 90 + layout.maxRow * ROW_SPACING;
   const viewBoxHeight = chamberHeight + 40;
   const govTint = `${layout.government?.color ?? COLORS.inkSoft}0f`;
@@ -201,6 +207,22 @@ export default function CommonsChamber() {
             Opposition benches
           </text>
 
+          {/* The benches: a green strip behind each row of seats, as in the real Chamber */}
+          {Array.from({ length: layout.maxRow }, (_, r) => (
+            <g key={r} className="chm-bench" aria-hidden="true">
+              <rect x={GOV_X - 9} y={60 + r * ROW_SPACING + 20 - 5.5} width={(PER_ROW - 1) * SPACING + 18} height={11} rx={5.5} fill={layout.government?.color ?? COLORS.inkSoft} />
+              <rect x={OPP_X - (PER_ROW - 1) * SPACING - 9} y={60 + r * ROW_SPACING + 20 - 5.5} width={(PER_ROW - 1) * SPACING + 18} height={11} rx={5.5} fill={COLORS.inkSoft} />
+            </g>
+          ))}
+
+          {/* The size of each side, in the space the shorter side leaves */}
+          <g className="chm-count" aria-hidden="true">
+            <text x={30} y={viewBoxHeight - 48} className="chm-count-n" fill={COLORS.ink}>{layout.oppSeats.length}</text>
+            <text x={30} y={viewBoxHeight - 28} className="chm-count-l" fill={COLORS.inkSoft}>MPs on the Opposition benches</text>
+            <text x={770} y={viewBoxHeight - 48} textAnchor="end" className="chm-count-n" fill={layout.government?.color ?? COLORS.ink}>{layout.govSeats.length}</text>
+            <text x={770} y={viewBoxHeight - 28} textAnchor="end" className="chm-count-l" fill={COLORS.inkSoft}>{layout.government?.name} MPs, the Government side</text>
+          </g>
+
           {/* Seats: one dot for each MP, on their party's benches, filling from the aisle outwards. */}
           {[...layout.govSeats, ...layout.oppSeats].map((seat) => {
             const leader = seat.g === 0 ? layout.pm : layout.oppositionLeader;
@@ -239,6 +261,14 @@ export default function CommonsChamber() {
         </svg>
       </div>
 
+      <div className="chm-maj" data-go={go}>
+        <div className="chm-maj-bar" role="img" aria-label={`The Government side holds ${layout.govSeats.length} of the ${total} seats. ${majority} seats is a majority.`}>
+          <span className="chm-maj-gov" style={{ width: `${(layout.govSeats.length / total) * 100}%`, "--pc": layout.government?.color ?? COLORS.inkSoft }} />
+          <span className="chm-maj-mark" style={{ left: `${(majority / total) * 100}%` }} />
+        </div>
+        <p className="chm-maj-l"><b>{majority}</b> of {total} seats is a majority. {layout.govSeats.length >= majority ? `${layout.government?.name} holds ${layout.govSeats.length}, which is ${layout.govSeats.length - majority} more than a majority.` : `${layout.government?.name} holds ${layout.govSeats.length}, short of a majority.`}</p>
+      </div>
+
       <div className="chm-chips" onMouseLeave={() => setHover(null)}>
         {layout.partyGroups.map((g, gi) => (
           <button
@@ -258,7 +288,7 @@ export default function CommonsChamber() {
           </button>
         ))}
       </div>
-      <div className="chm-hint">Hover or press a party to find its seats.</div>
+      <div className="chm-hint">Hover or press a party to find its seats. Labour includes the Labour (Co-op) MPs.</div>
 
       <div style={{ fontFamily: FONT_BODY, fontSize: 11.5, color: COLORS.inkSoft, marginTop: 12, lineHeight: 1.5 }}>
         Seats are grouped by party, not individual real assignments. Parliament doesn't publish exactly who sits

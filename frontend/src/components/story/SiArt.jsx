@@ -21,23 +21,31 @@ function Paper() {
   );
 }
 
-// An Act with a gap in it, and the instrument that fills the gap.
+// An Act with a gap in it, and the instrument that fills the gap, in three steps: the Act leaves a detail open and gives the minister a power, the minister uses it, the gap is filled.
+const FILL_STEPS = [
+  { tab: "The Act gives a power", say: "The Act sets a rule but leaves one detail open. It includes a power: the minister may fill that detail in by writing an instrument." },
+  { tab: "The minister writes an instrument", say: "The minister uses the power the Act gave them and writes a statutory instrument, which says what the open detail is." },
+  { tab: "The gap is filled", say: "The instrument fills the gap with a day, so the Act now has its start date. The instrument is law too. No new Act was needed." },
+];
+
 export function SiFill() {
   const [ref, go] = useGo(0.3);
-  const [on, setOn] = useState(false);
+  const [step, setStep] = useState(0);
   const own = useRef(false);
   useEffect(() => {
     if (go !== "1") return undefined;
-    const t = setTimeout(() => { if (!own.current) setOn(true); }, 1800);
-    return () => clearTimeout(t);
+    const a = setTimeout(() => { if (!own.current) setStep(1); }, 1800);
+    const b = setTimeout(() => { if (!own.current) setStep(2); }, 3800);
+    return () => { clearTimeout(a); clearTimeout(b); };
   }, [go]);
-  const pick = (v) => { own.current = true; setOn(v); };
+  const pick = (v) => { own.current = true; setStep(v); };
   return (
-    <figure ref={ref} className="sif" data-go={go} data-on={on ? "1" : "0"}>
+    <figure ref={ref} className="sif" data-go={go} data-on={step === 2 ? "1" : "0"} data-step={step}>
       <figcaption>How an Act and an instrument fit together</figcaption>
-      <div className="sif-ctl" role="group" aria-label="Before or after the minister writes the instrument">
-        <button type="button" aria-pressed={!on} onClick={() => pick(false)}>The Act on its own</button>
-        <button type="button" aria-pressed={on} onClick={() => pick(true)}>With the minister&rsquo;s instrument</button>
+      <div className="sif-ctl" role="group" aria-label="The three steps">
+        {FILL_STEPS.map((f, k) => (
+          <button key={f.tab} type="button" aria-pressed={step === k} onClick={() => pick(k)}><i aria-hidden="true">{k + 1}</i>{f.tab}</button>
+        ))}
       </div>
       <div className="sif-stage">
         <div className="sif-sheet sif-act">
@@ -45,6 +53,7 @@ export function SiFill() {
           <span className="sif-sub">Passed by a vote in both Houses</span>
           <span className="sif-lines" aria-hidden="true"><i /><i /><i /></span>
           <p className="sif-key">This part of the Act starts on <span className="sif-gap"><span className="sif-empty">a day to be set</span><span className="sif-full">1 April</span></span>.</p>
+          <span className="sif-power">The Act says the minister may set this day</span>
           <span className="sif-lines" aria-hidden="true"><i /><i /></span>
         </div>
         <div className="sif-arrow" aria-hidden="true">
@@ -59,9 +68,7 @@ export function SiFill() {
           <span className="sif-lines" aria-hidden="true"><i /><i /></span>
         </div>
       </div>
-      <p className="sif-say" aria-live="polite">{on
-        ? "The instrument fills the gap with a day, so the Act now has its start date. The instrument is law too. No new Act was needed."
-        : "The Act sets a rule but leaves one detail open, and says the minister may fill it in by writing an instrument."}</p>
+      <p className="sif-say" aria-live="polite">{FILL_STEPS[step].say}</p>
       <p className="sif-eg">A made-up example of a common kind: an Act that starts on a day to be set.</p>
     </figure>
   );
@@ -92,11 +99,17 @@ export function SiRoutes() {
     <figure ref={ref} className="sir" data-go={go} data-route={route} data-out={out}>
       <figcaption>Try the two routes</figcaption>
       <div className="sir-ctl">
-        <div className="sir-seg" role="group" aria-label="Which route the instrument takes">
-          {Object.entries(SCENE).map(([k, v]) => <button key={k} type="button" aria-pressed={route === k} onClick={() => setRoute(k)}>{v.name}</button>)}
+        <div className="sir-pick">
+          <span className="sir-pl">1. Pick a route</span>
+          <div className="sir-seg" role="group" aria-label="Which route the instrument takes">
+            {Object.entries(SCENE).map(([k, v]) => <button key={k} type="button" aria-pressed={route === k} onClick={() => setRoute(k)}>{v.name}</button>)}
+          </div>
         </div>
-        <div className="sir-seg" role="group" aria-label="What Parliament does">
-          {["yes", "no"].map((k) => <button key={k} type="button" aria-pressed={out === k} data-k={k} onClick={() => setOut(k)}>{sc[k].button}</button>)}
+        <div className="sir-pick">
+          <span className="sir-pl">2. Choose what Parliament does</span>
+          <div className="sir-seg" role="group" aria-label="What Parliament does">
+            {["yes", "no"].map((k) => <button key={k} type="button" aria-pressed={out === k} data-k={k} onClick={() => setOut(k)}>{sc[k].button}</button>)}
+          </div>
         </div>
       </div>
       <div className="sir-stage" key={`${route}-${out}-${run}`}>

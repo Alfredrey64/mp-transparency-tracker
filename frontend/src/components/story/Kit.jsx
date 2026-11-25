@@ -104,13 +104,14 @@ export function Disclose({ title, children, open = false }) {
 }
 
 // Cards with a coloured top, an icon and a short line each: for "what this does not mean" and similar.
-export function Cards({ items, min = 260 }) {
+export function Cards({ items, min = 260, rich = false }) {
   return (
-    <ul className="st-cards" style={{ "--min": `${min}px` }}>
+    <ul className={rich ? "st-cards st-rich" : "st-cards"} style={{ "--min": `${min}px` }}>
       {items.map((c, i) => {
         const Icon = c.icon;
         return (
           <li key={c.title} style={{ "--tc": c.colour, "--i": i }}>
+            {rich && Icon && <span className="st-rich-mark" aria-hidden="true"><Icon size={120} /></span>}
             {Icon && <span className="st-card-icon" aria-hidden="true"><Icon size={22} /></span>}
             <b>{c.title}</b>
             <p>{c.text}</p>

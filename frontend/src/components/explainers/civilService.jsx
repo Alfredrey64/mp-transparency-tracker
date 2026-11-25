@@ -5,7 +5,7 @@ import { IconShield, IconBook, IconCompass, IconScales, IconCabinet, IconGroup }
 import { Workforce } from "../story/CivilServiceArt";
 import { Hero, Dots } from "../story/Vivid";
 import Handover from "../story/Handover";
-import ChainArt from "../story/ChainArt";
+import { CivilSwap } from "../story/FlowArt";
 
 const PAGE = {
   look: "vivid",
@@ -16,10 +16,10 @@ const PAGE = {
   lead: <Hero
     colours={["#101C34", "#2C5F9E", "#1F4A6E"]}
     why="When a minister announces a policy, civil servants are the ones who make it work, and who tell the minister what will and will not. The rules about their impartiality are what stop a change of government becoming a change of everyone doing the job."
-    extra={<ChainArt kind="civil" label="How ministers, civil servants and public services connect" nodes={[
-      { icon: IconCabinet, title: "Ministers", text: "Set the direction", colour: "#E59AA6" },
-      { icon: IconCivilService, title: "Civil servants", text: "Run the departments and write the advice", colour: "#8DB7E8" },
-      { icon: IconGroup, title: "Public services", text: "Delivered every day, whoever governs", colour: "#7CCBB3" },
+    extra={<CivilSwap label="How ministers, civil servants and public services connect" nodes={[
+      { icon: IconCabinet, title: "Ministers", text: "Set the direction", colour: "#C8546B" },
+      { icon: IconCivilService, title: "Civil servants", text: "Run the departments and write the advice", colour: "#2C5F9E" },
+      { icon: IconGroup, title: "Public services", text: "Delivered every day, whoever governs", colour: "#1F7A6E" },
     ]} />}
     figures={[
       { value: "557,825", label: "Civil servants, 31 March 2026", sub: "523,795 in full-time equivalent terms" },

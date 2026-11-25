@@ -35,7 +35,7 @@ async function main() {
   const names = { department: await taxonomy("department"), topic: await taxonomy("topic"), type: await taxonomy("report_type") };
   const items = [];
   for (let page = 1; ; page += 1) {
-    const rows = await getJson(`${API}/report?per_page=100&page=${page}&after=${from}T00:00:00&orderby=date&order=desc&_fields=id,date,link,title,excerpt,department,topic,report_type`);
+    const rows = await getJson(`${API}/report?per_page=100&page=${page}&after=${from}T00:00:00&orderby=date&order=desc&_fields=id,date,link,title,excerpt,content,department,topic,report_type`);
     items.push(...rows);
     console.log(`  ${items.length} reports`);
     if (rows.length < 100) break;

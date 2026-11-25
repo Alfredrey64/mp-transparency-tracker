@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { plain, tidyReport, summariseNao } from "./auditReports.js";
+import { plain, tidyReport, summariseNao, sections, fit } from "./auditReports.js";
 
 const names = {
   department: new Map([[1, "Home Office"], [2, "Cross-government"]]),
@@ -21,6 +21,26 @@ describe("tidyReport", () => {
   it("drops a report with no title or a link that is not the Office's", () => {
     expect(tidyReport(raw({ title: { rendered: "" } }), names)).toBeNull();
     expect(tidyReport(raw({ link: "https://example.com/x" }), names).url).toBe("");
+  });
+});
+
+describe("what a report found", () => {
+  const html = '<h2 id="a">Background to the report</h2><p>It is a big programme.</p><p>It costs a lot.</p><h2>Scope of the report</h2><p>We looked.</p><h2>Conclusions</h2><p>It did not work&nbsp;well.</p><p>Costs rose.</p>';
+  it("splits a report page at its headings", () => {
+    expect(sections(html).map((x) => x.heading)).toEqual(["Background to the report", "Scope of the report", "Conclusions"]);
+  });
+  it("keeps the conclusion as what it found and the background as why it was looked at", () => {
+    const r = tidyReport(raw({ content: { rendered: html } }), names);
+    expect(r.found).toEqual(["It did not work well.", "Costs rose."]);
+    expect(r.why).toEqual(["It is a big programme.", "It costs a lot."]);
+    expect(r.scope).toEqual(["We looked."]);
+  });
+  it("has empty lists when the page has no such sections", () => {
+    expect(tidyReport(raw({}), names)).toMatchObject({ found: [], why: [], scope: [] });
+  });
+  it("cuts at whole paragraphs, or whole sentences if the first is too long", () => {
+    expect(fit(["One.", "Two two."], 8)).toEqual(["One."]);
+    expect(fit(["Aaa bbb. Ccc ddd. Eee fff."], 20)).toEqual(["Aaa bbb. Ccc ddd."]);
   });
 });
 

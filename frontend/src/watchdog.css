@@ -1,0 +1,86 @@
+/* Spending watchdog page: the journey diagram at the top (components/story/WatchdogArt.jsx), and the pieces inside the opened report cards (AuditBrowser.jsx, PacReports.jsx).
+   The cards themselves are the shared opening cards from backbench.css. */
+
+/* ---- the journey ------------------------------------------------------------------------------------------------------------------------------------------------ */
+.wdg { container-type: inline-size; position: relative; overflow: hidden; border-radius: 24px; padding: clamp(20px, 3.4vw, 34px); color: #fff; background: radial-gradient(120% 140% at 0% 0%, #1E6285 0%, #10324A 55%, #0B2133 100%); box-shadow: var(--shadow-2, 0 10px 28px rgb(0 0 0 / 0.14)); }
+.wdg-why { margin: 0 0 clamp(20px, 3vw, 30px); max-width: 64ch; font: 500 clamp(17px, 2.2vw, 21px)/1.55 "Figures", "Newsreader", Georgia, serif; color: #fff; text-wrap: pretty; }
+.wdg-why strong { display: block; width: max-content; margin-bottom: 10px; padding: 5px 13px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.2); font: 700 13px/1.2 "Figures", "Public Sans", system-ui, sans-serif; }
+
+.wdg-track { position: relative; }
+.wdg-rail { position: absolute; z-index: 0; border-radius: 3px; background: rgba(255, 255, 255, 0.16); pointer-events: none; }
+.wdg-rail i { position: absolute; inset: 0; border-radius: 3px; background: linear-gradient(90deg, #8FD1A8, #8DB7E8, #B9A5F0, #F0C77A); transform-origin: left center; transition: transform 1s cubic-bezier(0.45, 0, 0.2, 1); }
+.wdg-rail i[data-h="0"] { transform-origin: center top; background: linear-gradient(180deg, #8FD1A8, #8DB7E8, #B9A5F0, #F0C77A); }
+
+.wdg-stops { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; position: relative; z-index: 1; }
+.wdg-stop { min-width: 0; }
+.wdg-btn { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; height: 100%; padding: 6px 10px 16px; border-radius: 18px; border: 1px solid transparent; background: transparent; color: inherit; font: inherit; text-align: center; cursor: pointer; transition: background 0.3s ease, border-color 0.3s ease; }
+.wdg-btn:hover { background: rgba(255, 255, 255, 0.05); }
+.wdg-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.wdg-stop[data-on="1"] .wdg-btn { background: rgba(255, 255, 255, 0.09); border-color: color-mix(in srgb, var(--tc) 70%, transparent); }
+
+.wdg-badge { position: relative; flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #0F2C42; border: 2px solid color-mix(in srgb, var(--tc) 75%, transparent); transition: background 0.4s ease, border-color 0.4s ease; }
+.wdg-badge > svg { display: none; }
+.wdg-badge i { font: 800 16px/1 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; font-variant-numeric: lining-nums; color: #fff; }
+.wdg-stop[data-done="1"] .wdg-badge { background: color-mix(in srgb, var(--tc) 38%, #0F2C42); }
+
+.wdg-words { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.wdg-words b { font: 700 clamp(16px, 1.9vw, 19px)/1.25 "Figures", "Newsreader", Georgia, serif; color: #fff; text-wrap: balance; }
+.wdg-words small { font: 500 13.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.82); text-wrap: pretty; }
+.wdg-words em { margin-top: 4px; padding: 3px 11px; border-radius: 999px; font: 700 12.5px/1.4 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; font-variant-numeric: lining-nums; color: #fff; background: color-mix(in srgb, var(--tc) 22%, transparent); border: 1px solid color-mix(in srgb, var(--tc) 60%, transparent); }
+
+/* the thing that travels: it sits over the numbered marker of the station it has reached, and turns into what that station works with */
+.wdg-token { position: absolute; z-index: 2; left: 0; top: 0; width: 58px; height: 58px; margin: -29px 0 0 -29px; pointer-events: none; transition: transform 1s cubic-bezier(0.45, 0, 0.2, 1), opacity 0.5s ease; }
+.wdg[data-go="0"] .wdg-token { opacity: 0; }
+.wdg-tokin { position: relative; display: block; width: 100%; height: 100%; border-radius: 50%; color: #0B2133; background: var(--tc); box-shadow: 0 0 0 5px color-mix(in srgb, var(--tc) 28%, transparent), 0 6px 16px rgb(0 0 0 / 0.35); transition: background 0.5s ease, box-shadow 0.5s ease; }
+.wdg-face { position: absolute; left: 50%; top: 50%; width: 28px; height: 28px; margin: -14px 0 0 -14px; opacity: 0; transform: scale(0.6) rotate(-12deg); transition: opacity 0.4s ease 0.35s, transform 0.5s var(--ease-out, ease) 0.35s; }
+.wdg-token[data-step="0"] .wdg-face[data-face="0"], .wdg-token[data-step="1"] .wdg-face[data-face="1"], .wdg-token[data-step="2"] .wdg-face[data-face="2"], .wdg-token[data-step="3"] .wdg-face[data-face="3"] { opacity: 1; transform: none; }
+.wdg[data-go="1"] .wdg-token .wdg-tokin { animation: wdgPulse 3.6s ease-in-out infinite; }
+@keyframes wdgPulse { 0%, 100% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--tc) 28%, transparent), 0 6px 16px rgb(0 0 0 / 0.35); } 50% { box-shadow: 0 0 0 11px color-mix(in srgb, var(--tc) 8%, transparent), 0 6px 16px rgb(0 0 0 / 0.35); } }
+
+.wdg-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: clamp(14px, 2.4vw, 22px); padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.14); }
+.wdg-loop { flex: 1 1 320px; margin: 0; display: flex; align-items: center; gap: 12px; font: 500 14px/1.5 "Figures", "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.86); }
+.wdg-loopline { position: relative; flex: none; width: 42px; height: 14px; background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.7) 0 6px, transparent 6px 11px) center / 100% 2px no-repeat; animation: wdgDash 1.2s linear infinite; }
+.wdg-loopline::before { content: ""; position: absolute; left: -2px; top: 50%; margin-top: -6px; border: 6px solid transparent; border-right: 8px solid rgba(255, 255, 255, 0.85); border-left: 0; }
+@keyframes wdgDash { to { background-position-x: 11px; } }
+.wdg-play { flex: none; min-height: 44px; padding: 8px 18px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.45); background: rgba(255, 255, 255, 0.08); color: #fff; font: 700 14px "Figures", "Public Sans", system-ui, sans-serif; cursor: pointer; transition: background 0.2s ease; }
+.wdg-play:hover { background: rgba(255, 255, 255, 0.18); }
+.wdg-play:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+/* narrow: the stations stack, with the rail running down through their markers */
+@container (max-width: 720px) {
+  .wdg-stops { grid-template-columns: 1fr; gap: 6px; }
+  .wdg-btn { flex-direction: row; align-items: flex-start; gap: 16px; padding: 12px 12px 12px 8px; text-align: left; }
+  .wdg-words { align-items: flex-start; }
+  .wdg-badge { margin-top: 4px; }
+}
+.wdg[data-still="1"] .wdg-token, .wdg[data-still="1"] .wdg-rail i, .wdg[data-still="1"] .wdg-face { transition: none; }
+.wdg[data-still="1"] .wdg-loopline, .wdg[data-still="1"] .wdg-tokin { animation: none; }
+@media (prefers-reduced-motion: reduce) { .wdg-token, .wdg-rail i, .wdg-face, .wdg-btn, .wdg-badge { transition: none; } .wdg-loopline, .wdg-tokin { animation: none !important; } }
+html[data-calm] .wdg-token, html[data-calm] .wdg-rail i, html[data-calm] .wdg-face { transition: none; }
+html[data-calm] .wdg-loopline, html[data-calm] .wdg-tokin { animation: none !important; }
+
+/* ---- inside an opened report card ------------------------------------------------------------------------------------------------------------------------------- */
+.wdc-none { margin: 0; font: 500 14.5px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.wdc-why { display: grid; gap: 8px; padding: 14px 16px; border-radius: 14px; background: color-mix(in srgb, var(--c-ink) 4%, var(--c-paper-card)); border: 1px solid var(--c-hairline); }
+.wdc-why p { margin: 0; font: 500 15px/1.6 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.wdc-why small { font: 500 12.5px/1.45 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.wdc-role { margin: 0; font: 500 14px/1.55 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.wdc-role b { color: var(--c-ink); }
+.wdc-links { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+.wdc-state { text-align: center; background: color-mix(in srgb, var(--ac) 14%, var(--c-paper-card)); }
+.wdc-state small { font: 800 13px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+
+/* report published -> reply due -> reply: three marks on a line, filled as far as the report has got */
+.wdc-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; position: relative; }
+.wdc-steps::before { content: ""; position: absolute; left: 16.6%; right: 16.6%; top: 7px; height: 3px; border-radius: 2px; background: color-mix(in srgb, var(--c-ink) 14%, transparent); }
+.wdc-steps li { position: relative; display: grid; justify-items: center; gap: 2px; text-align: center; }
+.wdc-steps i { position: relative; width: 17px; height: 17px; border-radius: 50%; background: var(--c-paper-card); border: 3px solid color-mix(in srgb, var(--c-ink) 22%, transparent); }
+.wdc-steps li[data-on="1"] i { background: var(--ac); border-color: var(--ac); }
+.wdc-steps b { margin-top: 4px; font: 700 12.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.wdc-steps span { font: 600 12.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (max-width: 480px) { .wdc-steps b, .wdc-steps span { font-size: 12px; } }
+.wdg-words b svg { vertical-align: -3px; margin-right: 4px; color: var(--tc); }
+.wdg-words { flex: 1 1 auto; align-self: stretch; }
+.wdg-words em { margin-top: auto; }
+.wdg-words small { margin-bottom: 8px; }
+@container (max-width: 720px) { .wdg-words em { margin-top: 4px; } .wdg-words small { margin-bottom: 0; } }

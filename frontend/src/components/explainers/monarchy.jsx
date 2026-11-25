@@ -1,9 +1,9 @@
 /** @jsxImportSource react */
 import ExplainerPage from "../story/ExplainerPage";
 import { IconCrown } from "../newIcons";
-import { IconHouse, IconCalculator, IconCoin } from "../icons";
 import { Flow, Handoff, Journey, Amounts } from "../story/StateArt";
 import { Hero } from "../story/Vivid";
+import { GrantPipe } from "../story/FlowArt";
 
 const PAGE = {
   look: "vivid",
@@ -14,17 +14,13 @@ const PAGE = {
   lead: <Hero
     colours={["#1D1A33", "#5E4B8B", "#8A6A2A"]}
     why="The Sovereign Grant is public money, set by a rule that most people have never seen. Seeing the rule explains why the figure moved up sharply and why a cut is now proposed."
-    stops={[
-      { icon: IconHouse, title: "The Crown Estate", text: "A property business with a yearly profit", colour: "#E2BE7A" },
-      { icon: IconCalculator, title: "The formula", text: "Five steps in the Sovereign Grant Act 2011", colour: "#5E4B8B" },
-      { icon: IconCoin, title: "The Sovereign Grant", text: "Public money paid to the Royal Household", colour: "#7CCBB3" },
-      { icon: IconCrown, title: "Official duties", text: "What the grant supports", colour: "#8DB7E8" },
-    ]}
-    figures={[
-      { value: "£137.9m", label: "Sovereign Grant, 2026 to 2027", sub: "To support the King's official duties" },
-      { value: "£99.9m", label: "Proposed from 2027 to 2028", sub: "Needs new legislation, so not yet law" },
-      { value: "£487m", label: "Crown Estate profit used in the sum, 2025 to 2026", sub: "The Royal Trustees' review figure" },
-    ]}
+    extra={<GrantPipe
+      label="How the Crown Estate's profit becomes the Sovereign Grant, and the cut that has been proposed"
+      estate={{ value: "£487m", text: "Crown Estate profit used in the sum, 2025 to 2026. The Royal Trustees' review figure." }}
+      now={{ value: "£137.9m", text: "Sovereign Grant, 2026 to 2027. To support the King's official duties.", pct: 100, button: "2026 to 2027" }}
+      proposed={{ value: "£99.9m", text: "Proposed from 2027 to 2028. Needs new legislation, so not yet law.", pct: (99.9 / 137.9) * 100, button: "Proposed from 2027 to 2028" }}
+      duties={{ title: "Official duties", text: "What the grant supports" }}
+    />}
   />,
   chapters: [
     {

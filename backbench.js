@@ -60,6 +60,8 @@ export function ballotRow(bill, detail, today) {
     party: lead?.party ?? "",
     seat: lead?.memberFrom ?? "",
     outcome: furthest(bill),
+    // What the bill sets out to do, in Parliament's own words: the long title every bill carries.
+    longTitle: String(detail?.longTitle ?? bill.longTitle ?? "").replace(/\s+/g, " ").trim(),
   };
 }
 
@@ -76,6 +78,7 @@ const motionRow = (r) => ({
   signatures: r.SponsorsCount ?? 0,
   sponsor: r.PrimarySponsor?.Name ?? "",
   party: r.PrimarySponsor?.Party ?? "",
+  text: String(r.MotionText ?? "").replace(/\s+/g, " ").trim(),
 });
 
 // Summarises the motions tabled in one session: how many there are, how many signatures they draw, which are most signed, and who tables the most.

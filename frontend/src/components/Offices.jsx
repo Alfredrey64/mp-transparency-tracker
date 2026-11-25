@@ -7,6 +7,7 @@ import { explainOffice } from "../lib/officeExplainers";
 import { duration, monthYear } from "../lib/careerTimeline";
 import { COLORS, FONT_DISPLAY, PAGE_PADDING } from "../theme";
 import { partyColour } from "../lib/format";
+import { portraitUrl, hdPortraitUrl } from "../lib/portrait";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { IconCabinet, IconEconomy, IconGlobe, IconDefence, IconGavel, IconHealth, IconMortarboard, IconFactory, IconHome, IconTransport, IconLeaf, IconBroadcast, IconPension, IconBolt, IconDevolved, IconGroup, IconSearch } from "./icons";
@@ -52,11 +53,24 @@ function lookOf(office) {
 
 const initials = (name) => String(name).replace(/^(rt hon|sir|dame|dr|mr|mrs|ms|lord|lady|baroness)\s+/gi, "").split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
+// The face of someone who has held the post: the sharper 240-pixel copy where one has been saved, then the ordinary small copy, and only then their initials.
+function Face({ h }) {
+  const small = portraitUrl(h.photo);
+  const sources = [hdPortraitUrl(small), small].filter(Boolean);
+  const [tried, setTried] = useState(0);
+  const src = sources[tried];
+  return (
+    <span className="off-av" aria-hidden="true" data-photo={src ? "1" : "0"}>
+      {src ? <img key={src} src={src} alt="" width="48" height="48" loading="lazy" decoding="async" onError={() => setTried((n) => n + 1)} /> : initials(h.name)}
+    </span>
+  );
+}
+
 function Holder({ h, now }) {
   const colour = partyColour(h.colour, COLORS.inkSoft);
   return (
     <button type="button" className="nclick off-holder" onClick={() => goHolder(h)} style={{ "--hc": colour }}>
-      <span className="off-av" aria-hidden="true">{initials(h.name)}</span>
+      <Face h={h} />
       <span style={{ minWidth: 0 }}>
         <span className="off-name">{h.name}<em>{h.house === "lords" ? "Lords" : "MP"}</em></span>
         <span className="off-party">{h.party ?? "No party"}</span>
@@ -118,8 +132,8 @@ export default function Offices({ initialQuery = "" }) {
     Promise.all([
       loadAllCareerDetail("commons"),
       loadAllCareerDetail("lords"),
-      fetchAllRows(() => supabase.from("politicians").select("id, parliament_member_id, name, party, party_colour")),
-      fetchAllRows(() => supabase.from("peers").select("id, name, party, party_colour")),
+      fetchAllRows(() => supabase.from("politicians").select("id, parliament_member_id, name, party, party_colour, thumbnail_url")),
+      fetchAllRows(() => supabase.from("peers").select("id, name, party, party_colour, thumbnail_url")),
     ])
       .then(([mpCareers, peerCareers, mps, peers]) => {
         const people = {};
@@ -127,13 +141,13 @@ export default function Offices({ initialQuery = "" }) {
         for (const p of mps) {
           const d = mpCareers[p.parliament_member_id];
           if (!d) continue;
-          people[`m${p.parliament_member_id}`] = { name: p.name, party: p.party, colour: p.party_colour, house: "commons", profileId: p.id };
+          people[`m${p.parliament_member_id}`] = { name: p.name, party: p.party, colour: p.party_colour, house: "commons", profileId: p.id, photo: p.thumbnail_url ?? null };
           careers[`m${p.parliament_member_id}`] = d;
         }
         for (const p of peers) {
           const d = peerCareers[p.id];
           if (!d) continue;
-          people[`l${p.id}`] = { name: p.name, party: p.party, colour: p.party_colour, house: "lords", profileId: p.id };
+          people[`l${p.id}`] = { name: p.name, party: p.party, colour: p.party_colour, house: "lords", profileId: p.id, photo: p.thumbnail_url ?? null };
           careers[`l${p.id}`] = d;
         }
         setData(buildOffices(careers, people));

@@ -51,14 +51,18 @@ function Section({ title, note, children }) {
   );
 }
 
-function Stat({ children, label }) {
+// One headline figure in its own box, with a coloured edge so the three read as a set.
+function Stat({ children, label, colour }) {
   return (
-    <div style={{ flex: "1 1 130px" }}>
-      <div style={{ ...numeric, fontSize: "clamp(30px, 5vw, 40px)", fontWeight: 600, lineHeight: 1, color: COLORS.ink }}>{children}</div>
-      <div style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.inkSoft, marginTop: 6 }}>{label}</div>
+    <div className="ab-stat" style={{ "--tc": colour }}>
+      <div className="ab-stat-n">{children}</div>
+      <div className="ab-stat-l">{label}</div>
     </div>
   );
 }
+
+// A topic as it is shown on a button: the first letter capitalised ("housing" becomes "Housing"; "NHS" is left alone).
+const topicLabel = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 
 // One bar split into party colours, so the whole picture of "who is asking"
 // reads at a glance; the exact figures sit in the legend underneath.
@@ -219,7 +223,7 @@ export default function AskedAbout({ onSelectPolitician, onNavigateForMp, initia
                 onClick={() => setInput(t)}
                 style={{ fontFamily: FONT_BODY, fontSize: 13, fontWeight: 600, padding: "7px 15px", borderRadius: 999, cursor: "pointer", border: `1px solid ${active ? COLORS.accent : COLORS.hairline}`, background: active ? COLORS.accent : COLORS.paper, color: active ? "#fff" : COLORS.inkSoft, transition: "background 0.15s, color 0.15s" }}
               >
-                {t}
+                {topicLabel(t)}
               </button>
             );
           })}
@@ -239,7 +243,7 @@ export default function AskedAbout({ onSelectPolitician, onNavigateForMp, initia
             {SUGGESTED_TOPICS.map((t, i) => (
               <button key={t} type="button" className="ab-tile" style={{ "--tc": TOPIC_COLOURS[i % TOPIC_COLOURS.length] }} onClick={() => setInput(t)}>
                 <span className="ab-tile-icon" aria-hidden="true"><IconTopic size={20} /></span>
-                <b>{t}</b>
+                <b>{topicLabel(t)}</b>
                 <small>{TOPIC_HINTS[t.toLowerCase()] ?? "See who is asking"}</small>
               </button>
             ))}
@@ -268,10 +272,10 @@ export default function AskedAbout({ onSelectPolitician, onNavigateForMp, initia
                   </div>
                   <div style={{ fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.inkSoft, marginTop: 2 }}>in the last 30 days</div>
                 </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "16px 28px", flex: "2 1 300px" }}>
-                  <Stat label={summary.askers === 1 ? "MP or peer" : "MPs and peers"}><CountUp value={summary.askers} /></Stat>
-                  <Stat label="answered so far"><CountUp value={summary.total ? (summary.answered / summary.total) * 100 : 0} format={(n) => pct0(n)} /></Stat>
-                  <Stat label={summary.departments.length === 1 ? "department" : "departments"}><CountUp value={summary.departments.length} /></Stat>
+                <div className="ab-stats">
+                  <Stat colour="#1E4FB8" label={summary.askers === 1 ? "MP or peer" : "MPs and peers"}><CountUp value={summary.askers} /></Stat>
+                  <Stat colour="#1FA97C" label="answered so far"><CountUp value={summary.total ? (summary.answered / summary.total) * 100 : 0} format={(n) => pct0(n)} /></Stat>
+                  <Stat colour="#E8741A" label={summary.departments.length === 1 ? "department" : "departments"}><CountUp value={summary.departments.length} /></Stat>
                 </div>
               </div>
               {state.matching > summary.total && (

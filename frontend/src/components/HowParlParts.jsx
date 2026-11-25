@@ -150,8 +150,11 @@ export function Layers({ stages }) {
 const COLS = 40;
 const GAP = 7;
 
+// Both boxes draw on the same tall canvas (the rows the bigger House needs) so the dots start at the same place and the figure under them sits on the same line in each box.
+const ROWS = Math.ceil(800 / COLS);
+
 function Dots({ count, color }) {
-  const rows = Math.ceil(count / COLS);
+  const rows = ROWS;
   return (
     <svg className="hwk-dots" viewBox={`0 0 ${COLS * GAP} ${rows * GAP}`} role="img" aria-label={`${count} dots, one for each member`}>
       {Array.from({ length: count }, (_, k) => (

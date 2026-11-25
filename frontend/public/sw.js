@@ -13,7 +13,8 @@ const VERSION = "sp-v2";
 const PAGES = `${VERSION}-pages`;
 const FILES = `${VERSION}-files`;
 const DATA = `${VERSION}-data`;
-const MAX_FILES = 500;
+// The built app is now over 470 files and the page asks for all of them to be saved, so the limit must stay well above that: at 500 the oldest saved files (here the tax data) were being trimmed away and an unvisited page failed offline.
+const MAX_FILES = 900;
 const MAX_DATA = 150;
 const DATA_WAIT_MS = 5000;
 const NAV_WAIT_MS = 4000;

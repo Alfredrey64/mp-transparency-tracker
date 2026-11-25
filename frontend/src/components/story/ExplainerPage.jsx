@@ -28,7 +28,7 @@ function Block({ b, colour }) {
   if (b.node) return <div className="st-node">{b.node}</div>;
   if (b.text) return <div className="st-prose" style={{ "--tc": colour }}>{b.text.map((p, i) => <p key={i}>{p}</p>)}</div>;
   if (b.pull) return <Pull colour={b.colour ?? colour}>{b.pull}</Pull>;
-  if (b.cards) return <Cards items={b.cards.map((c) => ({ colour: colour, ...c }))} />;
+  if (b.cards) return <Cards rich={b.rich} items={b.cards.map((c) => ({ colour: colour, ...c }))} />;
   if (b.steps) {
     // With `route`, the steps are drawn as cards joined by arrows (side by side on a wide screen, `down` to stack them) instead of a numbered list.
     if (b.route) return <Flow numbered down={b.route === "down"} items={b.steps.map((s) => ({ colour, ...s }))} vias={b.vias} />;

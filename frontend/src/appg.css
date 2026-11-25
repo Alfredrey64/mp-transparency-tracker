@@ -1,14 +1,5 @@
 .ap-sec { margin: 34px 0 0; max-width: none; }
-.ap-sec h2, .ap-what h2, .ap-why h2 { margin: 0 0 6px; font: 700 26px "Newsreader", Georgia, serif; color: var(--c-ink); }
-.ap-lead { margin: 0 0 14px; max-width: 680px; font: 400 14.5px/1.6 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.ap-what { margin: 26px 0 0; max-width: none; }
-.ap-what ol { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 12px; }
-.ap-what li { display: flex; gap: 14px; padding: 16px; border-radius: 18px; background: var(--c-paper-card); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
-.ap-what li > span { display: grid; place-items: center; flex: none; width: 36px; height: 36px; border-radius: 12px; background: var(--c-brand, #1E4FB8); color: #fff; font: 800 17px "Public Sans", system-ui, sans-serif; }
-.ap-what li:nth-child(2) > span { background: #E0367A; }
-.ap-what li:nth-child(3) > span { background: #1FA97C; }
-.ap-what b { font: 700 18px "Newsreader", Georgia, serif; color: var(--c-ink); }
-.ap-what p { margin: 2px 0 0; font: 400 14px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-sec h2, .ap-lead { margin: 0 0 14px; max-width: 680px; font: 400 14.5px/1.6 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ap-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 .ap-tags button { min-height: 38px; padding: 0 16px; border-radius: 999px; cursor: pointer; font: 700 13.5px "Public Sans", system-ui, sans-serif; color: var(--c-ink); background: var(--c-paper-card); border: 1px solid var(--c-hairline); transition: background 0.2s, border-color 0.2s; }
 .ap-tags button:hover { border-color: var(--c-ink-soft); }
@@ -23,12 +14,6 @@
 .ap-run b { font: 700 11.5px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--gc) 78%, var(--c-ink)); }
 .ap-run span { font: 500 13px/1.5 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .ap-sub { margin-top: 4px; font: 700 12px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.ap-members { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
-.ap-members li { display: flex; align-items: center; gap: 10px; }
-.ap-av { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; color: #fff; font: 800 12px "Public Sans", system-ui, sans-serif; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
-.ap-members li[data-chair="1"] .ap-av { box-shadow: 0 0 0 2px var(--c-paper-card), 0 0 0 4px var(--c-ink); }
-.ap-members b { display: block; font: 700 14px/1.25 "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
-.ap-members small { display: block; font: 500 12px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ap-note { margin: 0; font: italic 400 13px "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .ap-src { padding-block: 5px; justify-self: start; font: 700 13px "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--gc) 78%, var(--c-ink)); }
 .ap-why { margin: 34px 0 0; padding: 20px 24px; border-radius: 22px; max-width: none; background: linear-gradient(135deg, color-mix(in srgb, #C7871A 12%, var(--c-paper-card)), var(--c-paper-card) 80%); border: 1px solid color-mix(in srgb, #C7871A 30%, var(--c-hairline)); border-left: 6px solid #C7871A; }
@@ -41,3 +26,64 @@
 .ap-look h2 { margin: 0; font: 700 22px "Newsreader", Georgia, serif; color: #fff; }
 .ap-look p { margin: 4px 0 0; max-width: 560px; font: 400 14.5px/1.55 "Public Sans", system-ui, sans-serif; color: rgba(255, 255, 255, 0.85); }
 .ap-look a { padding: 12px 22px; border-radius: 999px; background: #fff; color: #16264A; font: 700 14.5px "Public Sans", system-ui, sans-serif; text-decoration: none; }
+
+/* A face: a round photo with the person's party colour as a ring, or their initials on that colour. */
+.portrait { position: relative; display: grid; place-items: center; flex: none; overflow: hidden; border-radius: 50%; background: var(--pc, #5B6784); color: #fff; font-family: "Figures", "Public Sans", system-ui, sans-serif; font-weight: 800; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); box-shadow: 0 0 0 2px var(--c-paper-card), 0 0 0 4px var(--pc, #5B6784); }
+.portrait img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 18%; background: color-mix(in srgb, var(--pc, #5B6784) 18%, var(--c-paper-card)); }
+
+/* How a group comes about: four steps joined by a line along which a pulse travels once the picture is in view. */
+.ap-flow { margin: 26px 0 0; max-width: none; padding: clamp(18px, 3vw, 28px); border-radius: 24px; background: linear-gradient(160deg, color-mix(in srgb, #1E4FB8 7%, var(--c-paper-card)), var(--c-paper-card) 55%); border: 1px solid var(--c-hairline); box-shadow: var(--shadow-1); }
+.ap-steps { list-style: none; margin: 22px 0 0; padding: 0; position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.ap-steps::before { content: ""; position: absolute; left: 12.5%; right: 12.5%; top: 32px; height: 0; border-top: 3px dashed color-mix(in srgb, var(--c-ink) 20%, transparent); }
+.ap-steps::after { content: ""; position: absolute; left: 12.5%; top: 26px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--c-brand, #1E4FB8); box-shadow: 0 0 0 5px color-mix(in srgb, var(--c-brand, #1E4FB8) 25%, transparent); opacity: 0; }
+.ap-flow[data-go="1"] .ap-steps::after { animation: apPulse 4.2s cubic-bezier(0.45, 0, 0.3, 1) 0.4s both; }
+@keyframes apPulse { 0% { left: 12.5%; opacity: 1; } 92% { opacity: 1; } 100% { left: 87.5%; opacity: 0; } }
+.ap-steps li { position: relative; display: grid; justify-items: center; align-content: start; gap: 8px; text-align: center; padding: 0 6px; }
+.ap-bd { position: relative; display: grid; place-items: center; width: 66px; height: 66px; border-radius: 50%; background: var(--c-paper-card); color: var(--tc); border: 3px solid var(--tc); box-shadow: 0 0 0 6px var(--c-paper-card); z-index: 1; transition: background 0.4s ease, color 0.4s ease, transform 0.4s var(--ease-out); }
+.ap-bd i { position: absolute; right: -6px; top: -6px; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--tc); color: #fff; font: 800 12.5px/1 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; }
+.ap-flow[data-go="0"] .ap-bd { transform: scale(0.8); opacity: 0.4; }
+.ap-flow[data-go="1"] .ap-bd { animation: apLight 0.9s var(--ease-out) calc(0.4s + var(--i) * 1.1s) both; }
+@keyframes apLight { 0% { background: var(--c-paper-card); color: var(--tc); transform: scale(0.85); } 55% { transform: scale(1.12); } 100% { background: var(--tc); color: #fff; transform: scale(1); } }
+.ap-steps b { font: 700 18px/1.25 "Figures", "Newsreader", Georgia, serif; color: var(--c-ink); text-wrap: balance; }
+.ap-steps p { margin: 0; font: 400 14px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-limit { display: flex; align-items: center; gap: 14px; margin-top: 22px; padding: 14px 18px; border-radius: 16px; background: color-mix(in srgb, #E0367A 8%, var(--c-paper-card)); border: 1px solid color-mix(in srgb, #E0367A 28%, var(--c-hairline)); }
+.ap-limit-ico { display: grid; place-items: center; flex: none; width: 42px; height: 42px; border-radius: 12px; background: color-mix(in srgb, #E0367A 16%, var(--c-paper-card)); color: #B42A63; }
+.ap-limit b { display: block; font: 700 16px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ap-limit span:not(.ap-limit-ico) { font: 400 14px/1.55 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (max-width: 860px) {
+  .ap-steps { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .ap-steps::before { left: 33px; right: auto; top: 33px; bottom: 33px; height: auto; border-top: 0; border-left: 3px dashed color-mix(in srgb, var(--c-ink) 20%, transparent); }
+  .ap-steps::after { display: none; }
+  .ap-steps li { grid-template-columns: 66px minmax(0, 1fr); justify-items: start; text-align: left; column-gap: 16px; row-gap: 2px; padding: 8px 0; }
+  .ap-steps li .ap-bd { grid-row: span 2; }
+  .ap-steps li p { grid-column: 2; }
+}
+
+/* A group's card: kind of group, name, what it does, who runs it, then its officers with their faces. */
+.ap-card { gap: 10px; }
+.ap-top { display: flex; align-items: center; justify-content: space-between; }
+.ap-run { grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 10px; padding: 12px 14px; border-radius: 14px; }
+.ap-run-ico { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: color-mix(in srgb, var(--gc) 16%, var(--c-paper-card)); color: color-mix(in srgb, var(--gc) 80%, var(--c-ink)); }
+.ap-run > div { display: grid; gap: 1px; min-width: 0; }
+.ap-people { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.ap-people li { display: block; }
+.ap-person { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--pc) 26%, var(--c-hairline)); border-radius: 16px; background: color-mix(in srgb, var(--pc) 6%, var(--c-paper-card)); text-align: left; font: inherit; color: inherit; cursor: default; }
+button.ap-person { cursor: pointer; transition: transform 0.25s var(--ease-out), box-shadow 0.25s ease, border-color 0.25s ease; }
+button.ap-person:hover { transform: translateY(-2px); border-color: var(--pc); box-shadow: var(--shadow-2); }
+button.ap-person:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 2px; }
+.ap-people li[data-chair="1"] { grid-column: 1 / -1; }
+.ap-people li[data-chair="1"] .ap-person { background: color-mix(in srgb, var(--pc) 11%, var(--c-paper-card)); border-color: color-mix(in srgb, var(--pc) 45%, var(--c-hairline)); }
+.ap-who { display: grid; gap: 1px; min-width: 0; }
+.ap-who b { font: 700 14.5px/1.25 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
+.ap-people li[data-chair="1"] .ap-who b { font-size: 16.5px; }
+.ap-who small { display: flex; align-items: center; gap: 6px; font: 500 12px/1.3 "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.ap-who small i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.ap-who em { font: 800 11px/1.4 "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: color-mix(in srgb, var(--pc) 70%, var(--c-ink)); }
+@media (prefers-reduced-motion: reduce) { .ap-bd, button.ap-person { transition: none; } .ap-flow[data-go="1"] .ap-bd, .ap-flow[data-go="1"] .ap-steps::after { animation: none; } .ap-flow[data-go="1"] .ap-steps::after { display: none; } .ap-flow[data-go="1"] .ap-bd { background: var(--tc); color: #fff; } }
+html[data-calm] .ap-flow[data-go="1"] .ap-bd, html[data-calm] .ap-flow[data-go="1"] .ap-steps::after { animation: none; }
+html[data-calm] .ap-flow[data-go="1"] .ap-steps::after { display: none; }
+html[data-calm] .ap-flow[data-go="1"] .ap-bd { background: var(--tc); color: #fff; }
+
+/* cards in a row are as tall as the tallest, so the officers sit at the foot of each */
+.ap-card { display: flex; flex-direction: column; }
+.ap-card .ap-sub { margin-top: auto; padding-top: 6px; }

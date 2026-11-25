@@ -34,6 +34,11 @@ describe("ballotRow", () => {
     const row = ballotRow(b, { sponsors: [{ member: { name: "A Member", party: "Green", memberFrom: "Somewhere" } }] }, "2026-11-18");
     expect(row).toMatchObject({ sponsor: "A Member", party: "Green", seat: "Somewhere", next: "2027-01-15" });
   });
+  it("keeps the bill's own description (its long title), tidied", () => {
+    const row = ballotRow(bill({}), { longTitle: "A Bill to  do\n a thing;  and for connected purposes.", sponsors: [] }, "2026-11-18");
+    expect(row.longTitle).toBe("A Bill to do a thing; and for connected purposes.");
+    expect(ballotRow(bill({}), null, "2026-11-18").longTitle).toBe("");
+  });
 });
 
 const motion = (uin, n, over = {}) => ({ UIN: uin, DateTabled: "2026-06-01T00:00:00", SponsorsCount: n, Title: `Motion ${uin}`, PrimarySponsor: { Name: "A", Party: "Labour" }, ...over });
@@ -51,5 +56,11 @@ describe("early day motions", () => {
     expect(s.oneSignature).toBe(1);
     expect(s.buckets.map((b) => b.count)).toEqual([1, 1, 0, 0, 1]);
     expect(s.parties[0]).toMatchObject({ party: "Labour", count: 2 });
+  });
+  it("carries the wording of the most signed motions, so the page can show what each says", () => {
+    const rows = [motion(1, 9, { MotionText: "That this House   notes a thing;\nand calls for another." }), motion(2, 3)];
+    const s = summariseMotions(rows);
+    expect(s.top[0].text).toBe("That this House notes a thing; and calls for another.");
+    expect(s.top[1].text).toBe("");
   });
 });

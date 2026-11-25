@@ -55,6 +55,8 @@ function audit({ touch, maxLine }) {
       const block = el.closest("p, li, dd, td, div");
       const inSentence = el.classList.contains("gloss-term") || (getComputedStyle(el).display === "inline" && block && block.textContent.trim().length > el.textContent.trim().length + 12);
       if (inSentence) continue;
+      // A point on a chart can sit close to its neighbours by the nature of the data; it still has a 30 pixel tap area, drawn as an invisible ::after, which a box measurement cannot see.
+      if (el.tagName === "BUTTON" && parseFloat(getComputedStyle(el, "::after").width) >= 24 && getComputedStyle(el, "::after").position === "absolute") continue;
       const a = box(el);
       const crowded = all.some((o) => o !== el && !el.contains(o) && !o.contains(el) && (() => { const b = box(o); return Math.min(a.r, b.r) - Math.max(a.l, b.l) > 0.5 && Math.min(a.b, b.b) - Math.max(a.t, b.t) > 0.5; })());
       if (crowded) out.small.push(`${label(el)} is ${Math.round(r.width)} by ${Math.round(r.height)}`);

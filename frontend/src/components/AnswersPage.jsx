@@ -19,20 +19,22 @@ import { glide } from "../lib/scrollBehavior";
 // figures beside it and the main arguments from different sides. The answers are written by hand
 // (see data/answers.js), so this only knows the questions listed, and says so when it doesn't.
 
+import { SUBJECT_COLOUR } from "../lib/subjectColours";
+
 const ACCENT = "#1E4FB8";
 const SUGGESTED = ["why-housing-expensive", "why-nhs-waiting-list", "why-prices-rising", "why-small-boats", "where-does-tax-go", "why-economy-slow", "why-mortgage-rates-high", "is-crime-rising"];
 
-// Each group of questions has its own colour and picture, so the page is not one shade: the group's panel, its popular questions and the answer page itself all pick it up.
+// Each group of questions has its own picture and, where it is about a subject the site sorts by, that subject's colour (lib/subjectColours.js), so the page is not one shade: the group's panel, its popular questions and the answer page itself all pick it up.
 const TOPIC_STYLE = {
-  "Prices and money": { colour: "#A9701F", Icon: IconCoin },
-  Housing: { colour: "#2C5F9E", Icon: IconHouse },
-  Health: { colour: "#C13A4E", Icon: IconHealth },
-  "Work and pay": { colour: "#1F7A6E", Icon: IconBriefcase },
+  "Prices and money": { colour: SUBJECT_COLOUR.economy, Icon: IconCoin },
+  Housing: { colour: SUBJECT_COLOUR.transport, Icon: IconHouse },
+  Health: { colour: SUBJECT_COLOUR.health, Icon: IconHealth },
+  "Work and pay": { colour: SUBJECT_COLOUR.learning, Icon: IconBriefcase },
   "Government money": { colour: "#2F4A6B", Icon: IconBudget },
-  "People and borders": { colour: "#B5533C", Icon: IconMigration },
-  "Place and environment": { colour: "#3F7D5C", Icon: IconLeaf },
-  "Schools and universities": { colour: "#8E5BA6", Icon: IconMortarboard },
-  "Defence and security": { colour: "#5A6678", Icon: IconDefence },
+  "People and borders": { colour: SUBJECT_COLOUR.justice, Icon: IconMigration },
+  "Place and environment": { colour: SUBJECT_COLOUR.environment, Icon: IconLeaf },
+  "Schools and universities": { colour: SUBJECT_COLOUR.learning, Icon: IconMortarboard },
+  "Defence and security": { colour: SUBJECT_COLOUR.defence, Icon: IconDefence },
 };
 const topicOf = (topic) => TOPIC_STYLE[topic] ?? { colour: ACCENT, Icon: IconAsk };
 

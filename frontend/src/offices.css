@@ -34,7 +34,8 @@
 .off-holder { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; padding: 10px 6px; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--c-hairline); border-radius: 12px; cursor: pointer; font: inherit; color: inherit; }
 .off-holder:last-child { border-bottom: 0; }
 .off-holder:hover { background: color-mix(in srgb, var(--hc) 8%, transparent); }
-.off-av { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--hc); color: #fff; font: 800 13px "Figures", "Public Sans", system-ui, sans-serif; box-shadow: 0 0 0 3px color-mix(in srgb, var(--hc) 24%, transparent); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+.off-av { display: grid; place-items: center; overflow: hidden; width: 48px; height: 48px; border-radius: 50%; background: var(--hc); color: #fff; font: 800 13px "Figures", "Public Sans", system-ui, sans-serif; box-shadow: 0 0 0 3px color-mix(in srgb, var(--hc) 24%, transparent); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+.off-av img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 20%; border-radius: 50%; background: color-mix(in srgb, var(--hc) 20%, var(--c-paper-card)); }
 .off-name { display: flex; align-items: baseline; gap: 8px; font: 700 14.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink); }
 .off-name em { font: 500 12px "Figures", "Public Sans", system-ui, sans-serif; font-style: normal; color: var(--c-ink-soft); }
 .off-party { display: block; font: 400 12.5px "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }

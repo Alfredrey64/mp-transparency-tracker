@@ -4,6 +4,7 @@ import { IconBudget } from "../newIcons";
 import { IconCoin, IconChartBars, IconParliament, IconTaxes } from "../icons";
 import { Journey } from "../story/StateArt";
 import { Hero } from "../story/Vivid";
+import { BudgetFlow } from "../story/FlowArt";
 
 const PAGE = {
   look: "vivid",
@@ -12,33 +13,33 @@ const PAGE = {
   kicker: "How Parliament works",
   title: "How the Budget and the Spending Review work",
   subtitle: "Twice a year or so the Chancellor stands up in the Commons and says what the government will tax and spend. This page explains what the Budget is, how it differs from the Spending Review, who checks the numbers, and what the Budget of 28 October 2026 changed for households.",
-  lead: <Hero
-    colours={["#0F3B33", "#1F6F5C", "#2C7DA0"]}
-    why="The Budget decides how much tax you pay, what help you get with bills and how much each part of government has to spend. Knowing who proposes it, who checks it and when it becomes law shows you where to look."
-    stops={[
-      { icon: IconCoin, title: "The Treasury decides", text: "What to change in tax and spending", colour: "#8FD1A8" },
-      { icon: IconChartBars, title: "The OBR forecasts", text: "Independent of ministers", colour: "#8DB7E8" },
-      { icon: IconTaxes, title: "The Chancellor announces", text: "A statement to the Commons", colour: "#F0C77A" },
-      { icon: IconParliament, title: "Parliament makes it law", text: "Usually in a Finance Bill", colour: "#B9A5F0" },
-    ]}
-    figures={[
-      { value: "28 Oct", label: "Budget 2026 was announced on", sub: "2026, with the independent forecast published the same day" },
-      { value: "£133bn", label: "Borrowing forecast for 2026-27", sub: "4.2% of the economy, from the Office for Budget Responsibility" },
-      { value: "£15bn", label: "Room against the main rule", sub: "by 2029-30, the margin by which the current budget is forecast to be in surplus" },
-    ]}
-  />,
+  lead: <>
+    <BudgetFlow
+      label="The four steps a Budget goes through, from the Treasury's decisions to a Finance Bill"
+      steps={[
+        { icon: IconCoin, who: "The Treasury", title: "The Treasury and the Chancellor decide what to change", text: "Tax rates, allowances and reliefs, support for households and businesses, and money for particular schemes.", colour: "#1F6F5C" },
+        { icon: IconChartBars, who: "Independent of ministers", title: "The Office for Budget Responsibility makes its forecast", text: "It forecasts growth, borrowing and debt, and says whether the government's own fiscal rules are met.", colour: "#2C7DA0" },
+        { icon: IconTaxes, who: "House of Commons", title: "The Chancellor makes the statement", text: "The Budget is presented to the House of Commons, and the Treasury publishes the documents that go with it, including the cost of each decision.", colour: "#B45A3C" },
+        { icon: IconParliament, who: "Parliament", title: "Parliament turns the tax changes into law", text: "Tax changes need legislation, which for a Budget usually comes in a Finance Bill that MPs and peers debate.", colour: "#7B5BD6" },
+      ]}
+    />
+    <Hero
+      colours={["#0F3B33", "#1F6F5C", "#2C7DA0"]}
+      why="The Budget decides how much tax you pay, what help you get with bills and how much each part of government has to spend. Knowing who proposes it, who checks it and when it becomes law shows you where to look."
+      stops={[
+        { icon: IconCoin, title: "The Treasury decides", text: "What to change in tax and spending", colour: "#8FD1A8" },
+        { icon: IconChartBars, title: "The OBR forecasts", text: "Independent of ministers", colour: "#8DB7E8" },
+        { icon: IconTaxes, title: "The Chancellor announces", text: "A statement to the Commons", colour: "#F0C77A" },
+        { icon: IconParliament, title: "Parliament makes it law", text: "Usually in a Finance Bill", colour: "#B9A5F0" },
+      ]}
+    />
+  </>,
   chapters: [
     {
       title: "What the Budget is",
       lede: "The Budget is the Chancellor of the Exchequer's statement to the House of Commons on what the government will do with tax and public spending. It comes with an independent forecast of the economy and the public finances.",
       colour: "#1F6F5C",
       blocks: [
-        { route: true, steps: [
-          { title: "The Treasury and the Chancellor decide what to change", text: "Tax rates, allowances and reliefs, support for households and businesses, and money for particular schemes." },
-          { title: "The Office for Budget Responsibility makes its forecast", text: "It is independent of ministers. It forecasts growth, borrowing and debt, and says whether the government's own fiscal rules are met." },
-          { title: "The Chancellor makes the statement", text: "The Budget is presented to the House of Commons, and the Treasury publishes the documents that go with it, including the cost of each decision." },
-          { title: "Parliament turns the tax changes into law", text: "Tax changes need legislation, which for a Budget usually comes in a Finance Bill that MPs and peers debate." },
-        ] },
       ],
     },
     {

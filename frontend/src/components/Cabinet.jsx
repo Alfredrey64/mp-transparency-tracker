@@ -1,6 +1,6 @@
 import { usePhone } from "../lib/usePhone";
 import { rankOf, headOf, bySeniority } from "../lib/cabinetRank";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import ExpandGrid from "./ExpandGrid";
 import { m as motion } from "motion/react";
 import { supabase } from "../supabaseClient";
@@ -326,13 +326,16 @@ const NODE_GAP = 18;
 
 function useResponsiveColumns(containerRef) {
   const [columns, setColumns] = useState(3);
-  useEffect(() => {
+  // The width is read before the first paint, so the departments are never drawn in the wrong number of rows and then moved (the Whips Office box, which sits near the end, used to start a row too low or too high and shift into place).
+  useLayoutEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     function update(width) {
       const fit = Math.floor((width + NODE_GAP) / (NODE_WIDTH + NODE_GAP));
       setColumns(Math.max(1, fit));
     }
+    const now = el.getBoundingClientRect().width;
+    if (now > 0) update(now);
     return watchWidth(el, update);
   }, [containerRef]);
   return columns;
@@ -349,8 +352,8 @@ function DeptNode({ group, delay, compact = false }) {
     <motion.button
       type="button"
       onClick={() => jumpToArea(group.area)}
-      initial={{ opacity: 0, y: -10 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.35, delay: delay + 0.1, ease: "easeOut" }}
       whileHover={{ y: -4 }}
@@ -380,6 +383,15 @@ function DeptNode({ group, delay, compact = false }) {
         ) : <span className="cab-node-count">Works on their own</span>}
       </span>
     </motion.button>
+  );
+}
+
+// A vertical line between two tiers. It always takes up its full height, and only the line inside it is drawn downwards, so the boxes below it never move while it draws.
+function Drop({ h, delay }) {
+  return (
+    <div aria-hidden="true" style={{ width: 3, height: h, flex: "none" }}>
+      <motion.div initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.25, delay: Math.max(0, delay), ease: "easeOut" }} style={{ height: "100%", borderRadius: 2, transformOrigin: "top", background: "color-mix(in srgb, var(--c-ink-soft) 40%, var(--c-hairline))" }} />
+    </div>
   );
 }
 
@@ -427,17 +439,18 @@ function CabinetOrgChart({ groups, pm }) {
             <small>Leads the government and appoints every minister</small>
           </span>
         </motion.div>
-        <motion.div initial={{ height: 0 }} whileInView={{ height: 26 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.25, delay: 0.3, ease: "easeOut" }} style={{ width: 3, borderRadius: 2, background: "color-mix(in srgb, var(--c-ink-soft) 40%, var(--c-hairline))" }} />
+        <Drop h={26} delay={0.3} />
         {phone && (
           <div className="cab-grid">
             {groups.map((group, i) => <DeptNode key={group.area} group={group} delay={Math.min(i, 5) * 0.04} compact />)}
           </div>
         )}
         {!phone && rows.map((row, ri) => {
-          const rowDelay = 0.55 + ri * 0.35;
+          // A row's delay counts from when that row scrolls into view, so it is the same for every row (a later row used to wait over a second, with its box and the bar above it half drawn).
+          const rowDelay = 0.15;
           return (
             <div key={ri} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              {ri > 0 && <motion.div initial={{ height: 0 }} whileInView={{ height: 20 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.2, delay: rowDelay - 0.12, ease: "easeOut" }} style={{ width: 3, borderRadius: 2, background: "color-mix(in srgb, var(--c-ink-soft) 40%, var(--c-hairline))" }} />}
+              {ri > 0 && <Drop h={20} delay={rowDelay - 0.12} />}
               <OrgChartRow row={row} baseDelay={rowDelay} />
             </div>
           );

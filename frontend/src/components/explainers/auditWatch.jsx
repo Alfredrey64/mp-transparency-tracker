@@ -4,8 +4,9 @@ import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
 import { IconAudit } from "../newIcons";
 import { IconLedger, IconCommittee, IconBook, IconMethodology } from "../icons";
-import { Hero } from "../story/Vivid";
+import WatchdogLoop from "../story/WatchdogArt";
 import AuditBrowser from "../story/AuditBrowser";
+import PacReports from "../story/PacReports";
 import { useDataFile } from "../../lib/useDataFile";
 import { auditReports, committeeReports } from "../../lib/dataFiles";
 import { dateLong } from "../../lib/upcoming";
@@ -24,28 +25,6 @@ const HEAD = {
 
 const n = (v) => Number(v ?? 0).toLocaleString("en-GB");
 const PAC = /^Public Accounts Committee$/i;
-
-function PacList({ reports, generated }) {
-  if (!reports.length) return <p className="ac-empty">No Public Accounts Committee reports with a government reply due are listed for the last year.</p>;
-  return (
-    <ul className="ac-list">
-      {reports.map((r) => {
-        const reply = r.replies[0];
-        const overdue = !reply && r.due < generated;
-        return (
-          <li key={r.id} className="ac-item" style={{ "--ac": reply ? "#3F7D5C" : overdue ? "#B3262E" : "#5B6784" }}>
-            <h3><a href={r.url} target="_blank" rel="noreferrer">{r.title}</a></h3>
-            <div className="ac-meta">
-              <span>Report published <b>{dateLong(r.date)}</b></span>
-              <span>Reply due <b>{dateLong(r.due)}</b></span>
-              <span className="ac-chip">{reply ? `Government replied ${dateLong(reply.date)}` : overdue ? "No reply listed, deadline passed" : "Reply not yet due"}</span>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
 
 function build(nao, committees) {
   const vfm = nao.byType.find((t) => t.name === "Value for money")?.count ?? 0;
@@ -87,7 +66,7 @@ function build(nao, committees) {
     },
     {
       title: "Every report, in the Office's words",
-      lede: "Each card gives the Office's own one-sentence summary and a link to the full report. Search by a word, or pick a department.",
+      lede: "Each card gives the Office's own one-sentence summary. Open one to read what the Office found, why it matters and a link to the full report. Search by a word, or pick a department.",
       colour: "#2C7DA0",
       blocks: [{ node: <AuditBrowser reports={nao.reports} departments={departments} /> }],
     },
@@ -101,7 +80,7 @@ function build(nao, committees) {
         : "The Committee's own reports, with the date the government's reply was due.",
       colour: "#7B5BD6",
       blocks: [
-        { node: <PacList reports={pac} generated={committees.generated} /> },
+        { node: <PacReports reports={pac} generated={committees.generated} /> },
         { note: "A reply may arrive in a form that Parliament's list does not link to the report. A report shown without a reply may have been answered in a way this page cannot see. The full set of committee reports is on the committee reports page." },
         { node: <p className="st-note"><a href="#/committeeReports">All committee reports and replies</a> · <a href="#/departments">Spending by department</a> · <a href="#/govContracts">Government contracts</a></p> },
       ],
@@ -109,19 +88,15 @@ function build(nao, committees) {
   }
 
   return {
-    lead: <Hero
-      colours={["#10324A", "#2C7DA0", "#B08A2E"]}
+    lead: <WatchdogLoop
+      label="The journey of public money, from being spent to the government's reply"
       why="Public money is only as well spent as it is checked. These reports are the evidence MPs use when they question ministers about spending."
+      closing="Then the next year's spending is checked again. Whether anything changes in between is for the government to decide."
       stops={[
-        { icon: IconLedger, title: "Money is spent", text: "On services, projects and contracts", colour: "#8FD1A8" },
-        { icon: IconAudit, title: "The Office checks", text: "Accounts, and value for money", colour: "#8DB7E8" },
-        { icon: IconCommittee, title: "MPs question", text: "The Public Accounts Committee", colour: "#B9A5F0" },
-        { icon: IconBook, title: "The government replies", text: "Public, in writing", colour: "#F0C77A" },
-      ]}
-      figures={[
-        { value: n(nao.total), label: "Reports in the last year", sub: `Newest ${dateLong(nao.reports[0].date)}` },
-        { value: n(vfm), label: "Value for money studies", sub: "what a programme achieved for its cost" },
-        { value: pac.length ? `${n(pacReplied)} of ${n(pac.length)}` : "-", label: "Committee reports answered", sub: "of those with a reply due" },
+        { icon: IconLedger, title: "Money is spent", text: "On services, projects and contracts", figure: `${n(departments.length)} departments and bodies in this year's reports`, colour: "#8FD1A8" },
+        { icon: IconAudit, title: "The Office checks", text: "Accounts, and value for money", figure: `${n(nao.total)} reports, ${n(vfm)} on value for money`, colour: "#8DB7E8" },
+        { icon: IconCommittee, title: "MPs question", text: "The Public Accounts Committee", figure: pac.length ? `${n(pac.length)} Committee reports with a reply due` : "", colour: "#B9A5F0" },
+        { icon: IconBook, title: "The government replies", text: "Public, in writing", figure: pac.length ? `${n(pacReplied)} of ${n(pac.length)} answered so far` : "", colour: "#F0C77A" },
       ]}
     />,
     chapters,

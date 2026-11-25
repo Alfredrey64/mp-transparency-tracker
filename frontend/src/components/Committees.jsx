@@ -10,6 +10,9 @@ import { IconCommittee } from "./icons";
 import { CommitteeIcon } from "./committeeIcon";
 import CountUp from "./CountUp";
 import Loading from "./Loading";
+import { fetchAllRows } from "../lib/supabasePagination";
+import { navigate } from "../lib/route";
+import Portrait from "./Portrait";
 import "../committees.css";
 
 const HOUSE_FILTERS = ["All", "Commons", "Lords", "Joint"];
@@ -22,18 +25,31 @@ const HOUSE_FILTERS = ["All", "Commons", "Lords", "Joint"];
 // red, it's a genuinely different category.
 const HOUSE_COLOR = { Commons: COLORS.commonsGreen, Lords: COLORS.garnet, Joint: COLORS.accent };
 
-function MemberChip({ member, showHouse }) {
+// Committee members carry Parliament's own member number. A peer's profile here is filed under that number; an MP's is filed under the site's own number, so the table that joins the two is
+// read once (about 650 short rows) the first time a committee is opened.
+let mpIdsPromise = null;
+function useMpIds() {
+  const [ids, setIds] = useState(null);
+  useEffect(() => {
+    let off = false;
+    mpIdsPromise ??= fetchAllRows(() => supabase.from("politicians").select("id, parliament_member_id"))
+      .then((rows) => Object.fromEntries(rows.map((r) => [r.parliament_member_id, r.id])))
+      .catch(() => { mpIdsPromise = null; return {}; });
+    mpIdsPromise.then((m) => { if (!off) setIds(m); });
+    return () => { off = true; };
+  }, []);
+  return ids;
+}
+
+function MemberChip({ member, showHouse, mpIds }) {
   const color = partyColour(member.party_colour, COLORS.inkSoft);
   const houseColor = HOUSE_COLOR[member.house];
-  return (
-    <span
-      style={{
-        display: "inline-flex", alignItems: "center", gap: 6, fontFamily: FONT_BODY, fontSize: 12.5,
-        padding: "5px 10px 5px 8px", borderRadius: 999, background: COLORS.paper,
-        border: `1px solid ${showHouse && houseColor ? `${houseColor}55` : COLORS.hairline}`,
-      }}
-    >
-      <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
+  const pmid = member.parliament_member_id;
+  const peer = member.house === "Lords";
+  const profile = !pmid ? null : peer ? `#/lords/${pmid}` : mpIds?.[pmid] ? `#/mp/${mpIds[pmid]}` : null;
+  const inner = (
+    <>
+      <Portrait name={member.name} photo={pmid ? `https://members-api.parliament.uk/api/Members/${pmid}/Thumbnail` : null} colour={color} size={26} className="cm-chip-face" />
       <span style={{ color: COLORS.ink, fontWeight: member.is_chair ? 700 : 400 }}>
         {member.name}{member.is_chair ? " (Chair)" : ""}
       </span>
@@ -42,8 +58,16 @@ function MemberChip({ member, showHouse }) {
           {member.house}
         </span>
       )}
-    </span>
+    </>
   );
+  const style = {
+    display: "inline-flex", alignItems: "center", gap: 8, fontFamily: FONT_BODY, fontSize: 12.5, textAlign: "left",
+    padding: "4px 12px 4px 5px", borderRadius: 999, background: COLORS.paper,
+    border: `1px solid ${showHouse && houseColor ? `${houseColor}55` : COLORS.hairline}`,
+  };
+  return profile ? (
+    <button type="button" className="cm-chip-link" style={{ ...style, cursor: "pointer", minHeight: 36 }} onClick={() => navigate(profile)} aria-label={`${member.name}${member.is_chair ? ", chair" : ""}, ${member.party ?? ""}. Open their profile.`}>{inner}</button>
+  ) : <span style={style}>{inner}</span>;
 }
 
 function InquiryRow({ inquiry }) {
@@ -220,6 +244,7 @@ function CommitteeDetails({ committee, open, onGone }) {
     return () => clearTimeout(timer);
   }, [open, onGone]);
   const shown = open && mounted;
+  const mpIds = useMpIds();
   return (
     <div id={`cm-detail-${committee.id}`} className="cm-detail" data-open={shown ? "true" : "false"} inert={!shown} role="region" aria-label={`${committee.name}: members and inquiries`}>
       <div className="cm-detail-in">
@@ -230,7 +255,7 @@ function CommitteeDetails({ committee, open, onGone }) {
             {purpose && <div style={{ fontFamily: FONT_BODY, fontSize: 13.5, color: COLORS.ink, lineHeight: 1.6, marginBottom: 14 }}>{purpose}</div>}
             <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 11, color: COLORS.inkSoft, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>Members ({n})</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {(committee.members ?? []).map((m, i) => <MemberChip key={i} member={m} showHouse={committee.house === "Joint"} />)}
+              {(committee.members ?? []).map((m, i) => <MemberChip key={i} member={m} showHouse={committee.house === "Joint"} mpIds={mpIds} />)}
             </div>
           </div>
           {q > 0 && (

@@ -50,3 +50,20 @@
 @keyframes clTick { from { opacity: 0; transform: translate(-50%, -4px); } }
 @keyframes clPop { from { scale: 0; } }
 @media (prefers-reduced-motion: reduce) { .cl[data-go="0"] .cl-grid { transform: none; } .cl[data-go="0"] .cl-tick { opacity: 1; } .cl[data-go="0"] .cl-lost { scale: 1; } }
+
+/* The card over a timeline bar. */
+.cl-tip { position: fixed; z-index: 1000; display: grid; gap: 3px; width: max-content; max-width: min(300px, calc(100vw - 16px)); padding: 11px 14px 12px; border-radius: 14px; background: var(--c-paper-card); color: var(--c-ink); border: 1px solid color-mix(in srgb, var(--tc) 40%, var(--c-hairline)); box-shadow: 0 14px 34px -12px rgb(10 20 36 / 0.42), 0 2px 6px rgb(10 20 36 / 0.1); pointer-events: none; opacity: 0; transform: translateY(4px); transition: opacity 0.16s ease, transform 0.16s var(--ease-out); }
+.cl-tip[data-above="0"] { transform: translateY(-4px); }
+.cl-tip[data-ready="1"] { opacity: 1; transform: none; }
+.cl-tip::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 5px; border-radius: 0 3px 3px 0; background: var(--tc); }
+.cl-tip::after { content: ""; position: absolute; left: var(--arrow); width: 12px; height: 12px; margin-left: -6px; background: var(--c-paper-card); border: 1px solid color-mix(in srgb, var(--tc) 40%, var(--c-hairline)); transform: rotate(45deg); }
+.cl-tip[data-above="1"]::after { bottom: -7px; border-top: 0; border-left: 0; }
+.cl-tip[data-above="0"]::after { top: -7px; border-bottom: 0; border-right: 0; }
+.cl-tip > * { padding-left: 6px; }
+.cl-tip-lane { font: 700 11.5px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: color-mix(in srgb, var(--tc) 70%, var(--c-ink)); }
+.cl-tip-name { font: 700 16px/1.3 "Figures", "Newsreader", Georgia, serif; text-wrap: balance; overflow-wrap: anywhere; }
+.cl-tip-note { font: 500 13px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); overflow-wrap: anywhere; }
+.cl-tip-when { margin-top: 3px; font: 700 13px/1.35 "Figures", "Public Sans", system-ui, sans-serif; font-variant-numeric: lining-nums; }
+.cl-tip-len { font: 500 12.5px/1.35 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+@media (prefers-reduced-motion: reduce) { .cl-tip { transition: none; transform: none; } }
+html[data-calm] .cl-tip { transition: none; transform: none; }

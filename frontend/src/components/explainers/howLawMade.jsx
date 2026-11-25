@@ -5,6 +5,7 @@ import { Flow } from "../story/StateArt";
 import { Hero } from "../story/Vivid";
 import LawRoute from "../story/LawRoute";
 import PingPong from "../story/PingPong";
+import ActsSection from "../ActsSection";
 import LAW from "../../data/lawExample.json";
 
 // The explanations of each stage are Parliament's own, from the "How does a bill become a law?" guide on parliament.uk, read on 12 November 2026. The journey is a real Act:
@@ -178,8 +179,8 @@ const PAGE = {
         { facts: [
           { label: "Royal Assent given", value: fmt(LAW.royalAssent), note: LAW.bill.shortTitle },
         ] },
-        { text: [<>To see how many Acts have become law this year, and how that compares with other years, see the <a href="#/voting">Bills page</a>.</>] },
         { text: ["Being an Act does not always mean the law applies at once. It may come into effect immediately, after a set period, or only when a minister makes a commencement order. If there is no commencement order, an Act comes into force from midnight at the start of the day it received Royal Assent."] },
+        { node: <ActsSection /> },
       ],
     },
   ],

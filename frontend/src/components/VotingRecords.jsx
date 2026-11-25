@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { m as motion } from "motion/react";
 import { supabase } from "../supabaseClient";
 import { MP_LIST_COLUMNS } from "../lib/mpRows";
@@ -13,7 +13,6 @@ import VoteHistory from "./VoteHistory";
 import { explainDivision } from "../lib/divisionExplainer";
 import { BillJourney } from "./BillJourney";
 
-const ActsSection = lazy(() => import("./ActsSection"));
 import { withScrollPreserved } from "../lib/preserveScroll";
 import { IconVote, IconBills, IconHealth, IconDefence, IconCoin, IconTransport, IconBolt, IconGavel, IconLeaf, IconMortarboard, IconPension, IconHouse, IconGlobe, IconBroadcast } from "./icons";
 
@@ -632,12 +631,6 @@ export default function VotingRecords({ initialMp = null, initialBill = null, in
         <div style={{ marginTop: 32 }}>
           <BillJourney bills={bills} />
         </div>
-      )}
-
-      {!loadingBills && (
-        <Suspense fallback={<div aria-hidden="true" className="acs-hold" />}>
-          <ActsSection />
-        </Suspense>
       )}
 
       <div style={{ marginTop: 32 }}>
