@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
 import TreatyList from "../story/TreatyList";
+import AbroadArt from "../story/AbroadArt";
 import { IconAid } from "../newIcons";
 import { useDataFile } from "../../lib/useDataFile";
 import { treaties } from "../../lib/dataFiles";
@@ -14,11 +15,7 @@ const PAGE = {
   kicker: "Britain in numbers",
   title: "The UK abroad: aid and treaties",
   subtitle: "Two parts of foreign policy leave a paper trail anyone can read: the overseas aid budget, which is falling on purpose, and the treaties the UK signs, which Parliament gets a chance to block. This page covers both.",
-  tiles: [
-    { label: "UK aid spending in 2025", value: "£13.1bn", colour: "#6FB1FF", sub: "7.0% less than in 2024" },
-    { label: "Aid as a share of national income, 2025", value: "0.44%", colour: "#FFB45E", sub: "0.50% in 2024. The plan is 0.3% by 2027" },
-    { label: "Sitting days Parliament has to object to a treaty", value: "21", colour: "#3F7D5C", sub: "before it can be ratified" },
-  ],
+  lead: <AbroadArt />, // the aid share and the 21-day window, drawn as one panel in place of three figure tiles
   why: { colour: "#5A7FA6", text: "Most foreign policy is decided by ministers without a vote. Aid and treaties are the two places where the numbers and the deadlines are on the public record." },
   chapters: [
     {

@@ -82,7 +82,7 @@ function Card({ r, today, index }) {
           <p className="ib-who">{r.committee}{r.inquiry && <> · looked into <em>{r.inquiry}</em></>}</p>
         </div>
       </div>
-      {!open && <p className="ib-peek">{peek}</p>}
+      <div className="ib-peek-w" aria-hidden={open}><div><p className="ib-peek">{peek}</p></div></div>
       <Clock r={r} d={d} reply={reply} />
       <div className="ib-panel" id={`${uid}-panel`} role="region" aria-label={`More about ${r.title}`} inert={!open}>
         <div>

@@ -3,6 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
 import AdviserList from "../story/AdviserList";
+import { AdviserDots, PayBars, BandRanges } from "../story/AdviserArt";
 import { IconGroup } from "../icons";
 import { useDataFile } from "../../lib/useDataFile";
 import { specialAdvisers } from "../../lib/dataFiles";
@@ -26,6 +27,8 @@ const gbp = (v) => `£${n(v)}m`;
 const pounds = (v) => `£${n(v)}`;
 // "Secretary of State for Health and Social Care" -> "Health and Social Care": the bars are narrow, and every one of these is a Secretary of State.
 const barLabel = (role) => { const t = role.replace(/^Secretary of State for (the )?/, ""); return t.length > 42 ? `${t.slice(0, 40)}…` : t; };
+// "1 April 2025 - 31 March 2026" -> "2025-26", for the label on a bar.
+const yearsOf = (period) => { const m = /(\d{4}).*?(\d{4})/.exec(period); return m ? `${m[1]}-${m[2].slice(2)}` : short(period); };
 const short = (s) => String(s).replace(/ - /g, " to ").replace(/^(\d+ \w+) (\d{4}) to /, "$1 $2 to ");
 
 function build(d) {
@@ -97,13 +100,16 @@ function build(d) {
 export default function SpecialAdvisers() {
   const { data, failed } = useDataFile(specialAdvisers);
   if (!data) return <ExplainerPage {...HEAD} chapters={[]} lead={failed ? <LoadFailedNote item="the special advisers report" /> : <Loading />} />;
+  const total = data.costs.rows.find((r) => /^total/i.test(r.label));
+  const [nowPeriod, beforePeriod] = data.costs.periods;
+  const counts = new Map(data.perBand.map((b) => [b.band, b.count]));
   return (
     <ExplainerPage
       {...HEAD}
       tiles={[
-        { label: "Special advisers", value: n(data.count), colour: "#E3B04B", sub: `As at ${dateLong(data.asAt)}` },
-        { label: "Pay bill for the year", value: gbp(data.paybill.millions), colour: "#6FB1FF", sub: short(data.paybill.period) },
-        { label: "Pay bands", value: "4", colour: "#8FD1A8", sub: "From junior adviser to leadership" },
+        { label: "Special advisers", value: n(data.count), colour: "#E3B04B", sub: `As at ${dateLong(data.asAt)}`, visual: <AdviserDots count={data.count} /> },
+        { label: "Pay bill for the year", value: gbp(data.paybill.millions), colour: "#6FB1FF", sub: short(data.paybill.period), visual: total && <PayBars before={{ label: yearsOf(beforePeriod), value: total.previous, text: gbp(total.previous) }} now={{ label: yearsOf(nowPeriod), value: total.current, text: gbp(total.current) }} /> },
+        { label: "Pay bands", value: String(data.bands.length), colour: "#8FD1A8", sub: "From junior adviser to leadership. The number on each bar is how many advisers are in the band", visual: <BandRanges bands={data.bands} counts={counts} /> },
       ]}
       why={{ colour: "#B7791F", text: "Special advisers are paid from public money and work beside ministers, but are not elected and are not in the permanent Civil Service. The report is the public record of how many there are, what they cost and who they work for." }}
       {...build(data)}

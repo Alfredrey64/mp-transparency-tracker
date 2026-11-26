@@ -50,7 +50,7 @@ function Card({ data, r, index }) {
       </h3>
       <p className="ib-who">{r.department ? `Laid by ${r.department}` : "Department not listed"}{r.ref && <> · {r.ref}</>}</p>
       <Strip r={r} today={data.generated} />
-      {peek && !open && <p className="ib-peek">{peek}</p>}
+      {peek && <div className="ib-peek-w" aria-hidden={open}><div><p className="ib-peek">{peek}</p></div></div>}
       <div className="ib-panel" id={`${uid}-panel`} role="region" aria-label={`More about ${r.name}`} inert={!open}>
         <div>
           <div className="ib-body">
