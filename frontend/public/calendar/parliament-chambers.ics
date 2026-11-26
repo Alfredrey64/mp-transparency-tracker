@@ -12,245 +12,8 @@ X-WR-TIMEZONE:Europe/London
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:9b66e5b45078a216@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART:20261125T093000Z
-DTEND:20261125T103000Z
-SUMMARY:Lobbying transparency and public confidence
-LOCATION:Commons\, Westminster Hall
-DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a 
- start time but not an end time\, so this is shown as one hour.\nMore on Do
- mesday Live: https://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:8cd185df727b1e9c@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART:20261125T110000Z
-DTEND:20261125T120000Z
-SUMMARY:Access to remote locations during floods and emergencies
-LOCATION:Commons\, Westminster Hall
-DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a 
- start time but not an end time\, so this is shown as one hour.\nMore on Do
- mesday Live: https://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:9c0bf9e198fb082b@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART:20261125T110000Z
-DTEND:20261125T120000Z
-SUMMARY:Health Bill: committee stage (day 7) - part one
-LOCATION:Lords
-DESCRIPTION:A stage of a bill in this House.\nParliament lists a start time
-  but not an end time\, so this is shown as one hour.\nBill page: https://b
- ills.parliament.uk/Bills/4124\nMore on Domesday Live: https://domesdaylive
- .co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-URL:https://bills.parliament.uk/Bills/4124
-END:VEVENT
-BEGIN:VEVENT
-UID:5fdc87175668e796@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART:20261125T113000Z
-DTEND:20261125T123000Z
-SUMMARY:Northern Ireland
-LOCATION:Commons
-DESCRIPTION:Questions put to ministers.\nParliament lists a start time but 
- not an end time\, so this is shown as one hour.\nMore on Domesday Live: ht
- tps://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:e40618a6d56d5e30@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART:20261125T120000Z
-DTEND:20261125T130000Z
-SUMMARY:Prime Minister's Questions
-LOCATION:Commons
-DESCRIPTION:Questions put to ministers.\nParliament lists a start time but 
- not an end time\, so this is shown as one hour.\nMore on Domesday Live: ht
- tps://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:eacfdf5343ff69c0@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART:20261125T143000Z
-DTEND:20261125T153000Z
-SUMMARY:Management and disclosure of records from the RFA Sir Galahad Board
-  of Inquiry
-LOCATION:Commons\, Westminster Hall
-DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a 
- start time but not an end time\, so this is shown as one hour.\nMore on Do
- mesday Live: https://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:b3086dcb025cf15d@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART:20261125T150000Z
-DTEND:20261125T160000Z
-SUMMARY:Remote delivery of the Home Office English Language Test
-LOCATION:Lords
-DESCRIPTION:Questions put to ministers.\nParliament lists a start time but 
- not an end time\, so this is shown as one hour.\nMore on Domesday Live: ht
- tps://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:44f7756f4f2304ba@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART:20261125T160000Z
-DTEND:20261125T170000Z
-SUMMARY:Regulation of driverless road vehicles
-LOCATION:Commons\, Westminster Hall
-DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a 
- start time but not an end time\, so this is shown as one hour.\nMore on Do
- mesday Live: https://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:5926766476ed62fb@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART:20261125T163000Z
-DTEND:20261125T173000Z
-SUMMARY:Government support for the protection of the rights of the Rohingya
-LOCATION:Commons\, Westminster Hall
-DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a 
- start time but not an end time\, so this is shown as one hour.\nMore on Do
- mesday Live: https://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:1124494cde39789a@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261125
-DTEND;VALUE=DATE:20261126
-SUMMARY:Health Bill: committee stage (day 7) - part two
-LOCATION:Lords
-DESCRIPTION:A stage of a bill in this House.\nBill page: https://bills.parl
- iament.uk/Bills/4124\nMore on Domesday Live: https://domesdaylive.co.uk/th
- isWeek/ahead
-TRANSP:TRANSPARENT
-URL:https://bills.parliament.uk/Bills/4124
-END:VEVENT
-BEGIN:VEVENT
-UID:008d53d16dc596cb@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261125
-DTEND;VALUE=DATE:20261126
-SUMMARY:Health Bill: committee stage (day 7) - part three
-LOCATION:Lords
-DESCRIPTION:A stage of a bill in this House.\nBill page: https://bills.parl
- iament.uk/Bills/4124\nMore on Domesday Live: https://domesdaylive.co.uk/th
- isWeek/ahead
-TRANSP:TRANSPARENT
-URL:https://bills.parliament.uk/Bills/4124
-END:VEVENT
-BEGIN:VEVENT
-UID:39a76afba6e5852d@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261125
-DTEND;VALUE=DATE:20261126
-SUMMARY:Highlighting technical education in secondary schools
-LOCATION:Lords
-DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
- esdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:62b84b8e728b2617@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261125
-DTEND;VALUE=DATE:20261126
-SUMMARY:Myanmar (dinner break business)
-LOCATION:Lords
-DESCRIPTION:A minister reports to the House.\nMore on Domesday Live: https:
- //domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:1801cbdc7fcc6d56@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261125
-DTEND;VALUE=DATE:20261126
-SUMMARY:National EDITH trial for the early detection of breast cancers
-LOCATION:Lords
-DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
- esdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:6870459e16a15fc5@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261125
-DTEND;VALUE=DATE:20261126
-SUMMARY:Nuclear Test Veterans
-LOCATION:Commons
-DESCRIPTION:A minister reports to the House.\nMore on Domesday Live: https:
- //domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:67f14483b02cdf37@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261125
-DTEND;VALUE=DATE:20261126
-SUMMARY:Recommendations of the independent ADHD Taskforce
-LOCATION:Lords
-DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
- esdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:d58f61f75a2ed7f6@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261125
-DTEND;VALUE=DATE:20261126
-SUMMARY:Restoration and renewal of the Palace of Westminster
-LOCATION:Commons
-DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
- ve: https://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:73a177ffd7cd897e@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261125
-DTEND;VALUE=DATE:20261126
-SUMMARY:Sale of Electric Personal Vehicles (Offences)
-LOCATION:Commons
-DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
- ve: https://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:5061a7bae9108cff@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261125
-DTEND;VALUE=DATE:20261126
-SUMMARY:White Ribbon Day
-LOCATION:Commons
-DESCRIPTION:A minister reports to the House.\nMore on Domesday Live: https:
- //domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:2354556654e49b63@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261125
-DTEND;VALUE=DATE:20261126
-SUMMARY:Youth custody safeguarding reforms and Medomsley Detention Centre s
- urvivors
-LOCATION:Commons
-DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
- ve: https://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
 UID:7794a37dbc740640@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261126T093000Z
 DTEND:20261126T103000Z
 SUMMARY:Business\, Innovation\, Science and Trade (including Topical Questi
@@ -263,7 +26,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:b5dd41d815552a7d@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261126T110000Z
 DTEND:20261126T120000Z
 SUMMARY:Use of educational technology in the classroom
@@ -275,7 +38,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:779c05e7598c07de@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261126T113000Z
 DTEND:20261126T123000Z
 SUMMARY:Financial Services and Markets Bill [Lords]
@@ -287,7 +50,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:3074f31a609db5f1@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261126T133000Z
 DTEND:20261126T143000Z
 SUMMARY:Access to stroke services in remote areas
@@ -298,8 +61,20 @@ DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:cda630316f3e529b@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART:20261126T140000Z
+DTEND:20261126T150000Z
+SUMMARY:Financial Services and Markets Bill [Lords]
+LOCATION:Commons\, General Committee
+DESCRIPTION:A committee going through a bill line by line.\nParliament list
+ s a start time but not an end time\, so this is shown as one hour.\nMore o
+ n Domesday Live: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:84d6602744b2cc4a@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261126T150000Z
 DTEND:20261126T160000Z
 SUMMARY:Islamophobia Awareness Month
@@ -311,7 +86,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:f654949a4cbb44f0@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261126
 DTEND;VALUE=DATE:20261127
 SUMMARY:Business Questions to the Leader of the House
@@ -322,7 +97,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:1b3c7c3b36466977@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261126
 DTEND;VALUE=DATE:20261127
 SUMMARY:Contribution across the UK of the creative industries\, culture and
@@ -334,7 +109,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:5b77aed44a09f42a@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261126
 DTEND;VALUE=DATE:20261127
 SUMMARY:General debate on inequalities in cancer care
@@ -345,7 +120,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:7d1d8c4960827976@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261126
 DTEND;VALUE=DATE:20261127
 SUMMARY:General debate on lifelong sex education
@@ -356,7 +131,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:da5fd3d08c681931@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261126
 DTEND;VALUE=DATE:20261127
 SUMMARY:Housing targets and the protection of Green Belt land on the urban 
@@ -368,7 +143,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:16436235394d3582@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261126
 DTEND;VALUE=DATE:20261127
 SUMMARY:Legal duty of AI developers to disclose access to NHS data
@@ -378,8 +153,19 @@ DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:73eb75fca8b5a40a@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261126
+DTEND;VALUE=DATE:20261127
+SUMMARY:Nuclear Test Veterans
+LOCATION:Lords
+DESCRIPTION:A minister reports to the House.\nMore on Domesday Live: https:
+ //domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:cf285638bff483f5@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261126
 DTEND;VALUE=DATE:20261127
 SUMMARY:Number of London bridges in critical need of repair works
@@ -389,8 +175,19 @@ DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:c1ea1fb095cd1006@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261126
+DTEND;VALUE=DATE:20261127
+SUMMARY:Ofgem January Price Cap
+LOCATION:Commons
+DESCRIPTION:A minister reports to the House.\nMore on Domesday Live: https:
+ //domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:66e9f0d19bbdb586@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261126
 DTEND;VALUE=DATE:20261127
 SUMMARY:Outcome of the 20 November EU-UK summit
@@ -401,7 +198,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:99c7310623ef2650@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261126
 DTEND;VALUE=DATE:20261127
 SUMMARY:Reforming the law on use of third-party consent as a defence in rap
@@ -412,8 +209,20 @@ DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:e8749e57401213f6@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261126
+DTEND;VALUE=DATE:20261127
+SUMMARY:Update on the Government response to the Peter Mandelson Humble Add
+ ress motion
+LOCATION:Commons
+DESCRIPTION:A minister reports to the House.\nMore on Domesday Live: https:
+ //domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:08bd4a454ce74888@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261127T093000Z
 DTEND:20261127T103000Z
 SUMMARY:Strategic Litigation Against Public Participation (No.2) Bill
@@ -425,7 +234,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:4df1a6e79ae53aed@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Artificial Superintelligence Bill
@@ -436,7 +245,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:72ac65f389161994@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Barbers and Hairdressers (Registration) Bill
@@ -447,7 +256,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:7dd7e2ec0f63666e@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Ceramics (Country of Origin Marking) Bill
@@ -458,7 +267,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:e6492afa838d7f9f@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Controlled Drugs (Procedure for Specification) Bill
@@ -469,7 +278,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:3120f99a15b317a4@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Emergency and Life-saving Skills (Schools) Bill
@@ -480,7 +289,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:36936c6da71527ae@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Government support for small businesses in railway arches
@@ -491,7 +300,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:41f36ba81a447699@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Hospice Funding Bill
@@ -502,7 +311,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:22f1b4185b98cced@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Illegal Trading (Temporary Closure of Premises) Bill
@@ -513,7 +322,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:acad86ffceb814b5@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Non-domestic Rating (Retail\, Hospitality and Leisure) Bill
@@ -524,7 +333,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:f94df0d179240000@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Northern Ireland Troubles (Criminal Investigations etc) Bill: Adjou
@@ -536,7 +345,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:fc8138ab75db369a@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Powers of Attorney Bill
@@ -547,7 +356,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:de6795e0d3f263f0@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Rural Public Transport
@@ -558,7 +367,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:555b90defd34fa27@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Sale and Supply of Glue Traps (Prohibition) Bill
@@ -569,7 +378,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:e2b46da142a3620b@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261130
 DTEND;VALUE=DATE:20261201
 SUMMARY:10th anniversary of the Colombian Peace Agreement
@@ -580,7 +389,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:842310676a6f5506@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261130T143000Z
 DTEND:20261130T153000Z
 SUMMARY:Defence (including Topical Questions)
@@ -592,7 +401,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:15a12635a7d7bb98@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261130T143000Z
 DTEND:20261130T153000Z
 SUMMARY:Effect on the UK AI Security Institute of the policies of the Unite
@@ -605,7 +414,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:c7e05f0d03d2a500@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261130T154500Z
 DTEND:20261130T164500Z
 SUMMARY:International Agreements Committee report: 'Scrutiny of Internation
@@ -619,7 +428,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:b311482e6a327f1b@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261130T163000Z
 DTEND:20261130T173000Z
 SUMMARY:e-petition 764268 relating to the legal right to support for childr
@@ -631,11 +440,15 @@ DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:1ba5bdc444fe84f8@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+UID:d7d05f80ef13a402@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261130
 DTEND;VALUE=DATE:20261201
-SUMMARY:Finance Bill: Committee of the Whole House
+SUMMARY:Finance Bill: Committee of the Whole House Clauses 1 to 4 and 39 (i
+ ncome tax charge and rates)\; Clause 7 (increase in rate of banking surcha
+ rge for temporary period)\; Clauses 52 and 91 (VAT and climate change levy
+  on supply of electricity for electric vehicle charging)\; and any new Cla
+ uses or new Schedules relating to the subject matter of the above Clauses.
 LOCATION:Commons
 DESCRIPTION:A stage of a bill in this House.\nBill page: https://bills.parl
  iament.uk/Bills/4316\nMore on Domesday Live: https://domesdaylive.co.uk/th
@@ -645,7 +458,7 @@ URL:https://bills.parliament.uk/Bills/4316
 END:VEVENT
 BEGIN:VEVENT
 UID:b30239c434fb83d0@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261130
 DTEND;VALUE=DATE:20261201
 SUMMARY:Financial Services Regulation Committee report: 'Private markets: U
@@ -657,7 +470,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:9a7601c5968568dd@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261130
 DTEND;VALUE=DATE:20261201
 SUMMARY:Improving support and life chances for young care leavers
@@ -668,7 +481,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:455e0fa7f2bfb828@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261130
 DTEND;VALUE=DATE:20261201
 SUMMARY:Representation of the People Bill: committee (day 4)
@@ -681,7 +494,7 @@ URL:https://bills.parliament.uk/Bills/4080
 END:VEVENT
 BEGIN:VEVENT
 UID:71fcd1d9c4948eb1@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261130
 DTEND;VALUE=DATE:20261201
 SUMMARY:Situation in Sudan
@@ -692,7 +505,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:f9ef29f50d04d369@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261130
 DTEND;VALUE=DATE:20261201
 SUMMARY:Strengthening Northern Ireland's position within the UK
@@ -703,7 +516,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:634da270a56be782@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261201T092500Z
 DTEND:20261201T102500Z
 SUMMARY:Visitor Levy (England) Bill
@@ -715,7 +528,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:105754ce08ef27dd@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261201T093000Z
 DTEND:20261201T103000Z
 SUMMARY:Nursing staff
@@ -727,7 +540,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:beccc00e93c3d22d@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261201T110000Z
 DTEND:20261201T120000Z
 SUMMARY:Contribution of agri-tech to the economy
@@ -739,7 +552,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:15bb77b79d439088@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261201T113000Z
 DTEND:20261201T123000Z
 SUMMARY:Foreign\, Commonwealth and Development (including Topical Questions
@@ -752,7 +565,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:7590f79a08550a4b@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261201T140000Z
 DTEND:20261201T150000Z
 SUMMARY:Visitor Levy (England) Bill
@@ -764,7 +577,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:70f683347a93d6b0@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261201T143000Z
 DTEND:20261201T153000Z
 SUMMARY:Delivering large-scale well-designed new towns
@@ -776,7 +589,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:6af7f1e57068dd86@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261201T143000Z
 DTEND:20261201T153000Z
 SUMMARY:Tackling the promotion of eating disorder content on social media
@@ -788,7 +601,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:72e989118f8b032f@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261201T160000Z
 DTEND:20261201T170000Z
 SUMMARY:Potential merits of tax relief on the Longer Separation Allowance f
@@ -801,7 +614,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:c7c214c0598de7d3@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261201T163000Z
 DTEND:20261201T173000Z
 SUMMARY:Planning policy and the building of flood resilient homes
@@ -813,7 +626,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:f00b0f449b181ac4@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261201
 DTEND;VALUE=DATE:20261202
 SUMMARY:Armed Forces Bill: consideration of Commons amendments
@@ -826,7 +639,7 @@ URL:https://bills.parliament.uk/Bills/4065
 END:VEVENT
 BEGIN:VEVENT
 UID:452243aeeb447b19@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261201
 DTEND;VALUE=DATE:20261202
 SUMMARY:Chain stores operating in NHS hospital foyers
@@ -837,7 +650,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:d36955ae0442cd01@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261201
 DTEND;VALUE=DATE:20261202
 SUMMARY:Courts and Tribunals Bill: report stage
@@ -849,11 +662,15 @@ TRANSP:TRANSPARENT
 URL:https://bills.parliament.uk/Bills/4083
 END:VEVENT
 BEGIN:VEVENT
-UID:4d941a5fcef99129@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+UID:fb8958458351e5df@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261201
 DTEND;VALUE=DATE:20261202
-SUMMARY:Finance Bill: Committee of the Whole House
+SUMMARY:Finance Bill: Committee of the Whole House Clause 83 (rates of alco
+ hol duty)\; Clauses 90 and 92 to 95 (environmental taxes)\; Clauses 97 to 
+ 115 and Schedules 12 and 13 (high value council tax surcharge)\; and any n
+ ew Clauses or new Schedules relating to the subject matter of the above Cl
+ auses and Schedules.
 LOCATION:Commons
 DESCRIPTION:A stage of a bill in this House.\nBill page: https://bills.parl
  iament.uk/Bills/4316\nMore on Domesday Live: https://domesdaylive.co.uk/th
@@ -862,8 +679,19 @@ TRANSP:TRANSPARENT
 URL:https://bills.parliament.uk/Bills/4316
 END:VEVENT
 BEGIN:VEVENT
+UID:8d9f10531f6e6b12@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261201
+DTEND;VALUE=DATE:20261202
+SUMMARY:Heathrow Airport (Third Runway)
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:0392c291c2a05ed3@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261201
 DTEND;VALUE=DATE:20261202
 SUMMARY:Hospitality sector: increases in employment\, taxation regulatory c
@@ -874,20 +702,8 @@ DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:e06d6f9760025fd7@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261201
-DTEND;VALUE=DATE:20261202
-SUMMARY:That leave be given to bring in a Bill under SO No. 23 [details to 
- be provided]
-LOCATION:Commons
-DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
- ve: https://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
 UID:01bc93c19d8994d0@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261202T093000Z
 DTEND:20261202T103000Z
 SUMMARY:Regional disparities in children’s eye screening
@@ -899,7 +715,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:7b582e152a7bde2a@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261202T110000Z
 DTEND:20261202T120000Z
 SUMMARY:Maternity pay
@@ -911,7 +727,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:4df53507943bc403@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261202T113000Z
 DTEND:20261202T123000Z
 SUMMARY:Scotland
@@ -923,7 +739,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:8ae949194e7a6325@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261202T120000Z
 DTEND:20261202T130000Z
 SUMMARY:Prime Minister's Questions
@@ -935,7 +751,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:292ac626c9a4614b@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261202T143000Z
 DTEND:20261202T153000Z
 SUMMARY:Digital exclusion
@@ -947,7 +763,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:7a82e2b4b6adee53@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261202T150000Z
 DTEND:20261202T160000Z
 SUMMARY:Impact of the earned settlement proposals on integration
@@ -959,7 +775,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:561007ef56942923@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261202T160000Z
 DTEND:20261202T170000Z
 SUMMARY:Protections for consumers from gift card fraud
@@ -971,7 +787,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:46ed885bcf75995c@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261202T161500Z
 DTEND:20261202T171500Z
 SUMMARY:Special Report from the Select Committee on the Malvern Hills Bill
@@ -983,7 +799,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:5bfb28da982204b9@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261202T163000Z
 DTEND:20261202T173000Z
 SUMMARY:Data centres in rural areas
@@ -995,7 +811,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:1d35773f64a39112@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261202
 DTEND;VALUE=DATE:20261203
 SUMMARY:Amending the Teachers' Standards to address antisemitism\, as recom
@@ -1008,7 +824,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:596792aeef4eceb1@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261202
 DTEND;VALUE=DATE:20261203
 SUMMARY:Northern Ireland Troubles Bill: second reading
@@ -1021,7 +837,7 @@ URL:https://bills.parliament.uk/Bills/4022
 END:VEVENT
 BEGIN:VEVENT
 UID:348db1f8cbebbcbd@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261202
 DTEND;VALUE=DATE:20261203
 SUMMARY:Opposition Day (Eighth Allotted Day). Debate on a Motion in the nam
@@ -1033,7 +849,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:cb2d3388536b2ac8@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261202
 DTEND;VALUE=DATE:20261203
 SUMMARY:Supporting micro-businesses in response to ONS data regarding falli
@@ -1044,8 +860,19 @@ DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:9a2502a8a6fc3197@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261202
+DTEND;VALUE=DATE:20261203
+SUMMARY:Water Regulation (No.2)
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:2b47855d9c9f5d4b@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261203T093000Z
 DTEND:20261203T103000Z
 SUMMARY:Environment\, Food and Rural Affairs (including Topical Questions)
@@ -1057,7 +884,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:63c0b96c6fff9055@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261203T101000Z
 DTEND:20261203T111000Z
 SUMMARY:Church Commissioners and House of Commons Commission and Public Acc
@@ -1071,7 +898,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:b1bcded83e95f3e0@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261203T110000Z
 DTEND:20261203T120000Z
 SUMMARY:Role of places of worship in promoting the arts.
@@ -1083,7 +910,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:f965eeeed6466b03@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261203T113000Z
 DTEND:20261203T123000Z
 SUMMARY:Financial Services and Markets Bill [Lords]
@@ -1095,7 +922,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:5c9a42cd1b7c2635@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261203T113000Z
 DTEND:20261203T123000Z
 SUMMARY:Visitor Levy (England) Bill
@@ -1106,8 +933,34 @@ DESCRIPTION:A committee going through a bill line by line.\nParliament list
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:0ada241ffa9a50ea@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART:20261203T133000Z
+DTEND:20261203T143000Z
+SUMMARY:Select Committee Statement on the 2nd Special Report from the Joint
+  committee on human rights\, Human Rights and the Regulation of AI: Govern
+ ment Response\, HC 844
+LOCATION:Commons\, Westminster Hall
+DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a 
+ start time but not an end time\, so this is shown as one hour.\nMore on Do
+ mesday Live: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:6da45d2011dc998c@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART:20261203T135000Z
+DTEND:20261203T145000Z
+SUMMARY:Breeding of dogs and cats with exaggerated features
+LOCATION:Commons\, Westminster Hall
+DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a 
+ start time but not an end time\, so this is shown as one hour.\nMore on Do
+ mesday Live: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:b1ee977e9c9d26ed@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261203T140000Z
 DTEND:20261203T150000Z
 SUMMARY:Financial Services and Markets Bill [Lords]
@@ -1119,7 +972,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:e5501c19918200f1@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261203T140000Z
 DTEND:20261203T150000Z
 SUMMARY:Visitor Levy (England) Bill
@@ -1130,10 +983,10 @@ DESCRIPTION:A committee going through a bill line by line.\nParliament list
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:7c3736fb2c36f76f@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART:20261203T150000Z
-DTEND:20261203T160000Z
+UID:07c4b472cf97f834@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART:20261203T151000Z
+DTEND:20261203T161000Z
 SUMMARY:Pulmonary fibrosis and interstitial lung awareness
 LOCATION:Commons\, Westminster Hall
 DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a 
@@ -1143,7 +996,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:a9616ef8fcd54965@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261203
 DTEND;VALUE=DATE:20261204
 SUMMARY:Business Questions to the Leader of the House
@@ -1153,8 +1006,21 @@ DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:ea6b5a5af253cb97@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261203
+DTEND;VALUE=DATE:20261204
+SUMMARY:Energy Independence Bill: Second Reading
+LOCATION:Commons
+DESCRIPTION:A stage of a bill in this House.\nBill page: https://bills.parl
+ iament.uk/Bills/4319\nMore on Domesday Live: https://domesdaylive.co.uk/th
+ isWeek/ahead
+TRANSP:TRANSPARENT
+URL:https://bills.parliament.uk/Bills/4319
+END:VEVENT
+BEGIN:VEVENT
 UID:35018cec0f10741b@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261203
 DTEND;VALUE=DATE:20261204
 SUMMARY:Heightened security environment and the need for a robust defence c
@@ -1166,7 +1032,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:c750e5bd37f850a6@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261203
 DTEND;VALUE=DATE:20261204
 SUMMARY:Impact on energy bills of costs arising from policy decisions
@@ -1177,7 +1043,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:dff374d8e2f47ba1@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261203
 DTEND;VALUE=DATE:20261204
 SUMMARY:Local consent in decisions relating to renewable energy infrastruct
@@ -1189,7 +1055,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:d0418789565a7596@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261203
 DTEND;VALUE=DATE:20261204
 SUMMARY:Securing the future of the BBC in light of global streaming and onl
@@ -1201,7 +1067,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:ac849cb9ae6f4992@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261204T093000Z
 DTEND:20261204T103000Z
 SUMMARY:Domestic Abuse Protection Orders (Amendment) Bill
@@ -1213,7 +1079,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:6adf80d19ae20fcd@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261204T100000Z
 DTEND:20261204T110000Z
 SUMMARY:Contribution of children and young people to society\, and of measu
@@ -1225,8 +1091,85 @@ DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:d6646f95625c1582@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Arm’s-Length Bodies (Accountability to Parliament) Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:04ab2b71847633b3@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Bailiffs (Warrants of Possession) Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:00b51a2261a72c09@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Bank of England (Inflation Targets) Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:a9897ec800a42987@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:BBC Licence Fee Non-Payment (Decriminalisation for Over-75s) Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:48b8c12ef9bec7c0@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:British Broadcasting Corporation (Privatisation) Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:69e98dd7d97ae64a@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Covid-19 Vaccine Damage Payments Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:cb29118643c77088@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Dangerous Dogs Act 1991 (Amendment) Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:aeae605d09b3b0b7@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Domestic Energy (Value Added Tax) Bill
@@ -1237,7 +1180,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:859c7966007a1731@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Early Release of Prisoners (Restriction) Bill
@@ -1248,7 +1191,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:367eeaf66d7594b0@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Employment Bill
@@ -1259,7 +1202,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:f1f95742b431e14e@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Environmental Impact Assessment (Downstream Emissions) Bill
@@ -1270,7 +1213,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:c944aa29e97040d8@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Exemption from Value Added Tax (Listed Places of Worship) Bill
@@ -1281,7 +1224,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:8f6cd00251d22848@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Fireworks Bill
@@ -1292,7 +1235,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:bed65d8898dcbb09@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Flooding bill
@@ -1303,7 +1246,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:3d6a3eb298347633@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Gaza (Independent Public Inquiry) Bill
@@ -1314,7 +1257,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:0794b59d7b48dcc8@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Heritage Trees Bill
@@ -1324,8 +1267,30 @@ DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:44836fc2d2f359f9@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Hospitality Services (Value Added Tax Exemption) Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:c1d1df27aa07add8@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Meat (Information About Method of Killing) Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:7aa4973d60c8e993@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:National Police Chiefs’ Council (Guidance) Bill
@@ -1336,7 +1301,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:06c7d98c89d1d67b@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Public Procurement (British Goods and Services) Bill
@@ -1346,8 +1311,19 @@ DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:a91621427cc7c024@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Public Sector Exit Payments (Limitation) Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:520680e3d9b98cf6@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Relationships and Sex Education (Further Education Sector) Bill
@@ -1357,8 +1333,42 @@ DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:9eadc981f1453e34@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Sporting and Physical Education Services (Value Added Tax Exemption
+ ) Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:48ff0c0f7d1a4c3c@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Statutory Instruments Act 1946 (Amendment) Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:c8d451721f8d0de5@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Tax Reliefs Bill
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:0711a1086ea28bb6@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Utilities and Services Bill
@@ -1369,7 +1379,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:5e5a1a00ba01d57a@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261204
 DTEND;VALUE=DATE:20261205
 SUMMARY:Work Experience (Schools) Bill
@@ -1380,7 +1390,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:cc51163d2b9bedc0@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261207T143000Z
 DTEND:20261207T153000Z
 SUMMARY:Home Office (including Topical Questions)
@@ -1392,7 +1402,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:697ea577d8c8e312@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261207T143000Z
 DTEND:20261207T153000Z
 SUMMARY:Implementing recommendations Rycroft Review on countering foreign f
@@ -1405,7 +1415,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:1f48ab94496a280a@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261207T163000Z
 DTEND:20261207T173000Z
 SUMMARY:e-petition 737327 relating to a requirement for non-stunned and stu
@@ -1418,7 +1428,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:eaffbffbb5638bed@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261207
 DTEND;VALUE=DATE:20261208
 SUMMARY:Aligning Great Britain with Northern Ireland by moving to a defores
@@ -1430,7 +1440,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:8c781b3792ff65c7@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261207
 DTEND;VALUE=DATE:20261208
 SUMMARY:Courts and Tribunals Bill: third reading
@@ -1442,8 +1452,22 @@ TRANSP:TRANSPARENT
 URL:https://bills.parliament.uk/Bills/4083
 END:VEVENT
 BEGIN:VEVENT
+UID:3400395853fc1d78@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261207
+DTEND;VALUE=DATE:20261208
+SUMMARY:Cyber Security and Resilience (Network and Information Systems) Bil
+ l: consideration of Commons amendments
+LOCATION:Lords
+DESCRIPTION:A stage of a bill in this House.\nBill page: https://bills.parl
+ iament.uk/Bills/4035\nMore on Domesday Live: https://domesdaylive.co.uk/th
+ isWeek/ahead
+TRANSP:TRANSPARENT
+URL:https://bills.parliament.uk/Bills/4035
+END:VEVENT
+BEGIN:VEVENT
 UID:501059b2de64ef7a@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261207
 DTEND;VALUE=DATE:20261208
 SUMMARY:Preserving fish stocks and the future of the fishing industry
@@ -1454,7 +1478,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:8d9a03b82470abd8@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261207
 DTEND;VALUE=DATE:20261208
 SUMMARY:Public Office (Accountability) Bill: report stage
@@ -1467,7 +1491,7 @@ URL:https://bills.parliament.uk/Bills/4019
 END:VEVENT
 BEGIN:VEVENT
 UID:ba531b0490e5810c@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261207
 DTEND;VALUE=DATE:20261208
 SUMMARY:Reducing the backlog of cases in the courts across England and Wale
@@ -1479,7 +1503,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:c3c1a9245e48165a@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261208T092500Z
 DTEND:20261208T102500Z
 SUMMARY:Financial Services and Markets Bill [Lords]
@@ -1491,7 +1515,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:d2ba6cd1d44207ed@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261208T092500Z
 DTEND:20261208T102500Z
 SUMMARY:Visitor Levy (England) Bill
@@ -1503,7 +1527,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:6cb60541fc8e7059@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261208T113000Z
 DTEND:20261208T123000Z
 SUMMARY:HM Treasury (including Topical Questions)
@@ -1515,7 +1539,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:f373660a9c1387ea@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261208T140000Z
 DTEND:20261208T150000Z
 SUMMARY:Financial Services and Markets Bill [Lords]
@@ -1527,7 +1551,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:77e56a943f9662b1@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261208T140000Z
 DTEND:20261208T150000Z
 SUMMARY:Visitor Levy (England) Bill
@@ -1539,7 +1563,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:1a8ca590beada932@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261208T143000Z
 DTEND:20261208T153000Z
 SUMMARY:Antisemitism in British university campuses
@@ -1550,11 +1574,23 @@ DESCRIPTION:Questions put to ministers.\nParliament lists a start time but
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:b62865abe99a5fce@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+UID:1ec357971246a2fe@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261208
 DTEND;VALUE=DATE:20261209
-SUMMARY:Health Bill: report day (final day)
+SUMMARY:Debate on a Motion relating to the Restoration and Renewal of the P
+ alace of Westminster Programme
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:64a70be77c182bb1@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261208
+DTEND;VALUE=DATE:20261209
+SUMMARY:Health Bill: committee day (final day)
 LOCATION:Lords
 DESCRIPTION:A stage of a bill in this House.\nBill page: https://bills.parl
  iament.uk/Bills/4124\nMore on Domesday Live: https://domesdaylive.co.uk/th
@@ -1564,7 +1600,7 @@ URL:https://bills.parliament.uk/Bills/4124
 END:VEVENT
 BEGIN:VEVENT
 UID:9945f7f1166db3b1@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261208
 DTEND;VALUE=DATE:20261209
 SUMMARY:Measures to reduce youth unemployment
@@ -1574,8 +1610,19 @@ DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:23edc33f25507c97@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261208
+DTEND;VALUE=DATE:20261209
+SUMMARY:Northern Ireland Poll (Criteria and Evidence)
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:23b9e352bd1d095c@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261208
 DTEND;VALUE=DATE:20261209
 SUMMARY:Prohibiting construction of floating bus stops
@@ -1586,7 +1633,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:3ccfd98f49c0fb4d@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261208
 DTEND;VALUE=DATE:20261209
 SUMMARY:Railways Bill: report stage (day 2)
@@ -1598,20 +1645,8 @@ TRANSP:TRANSPARENT
 URL:https://bills.parliament.uk/Bills/4030
 END:VEVENT
 BEGIN:VEVENT
-UID:e1fe8ad1322d282d@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
-DTSTART;VALUE=DATE:20261208
-DTEND;VALUE=DATE:20261209
-SUMMARY:That leave be given to bring in a Bill under SO No. 23 [details to 
- be provided]
-LOCATION:Commons
-DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
- ve: https://domesdaylive.co.uk/thisWeek/ahead
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
 UID:dd4117571291b45d@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261209T113000Z
 DTEND:20261209T123000Z
 SUMMARY:Wales
@@ -1623,7 +1658,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:321bf5c77ce0280f@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261209T120000Z
 DTEND:20261209T130000Z
 SUMMARY:Prime Minister's Questions
@@ -1635,7 +1670,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:ce8604ce05257fe5@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261209T150000Z
 DTEND:20261209T160000Z
 SUMMARY:Pressure on school SEND budgets.
@@ -1647,7 +1682,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:8cc85695bc76eaca@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261209T161500Z
 DTEND:20261209T171500Z
 SUMMARY:Report by the Secondary Legislation Scrutiny Committee: Work of the
@@ -1662,7 +1697,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:3764da17575e1666@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261209
 DTEND;VALUE=DATE:20261210
 SUMMARY:AI Economics Institute data-sharing collaboration with the private 
@@ -1673,8 +1708,20 @@ DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:5e53cf0476f7ad4d@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261209
+DTEND;VALUE=DATE:20261210
+SUMMARY:Opposition Day (Ninth Alloted Day). Debate on a Motion in the name 
+ of the Official Opposition. Subject to be announced.
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:ee72bfd4a6eea9df@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261209
 DTEND;VALUE=DATE:20261210
 SUMMARY:Profit constraints on providers of adult and children’s care serv
@@ -1686,7 +1733,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:19791692751405fc@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261209
 DTEND;VALUE=DATE:20261210
 SUMMARY:Representation of the People Bill: committee (day 5)
@@ -1698,8 +1745,20 @@ TRANSP:TRANSPARENT
 URL:https://bills.parliament.uk/Bills/4080
 END:VEVENT
 BEGIN:VEVENT
+UID:a36fef9fdf790b59@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261209
+DTEND;VALUE=DATE:20261210
+SUMMARY:That leave be given to bring in a Bill under SO No. 23 [details to 
+ be provided]
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:c84c2a13775606ee@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261210T093000Z
 DTEND:20261210T103000Z
 SUMMARY:Transport (including Topical Questions)
@@ -1711,7 +1770,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:612b6ad0a24b6155@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261210T113000Z
 DTEND:20261210T123000Z
 SUMMARY:Visitor Levy (England) Bill
@@ -1723,7 +1782,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:c72c185b7adbffe5@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261210T121500Z
 DTEND:20261210T131500Z
 SUMMARY:Report by the International Agreements Committee: Electronic commer
@@ -1735,8 +1794,20 @@ DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:839d5adb114cbb42@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART:20261210T133000Z
+DTEND:20261210T143000Z
+SUMMARY:Independent press regulation
+LOCATION:Commons\, Westminster Hall
+DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a 
+ start time but not an end time\, so this is shown as one hour.\nMore on Do
+ mesday Live: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:ab39436b7cc41aaa@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261210T140000Z
 DTEND:20261210T150000Z
 SUMMARY:Visitor Levy (England) Bill
@@ -1747,8 +1818,20 @@ DESCRIPTION:A committee going through a bill line by line.\nParliament list
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:b2b86ff76f802ac8@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART:20261210T150000Z
+DTEND:20261210T160000Z
+SUMMARY:Disabled children's social care
+LOCATION:Commons\, Westminster Hall
+DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a 
+ start time but not an end time\, so this is shown as one hour.\nMore on Do
+ mesday Live: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:9c14cba12118a40c@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261210
 DTEND;VALUE=DATE:20261211
 SUMMARY:Business Questions to the Leader of the House
@@ -1758,11 +1841,11 @@ DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:ece741ad4271e79b@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+UID:d9c38d331fddcf0c@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261210
 DTEND;VALUE=DATE:20261211
-SUMMARY:Ensureingthe Post Office makes a profit
+SUMMARY:Ensuring the Post Office makes a profit
 LOCATION:Lords
 DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
  esdaylive.co.uk/thisWeek/ahead
@@ -1770,7 +1853,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:d99c2b393136a172@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261210
 DTEND;VALUE=DATE:20261211
 SUMMARY:Expertise within the civil service with the technical\, negotiating
@@ -1782,8 +1865,19 @@ DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:af290327fb046593@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261210
+DTEND;VALUE=DATE:20261211
+SUMMARY:Restoration and Renewal of the Palace of Westminster
+LOCATION:Lords
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:19ed19bd7bee0cfd@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261210
 DTEND;VALUE=DATE:20261211
 SUMMARY:The inclusion of veterinary professionals in the occupations eligib
@@ -1795,7 +1889,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:434303158328fee5@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261211T100000Z
 DTEND:20261211T110000Z
 SUMMARY:Youth Justice Board for England and Wales (Restoration of Powers an
@@ -1810,7 +1904,7 @@ URL:https://bills.parliament.uk/Bills/4145
 END:VEVENT
 BEGIN:VEVENT
 UID:648f354fc411a8be@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261211
 DTEND;VALUE=DATE:20261212
 SUMMARY:Health and Disability Benefits Reform Bill [HL]: second reading
@@ -1823,7 +1917,7 @@ URL:https://bills.parliament.uk/Bills/4150
 END:VEVENT
 BEGIN:VEVENT
 UID:9d7a0da7787b31b7@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261211
 DTEND;VALUE=DATE:20261212
 SUMMARY:Mental Health Support (Sentence of Detention and Imprisonment for P
@@ -1837,7 +1931,7 @@ URL:https://bills.parliament.uk/Bills/4149
 END:VEVENT
 BEGIN:VEVENT
 UID:f30b24c4ef084891@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261211
 DTEND;VALUE=DATE:20261212
 SUMMARY:Regulated Professions (Freedom of Speech) Bill [HL]: second reading
@@ -1850,7 +1944,7 @@ URL:https://bills.parliament.uk/Bills/4148
 END:VEVENT
 BEGIN:VEVENT
 UID:b1fd99f3f4558f3b@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261214T143000Z
 DTEND:20261214T153000Z
 SUMMARY:Housing\, Communities and Local Government (including Topical Quest
@@ -1863,7 +1957,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:7b09db7107b4cb11@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261214T143000Z
 DTEND:20261214T153000Z
 SUMMARY:Supporting domestic touring by theatre and dance companies
@@ -1874,8 +1968,20 @@ DESCRIPTION:Questions put to ministers.\nParliament lists a start time but
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:9b8a99c0597c68d5@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART:20261214T163000Z
+DTEND:20261214T173000Z
+SUMMARY:e-petition 766919 relating to the law on unfitness to plead
+LOCATION:Commons\, Westminster Hall
+DESCRIPTION:A debate in the House or Westminster Hall.\nParliament lists a 
+ start time but not an end time\, so this is shown as one hour.\nMore on Do
+ mesday Live: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:31a698cee0277112@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261214T180000Z
 DTEND:20261214T190000Z
 SUMMARY:e-petition 769589 relating to the mandatory fortification of white 
@@ -1888,7 +1994,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:35aa3c6e4830180f@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261214
 DTEND;VALUE=DATE:20261215
 SUMMARY:Award of the Emergency Alerts Services contract to Fujitsu
@@ -1898,8 +2004,21 @@ DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:2f5569125982147d@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261214
+DTEND;VALUE=DATE:20261215
+SUMMARY:Railways Bill: third reading
+LOCATION:Lords
+DESCRIPTION:A stage of a bill in this House.\nBill page: https://bills.parl
+ iament.uk/Bills/4030\nMore on Domesday Live: https://domesdaylive.co.uk/th
+ isWeek/ahead
+TRANSP:TRANSPARENT
+URL:https://bills.parliament.uk/Bills/4030
+END:VEVENT
+BEGIN:VEVENT
 UID:e8bfc51ff85d2e43@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261214
 DTEND;VALUE=DATE:20261215
 SUMMARY:Representation of the People Bill: committee (day 6)
@@ -1912,7 +2031,7 @@ URL:https://bills.parliament.uk/Bills/4080
 END:VEVENT
 BEGIN:VEVENT
 UID:44e46d6ba41fa732@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261214
 DTEND;VALUE=DATE:20261215
 SUMMARY:Shortfall of trained welders in the UK and increasing training oppo
@@ -1924,7 +2043,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:c8bcc2cd575b0cee@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261214
 DTEND;VALUE=DATE:20261215
 SUMMARY:Sir Jim Harra's review into the background to the problems at Natio
@@ -1936,7 +2055,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:f712ae8d32dd66ef@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261215T092500Z
 DTEND:20261215T102500Z
 SUMMARY:Financial Services and Markets Bill [Lords]
@@ -1948,7 +2067,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:7944d04229a29fab@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261215T113000Z
 DTEND:20261215T123000Z
 SUMMARY:Justice (including Topical Questions)
@@ -1960,7 +2079,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:b18834214b6c2986@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261215T140000Z
 DTEND:20261215T150000Z
 SUMMARY:Financial Services and Markets Bill [Lords]
@@ -1972,7 +2091,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:8604a416d46fc8e1@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261215T143000Z
 DTEND:20261215T153000Z
 SUMMARY:Freedom from Violence and Abuse: a cross-government strategy to bui
@@ -1985,7 +2104,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:29a232f655222ff3@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261215
 DTEND;VALUE=DATE:20261216
 SUMMARY:Data showing that around one in five disadvantaged white boys are n
@@ -1997,7 +2116,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:35f41af198c6cb89@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261215
 DTEND;VALUE=DATE:20261216
 SUMMARY:Effectiveness of oversight of mayoral combined authorities
@@ -2008,7 +2127,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:e160a5fb8caabbb7@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261215
 DTEND;VALUE=DATE:20261216
 SUMMARY:Railways Bill: report stage (day 2)
@@ -2020,8 +2139,20 @@ TRANSP:TRANSPARENT
 URL:https://bills.parliament.uk/Bills/4030
 END:VEVENT
 BEGIN:VEVENT
+UID:fc5006571cb716ee@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261215
+DTEND;VALUE=DATE:20261216
+SUMMARY:That leave be given to bring in a Bill under SO No. 23 [details to 
+ be provided]
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:bd5412faa76e4983@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261216T113000Z
 DTEND:20261216T123000Z
 SUMMARY:Women and Equalities (including Topical Questions)
@@ -2033,7 +2164,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:edb5f3bb58033508@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261216T120000Z
 DTEND:20261216T130000Z
 SUMMARY:Prime Minister's Questions
@@ -2045,7 +2176,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:36b9fa42585a1ba0@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261216T150000Z
 DTEND:20261216T160000Z
 SUMMARY:Implementing an Animal Welfare Strategy for England
@@ -2057,7 +2188,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:d514a5519f1116a5@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261216
 DTEND;VALUE=DATE:20261217
 SUMMARY:Ensuring pension scheme members are not defaulted into unsuitable c
@@ -2069,7 +2200,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:3ea2f8e525657fbc@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261216
 DTEND;VALUE=DATE:20261217
 SUMMARY:Impact of the cuts to television and radio services announced by th
@@ -2080,8 +2211,33 @@ DESCRIPTION:Questions put to ministers.\nMore on Domesday Live: https://dom
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:a43a331f96b078cc@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261216
+DTEND;VALUE=DATE:20261217
+SUMMARY:Representation of the People Bill: committee stage (day 7)
+LOCATION:Lords
+DESCRIPTION:A stage of a bill in this House.\nBill page: https://bills.parl
+ iament.uk/Bills/4080\nMore on Domesday Live: https://domesdaylive.co.uk/th
+ isWeek/ahead
+TRANSP:TRANSPARENT
+URL:https://bills.parliament.uk/Bills/4080
+END:VEVENT
+BEGIN:VEVENT
+UID:b796bbfbb9b88109@domesdaylive.co.uk
+DTSTAMP:20261126T000000Z
+DTSTART;VALUE=DATE:20261216
+DTEND;VALUE=DATE:20261217
+SUMMARY:That leave be given to bring in a Bill under SO No. 23 [details to 
+ be provided]
+LOCATION:Commons
+DESCRIPTION:A debate in the House or Westminster Hall.\nMore on Domesday Li
+ ve: https://domesdaylive.co.uk/thisWeek/ahead
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:577bee32a7fac440@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261217T093000Z
 DTEND:20261217T103000Z
 SUMMARY:Digital\, Culture\, Media and Sport
@@ -2093,7 +2249,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:1593e44023047330@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART:20261217T110000Z
 DTEND:20261217T120000Z
 SUMMARY:AI-generated representations: planning decisions delays
@@ -2105,7 +2261,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:5d0e494fac0d4aee@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261217
 DTEND;VALUE=DATE:20261218
 SUMMARY:Business Questions to the Leader of the House
@@ -2116,7 +2272,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:70a82a2a1242e80f@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261217
 DTEND;VALUE=DATE:20261218
 SUMMARY:Department for Environment\, Food and Rural Affairs and Natural Eng
@@ -2128,7 +2284,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:82611170f51871b5@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261217
 DTEND;VALUE=DATE:20261218
 SUMMARY:NEET policy and programme
@@ -2139,7 +2295,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:92b004d461fe07cd@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261127
 DTEND;VALUE=DATE:20261128
 SUMMARY:Lords: not sitting
@@ -2149,7 +2305,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:ae8f291b06738432@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261211
 DTEND;VALUE=DATE:20261212
 SUMMARY:Commons: not sitting
@@ -2159,7 +2315,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:60a6c4517549a0e1@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261218
 DTEND;VALUE=DATE:20270105
 SUMMARY:Commons: recess
@@ -2169,7 +2325,7 @@ TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
 UID:f10fc29d81ef254e@domesdaylive.co.uk
-DTSTAMP:20261125T000000Z
+DTSTAMP:20261126T000000Z
 DTSTART;VALUE=DATE:20261218
 DTEND;VALUE=DATE:20270105
 SUMMARY:Lords: recess
