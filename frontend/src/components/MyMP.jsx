@@ -1,3 +1,4 @@
+import FaceImg from "./FaceImg";
 import { useState, useEffect } from "react";
 import { m as motion, AnimatePresence } from "motion/react";
 import { supabase } from "../supabaseClient";
@@ -24,9 +25,9 @@ function Avatar({ url, name, color, size = 84 }) {
     );
   }
   return (
-    <img loading="lazy" decoding="async"
+    <FaceImg loading="lazy"
       src={url}
-      alt=""
+      size={size}
       onError={() => setErrored(true)}
       style={{ width: size, height: size, borderRadius: "50%", objectFit: "cover", background: COLORS.paperCard, border: `2px solid ${COLORS.paperCard}`, boxShadow: `0 0 0 2px ${color}55` }}
     />

@@ -3,7 +3,7 @@
 // share dialog, not with the page.
 import { FONT_DISPLAY, FONT_BODY, FONT_NUMERIC } from "../theme";
 import { wrapLines } from "./shareSpecs";
-import { fullPortraitUrl } from "./portrait";
+import { fullPortraitUrl, hqPortraitUrl } from "./portrait";
 
 const W = 1200;
 const H = 630;
@@ -233,20 +233,27 @@ function drawHexes(ctx, hexes, x, y, w, h) {
   }
 }
 
-// The MP's portrait, loaded so it can be drawn on the card. Parliament's picture server allows images to be used this way, but a copy the page already showed without
-// asking is kept by the browser without that permission and would spoil the image, so a harmless extra word on the address asks for a fresh one. Resolves to null if the
-// picture cannot be had in a few seconds; the card is then drawn with the person's initials instead.
-function loadPortrait(url) {
+// The MP's portrait, loaded so it can be drawn on the card: the sharp 512-pixel copy kept on this site where there is one (the card draws the face at several hundred pixels, so the
+// 128-pixel copy would look soft), then Parliament's own 240-pixel picture. Parliament's picture server allows images to be used this way, but a copy the page already showed without
+// asking is kept by the browser without that permission and would spoil the image, so a harmless extra word on its address asks for a fresh one. Resolves to null if no picture can be
+// had in a few seconds; the card is then drawn with the person's initials instead.
+function loadOne(src) {
   return new Promise((resolve) => {
-    if (!url || typeof Image === "undefined") { resolve(null); return; }
     const img = new Image();
     const timer = setTimeout(() => resolve(null), 6000);
     img.crossOrigin = "anonymous";
     img.onload = () => { clearTimeout(timer); resolve(img.naturalWidth > 0 ? img : null); };
     img.onerror = () => { clearTimeout(timer); resolve(null); };
-    const full = fullPortraitUrl(url);
-    img.src = `${full}${full.includes("?") ? "&" : "?"}card=1`;
+    img.src = src;
   });
+}
+
+async function loadPortrait(url) {
+  if (!url || typeof Image === "undefined") return null;
+  const sharp = hqPortraitUrl(url);
+  if (sharp) { const img = await loadOne(sharp); if (img) return img; }
+  const full = fullPortraitUrl(url);
+  return loadOne(`${full}${full.includes("?") ? "&" : "?"}card=1`);
 }
 
 // A round portrait with a ring in the party colour: the top square of the picture (faces are at the top), or the person's initials on the party colour.

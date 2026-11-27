@@ -1,3 +1,4 @@
+import FaceImg from "./FaceImg";
 import PartyChangeNote from "./PartyChangeNote";
 import { usePartyChange } from "../lib/usePartyChange";
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
@@ -145,7 +146,7 @@ export default function PoliticianDetail({ politician, onBack, onNavigate }) {
         <div className="mp-band">
           {politician.thumbnail_url && !avatarErrored ? (
             <div className="mp-band-photo" style={{ boxShadow: `0 0 0 3px ${color}` }}>
-              <img loading="lazy" decoding="async" src={politician.thumbnail_url} alt="" onError={() => setAvatarErrored(true)} onLoad={() => setAvatarLoaded(true)} style={{ opacity: avatarLoaded ? 1 : 0, transition: "opacity 0.25s ease" }} />
+              <FaceImg loading="lazy" src={politician.thumbnail_url} size={140} onError={() => setAvatarErrored(true)} onLoad={() => setAvatarLoaded(true)} style={{ opacity: avatarLoaded ? 1 : 0, transition: "opacity 0.25s ease" }} />
             </div>
           ) : (
             <div className="mp-band-photo" style={{ boxShadow: `0 0 0 3px ${color}`, fontFamily: FONT_DISPLAY, fontSize: 32, fontWeight: 700, color: "#fff", background: color === "#FFFFFF" ? "#444" : "rgba(255,255,255,0.12)" }}>

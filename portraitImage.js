@@ -22,12 +22,12 @@ function chunk(type, data) {
 }
 
 // width x height pixels of red, green, blue (3 bytes each) -> a PNG file
-export function encodePng(width, height, rgb) {
+export function encodePng(width, height, rgb, level = 9) {
   const rows = Buffer.alloc((width * 3 + 1) * height);
   for (let y = 0; y < height; y++) { rows[y * (width * 3 + 1)] = 0; rgb.copy(rows, y * (width * 3 + 1) + 1, y * width * 3, (y + 1) * width * 3); }
   const head = Buffer.alloc(13);
   head.writeUInt32BE(width, 0); head.writeUInt32BE(height, 4); head[8] = 8; head[9] = 2; // 8 bits, colour
-  return Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk("IHDR", head), chunk("IDAT", zlib.deflateSync(rows, { level: 9 })), chunk("IEND", Buffer.alloc(0))]);
+  return Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk("IHDR", head), chunk("IDAT", zlib.deflateSync(rows, { level })), chunk("IEND", Buffer.alloc(0))]);
 }
 
 // An uncompressed 24 or 32-bit Windows bitmap -> { width, height, rgb }, or throws.

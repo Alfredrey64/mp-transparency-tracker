@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { hdPortraitUrl, portraitUrl, memberIdFromPortrait, smallPortraitsIn } from "./portrait";
+import { hdPortraitUrl, hqPortraitUrl, faceSources, SHARP_FROM, portraitUrl, memberIdFromPortrait, smallPortraitsIn } from "./portrait";
 import { createReader } from "./postgrest";
 
 describe("member portraits", () => {
@@ -29,5 +29,26 @@ describe("sharp portraits", () => {
     expect(hdPortraitUrl("/portraits/4212.webp")).toBe("/portraits/hd/4212.webp");
     expect(hdPortraitUrl("https://example.org/face.jpg")).toBeNull();
     expect(hdPortraitUrl(null)).toBeNull();
+  });
+});
+
+describe("the sharpest portraits", () => {
+  it("points a saved small copy at its 512-pixel one, and leaves other pictures alone", () => {
+    expect(hqPortraitUrl("/portraits/4212.webp")).toBe("/portraits/hq/4212.webp");
+    expect(hqPortraitUrl("/portraits/hd/4212.webp")).toBeNull();
+    expect(hqPortraitUrl("https://example.org/face.jpg")).toBeNull();
+    expect(hqPortraitUrl(null)).toBeNull();
+  });
+  it("tries the sharpest copy first only for faces drawn large, and always ends on the small one", () => {
+    const parliament = "https://members-api.parliament.uk/api/Members/4212/Thumbnail";
+    expect(faceSources(parliament, 140)).toEqual(["/portraits/hq/4212.webp", "/portraits/hd/4212.webp", "/portraits/4212.webp"]);
+    expect(faceSources("/portraits/4212.webp", SHARP_FROM)).toEqual(["/portraits/hq/4212.webp", "/portraits/hd/4212.webp", "/portraits/4212.webp"]);
+    expect(faceSources("/portraits/4212.webp", SHARP_FROM - 1)).toEqual(["/portraits/hd/4212.webp", "/portraits/4212.webp"]);
+    expect(faceSources("/portraits/4212.webp")).toEqual(["/portraits/hd/4212.webp", "/portraits/4212.webp"]);
+  });
+  it("returns another site's picture alone, and nothing for no picture", () => {
+    expect(faceSources("https://thumb.wikimedia.org/x.jpg", 140)).toEqual(["https://thumb.wikimedia.org/x.jpg"]);
+    expect(faceSources(null, 140)).toEqual([]);
+    expect(faceSources("", 140)).toEqual([]);
   });
 });

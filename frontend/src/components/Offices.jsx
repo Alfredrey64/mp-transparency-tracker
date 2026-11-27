@@ -7,7 +7,7 @@ import { explainOffice } from "../lib/officeExplainers";
 import { duration, monthYear } from "../lib/careerTimeline";
 import { COLORS, FONT_DISPLAY, PAGE_PADDING } from "../theme";
 import { partyColour } from "../lib/format";
-import { portraitUrl, hdPortraitUrl } from "../lib/portrait";
+import { faceSources } from "../lib/portrait";
 import { PageHeader } from "./shared";
 import { LoadFailedNote } from "./MpCards";
 import { IconCabinet, IconEconomy, IconGlobe, IconDefence, IconGavel, IconHealth, IconMortarboard, IconFactory, IconHome, IconTransport, IconLeaf, IconBroadcast, IconPension, IconBolt, IconDevolved, IconGroup, IconSearch } from "./icons";
@@ -55,8 +55,7 @@ const initials = (name) => String(name).replace(/^(rt hon|sir|dame|dr|mr|mrs|ms|
 
 // The face of someone who has held the post: the sharper 240-pixel copy where one has been saved, then the ordinary small copy, and only then their initials.
 function Face({ h }) {
-  const small = portraitUrl(h.photo);
-  const sources = [hdPortraitUrl(small), small].filter(Boolean);
+  const sources = faceSources(h.photo, 48);
   const [tried, setTried] = useState(0);
   const src = sources[tried];
   return (
