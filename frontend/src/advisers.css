@@ -41,20 +41,19 @@
 /* The pay bill as coins dropping into two piles; the extra coins in this year's pile are gold, and that is the rise. */
 .av-piles { display: grid; grid-template-columns: repeat(2, auto); justify-content: space-between; align-items: end; gap: 8px 20px; }
 .av-pilecol { display: grid; justify-items: center; gap: 8px; }
-.av-pile { display: grid; grid-template-columns: repeat(6, 18px); grid-template-rows: repeat(var(--rows), 18px); gap: 2px; }
-.av-coin, .av-pile i { grid-column: var(--c); grid-row: var(--r); position: relative; width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(90deg, var(--ink) 0 var(--b), #F2B33D var(--b) var(--n), transparent var(--n)); clip-path: inset(0 calc(100% - var(--n)) 0 0); transition: transform 0.75s cubic-bezier(0.34, 1.4, 0.5, 1), opacity 0.18s ease; transition-delay: var(--d); }
-.av-pile i::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.55) 0 12%, transparent 40%); box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.2), inset 0 -2px 0 rgba(0, 0, 0, 0.12); }
-.av-pile i.then { --ink: #9DB9E6; }
-.av-pile i.now { --ink: #3F78D4; }
-.av-coins[data-go="0"] .av-pile i { opacity: 0; transform: translateY(calc(-70px - var(--up) * 22px)); }
-.av-coins[data-go="1"] .av-pile i.gold { animation: avCoin 0.8s ease calc(var(--d) + 700ms); }
-@keyframes avCoin { 40% { transform: scale(1.3); } }
+.av-pile { display: grid; grid-template-columns: repeat(6, 20px); grid-template-rows: repeat(var(--rows), 13px); gap: 3px; }
+.av-pile i { grid-column: var(--c); grid-row: var(--r); width: 20px; height: 13px; border-radius: 2px; background: linear-gradient(90deg, var(--ink) 0 var(--b), #C08A2B var(--b) var(--n), transparent var(--n)); clip-path: inset(0 calc(100% - var(--n)) 0 0); transition: transform 0.5s cubic-bezier(0.22, 0.8, 0.3, 1), opacity 0.3s ease; transition-delay: var(--d); }
+.av-pile i.then { --ink: #A9B6CB; }
+.av-pile i.now { --ink: #2F4E7A; }
+.av-coins[data-go="0"] .av-pile i { opacity: 0; transform: translateY(-10px); }
+.av-coins[data-go="1"] .av-pile i.gold { animation: avCoin 0.9s ease calc(var(--d) + 600ms); }
+@keyframes avCoin { 45% { filter: brightness(1.25); } }
 .av-cap { display: grid; justify-items: center; gap: 2px; font: 700 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
 .av-cap strong { font-size: 15px; }
-.av-gain { justify-self: start; padding: 3px 11px; border-radius: 999px; background: color-mix(in srgb, #F2B33D 30%, transparent); color: var(--c-ink); font-weight: 800; transition: opacity 0.5s ease var(--d), transform 0.5s cubic-bezier(0.34, 1.5, 0.5, 1) var(--d); }
-.av-coins[data-go="0"] .av-gain { opacity: 0; transform: scale(0.8); }
+.av-gain { justify-self: start; padding: 3px 11px; border-radius: 999px; background: color-mix(in srgb, #C08A2B 22%, transparent); color: var(--c-ink); font-weight: 800; transition: opacity 0.5s ease var(--d), transform 0.5s ease var(--d); }
+.av-coins[data-go="0"] .av-gain { opacity: 0; transform: translateY(4px); }
 .av-coinkey { display: flex; align-items: center; gap: 6px; font-size: 11px; }
-.av-coinkey::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #3F78D4; box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.2); }
+.av-coinkey::before { content: ""; width: 12px; height: 8px; border-radius: 2px; background: #2F4E7A; }
 
 /* The four pay bands on one pound scale, with a marker that sweeps across and then follows the pointer. */
 .av-bands { --lab: 46px; --cnt: 26px; --gap: 10px; cursor: ew-resize; }

@@ -7,7 +7,7 @@ import "../../advisers.css";
 // The three pictures inside the figures at the top of the Special advisers page. Each is drawn from the same numbers the figure above it states, plays once when it scrolls into view,
 // and is hidden from screen readers, because the number and the line under it already say the same in words.
 //   AdviserDots  159 dots that fly in from all over and settle into a grid; the ones on the Prime Minister's team light up gold (and can be pointed at in the key).
-//   PayCoins     the pay bill as coins dropping into two piles, last year's and this year's; the extra coins in this year's pile are gold, which is the rise.
+//   PayCoins     the pay bill as flat blocks settling into two piles, last year's and this year's; the extra blocks in this year's pile are gold, which is the rise.
 //   BandScrub    the four pay bands as ranges on one pound scale with a marker that sweeps across, then follows the pointer: which bands could pay that salary?
 const n = (v) => Number(v ?? 0).toLocaleString("en-GB");
 const BAND = ["#7B5BD6", "#2C7DA0", "#3F7D5C", "#B7791F"];
@@ -39,7 +39,7 @@ export function AdviserDots({ count, team = 0 }) {
   );
 }
 
-// Each coin is worth a round number of £ million, chosen so the bigger pile is about 36 coins.
+// Each block is worth a round number of £ million, chosen so the bigger pile is about 36 coins.
 const STEPS = [0.1, 0.2, 0.25, 0.5, 1, 2, 2.5, 5, 10, 20, 25, 50, 100];
 const COLS = 6;
 
@@ -83,7 +83,7 @@ export function PayCoins({ now, before }) {
         ))}
       </div>
       {diff !== 0 && <p className="av-gain" style={{ "--d": `${last + 1100}ms` }}>{diff > 0 ? "Up" : "Down"} £{Math.abs(diff).toFixed(1)}m on the year before</p>}
-      <p className="av-coinkey">Each coin is £{unit}m</p>
+      <p className="av-coinkey">Each block is £{unit}m</p>
     </div>
   );
 }
