@@ -39,10 +39,10 @@
 .av-crowd[data-go="0"] .av-legend { opacity: 0; }
 
 /* The pay bill as coins dropping into two piles; the extra coins in this year's pile are gold, and that is the rise. */
-.av-piles { display: grid; grid-template-columns: repeat(2, auto); justify-content: space-between; align-items: end; gap: 8px 20px; }
-.av-pilecol { display: grid; justify-items: center; gap: 8px; }
-.av-pile { display: grid; grid-template-columns: repeat(6, 20px); grid-template-rows: repeat(var(--rows), 13px); gap: 3px; }
-.av-pile i { grid-column: var(--c); grid-row: var(--r); width: 20px; height: 13px; border-radius: 2px; background: linear-gradient(90deg, var(--ink) 0 var(--b), #C08A2B var(--b) var(--n), transparent var(--n)); clip-path: inset(0 calc(100% - var(--n)) 0 0); transition: transform 0.5s cubic-bezier(0.22, 0.8, 0.3, 1), opacity 0.3s ease; transition-delay: var(--d); }
+.av-piles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; gap: 8px 16px; }
+.av-pilecol { display: grid; justify-items: stretch; gap: 8px; min-width: 0; text-align: center; }
+.av-pile { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: repeat(var(--rows), 13px); gap: 3px; width: 100%; max-width: 150px; justify-self: center; }
+.av-pile i { grid-column: var(--c); grid-row: var(--r); width: 100%; height: 13px; border-radius: 2px; background: linear-gradient(90deg, var(--ink) 0 var(--b), #C08A2B var(--b) var(--n), transparent var(--n)); clip-path: inset(0 calc(100% - var(--n)) 0 0); transition: transform 0.5s cubic-bezier(0.22, 0.8, 0.3, 1), opacity 0.3s ease; transition-delay: var(--d); }
 .av-pile i.then { --ink: #A9B6CB; }
 .av-pile i.now { --ink: #2F4E7A; }
 .av-coins[data-go="0"] .av-pile i { opacity: 0; transform: translateY(-10px); }
