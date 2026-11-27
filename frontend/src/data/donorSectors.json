@@ -38,13 +38,6 @@
     "companyNumber": "13054048",
     "sicCode": "94920"
   },
-  "International Centre of Justice for Palestinians (ICJP)": {
-    "sector": "Other / Uncategorised",
-    "source": "companies-house",
-    "companyName": "INTERNATIONAL CENTRE OF JUSTICE FOR PALESTINIANS",
-    "companyNumber": "13054048",
-    "sicCode": "94920"
-  },
   "National Liberal Club": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -114,6 +107,13 @@
     "companyName": "SILVERSTONE CIRCUITS LIMITED",
     "companyNumber": "00882843",
     "sicCode": "93110"
+  },
+  "Compass - Together for a Good Society Ltd": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "COMPASS - TOGETHER FOR A GOOD SOCIETY LTD",
+    "companyNumber": "05391145",
+    "sicCode": "94920"
   },
   "Aid Alliance": {
     "sector": "Other / Uncategorised",
@@ -489,6 +489,13 @@
     "companyNumber": "00972224",
     "sicCode": "41100"
   },
+  "Millennium Care (U.K.) Limited": {
+    "sector": "Pharma & Healthcare",
+    "source": "companies-house",
+    "companyName": "MILLENNIUM CARE (U.K.) LIMITED",
+    "companyNumber": "03462318",
+    "sicCode": "86900"
+  },
   "SRE Hotels (Cliveden) Ltd": {
     "sector": "Other / Uncategorised",
     "source": "companies-house",
@@ -676,5 +683,12 @@
     "companyName": "MANCHESTER UNITED FOOTBALL CLUB LIMITED",
     "companyNumber": "00095489",
     "sicCode": "93120"
+  },
+  "Global Media IP Limited": {
+    "sector": "Other / Uncategorised",
+    "source": "companies-house",
+    "companyName": "GLOBAL MEDIA IP LIMITED",
+    "companyNumber": "12002350",
+    "sicCode": "82990"
   }
 }
