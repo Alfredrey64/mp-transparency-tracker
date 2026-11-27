@@ -3,7 +3,7 @@ import ExplainerPage from "../story/ExplainerPage";
 import Loading from "../Loading";
 import { LoadFailedNote } from "../MpCards";
 import AdviserList from "../story/AdviserList";
-import { AdviserDots, PayBars, BandRanges } from "../story/AdviserArt";
+import { AdviserDots, PayCoins, BandScrub } from "../story/AdviserArt";
 import { IconGroup } from "../icons";
 import { useDataFile } from "../../lib/useDataFile";
 import { specialAdvisers } from "../../lib/dataFiles";
@@ -107,9 +107,9 @@ export default function SpecialAdvisers() {
     <ExplainerPage
       {...HEAD}
       tiles={[
-        { label: "Special advisers", value: n(data.count), colour: "#E3B04B", sub: `As at ${dateLong(data.asAt)}`, visual: <AdviserDots count={data.count} /> },
-        { label: "Pay bill for the year", value: gbp(data.paybill.millions), colour: "#6FB1FF", sub: short(data.paybill.period), visual: total && <PayBars before={{ label: yearsOf(beforePeriod), value: total.previous, text: gbp(total.previous) }} now={{ label: yearsOf(nowPeriod), value: total.current, text: gbp(total.current) }} /> },
-        { label: "Pay bands", value: String(data.bands.length), colour: "#8FD1A8", sub: "From junior adviser to leadership. The number on each bar is how many advisers are in the band", visual: <BandRanges bands={data.bands} counts={counts} /> },
+        { label: "Special advisers", value: n(data.count), colour: "#E3B04B", sub: `As at ${dateLong(data.asAt)}`, visual: <AdviserDots count={data.count} team={data.perMinister[0]?.count ?? 0} /> },
+        { label: "Pay bill for the year", value: gbp(data.paybill.millions), colour: "#6FB1FF", sub: short(data.paybill.period), visual: total && <PayCoins before={{ label: yearsOf(beforePeriod), value: total.previous, text: gbp(total.previous) }} now={{ label: yearsOf(nowPeriod), value: total.current, text: gbp(total.current) }} /> },
+        { label: "Pay bands", value: String(data.bands.length), colour: "#8FD1A8", sub: "From junior adviser to leadership. The number on each bar is how many advisers are in the band", visual: <BandScrub bands={data.bands} counts={counts} /> },
       ]}
       why={{ colour: "#B7791F", text: "Special advisers are paid from public money and work beside ministers, but are not elected and are not in the permanent Civil Service. The report is the public record of how many there are, what they cost and who they work for." }}
       {...build(data)}

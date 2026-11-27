@@ -17,27 +17,68 @@
 }
 
 /* The pictures inside the three figures at the top of the page (components/story/AdviserArt.jsx). They play once, when they scroll into view. */
-.av-art { display: grid; align-content: start; gap: 8px; min-height: 112px; margin-top: 4px; }
+.av-art { display: grid; align-content: start; gap: 10px; min-height: 112px; margin-top: 4px; touch-action: pan-y; }
 .av-art p { margin: 0; font: 600 12px/1.4 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.av-dotgrid { display: grid; grid-template-columns: repeat(auto-fill, 9px); gap: 4px; }
-.av-dotgrid i { width: 9px; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--tc) 80%, #3a2a00); transition: transform 0.45s var(--ease-out), opacity 0.45s ease; transition-delay: calc(var(--k) * 7ms + 150ms); }
-.av-dots[data-go="0"] .av-dotgrid i { opacity: 0; transform: scale(0.2); }
-.av-pay > span { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 10px; align-items: center; font: 700 12.5px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.av-pay em { font-style: normal; white-space: nowrap; }
-.av-pay b { min-width: 3.6em; text-align: right; }
-.av-pay-track { display: block; height: 16px; }
-.av-pay-track i { display: block; height: 100%; width: var(--w); border-radius: 8px; transform-origin: left; background: color-mix(in srgb, var(--tc) 40%, var(--c-paper)); transition: transform 0.9s var(--ease-out) calc(var(--k) * 260ms + 200ms); }
-.av-pay .now .av-pay-track i { background: color-mix(in srgb, var(--tc) 82%, #1a3a66); }
-.av-pay[data-go="0"] .av-pay-track i { transform: scaleX(0); }
-.av-pay p { transition: opacity 0.5s ease 1.1s; }
-.av-pay[data-go="0"] p { opacity: 0; }
-.av-bands ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
-.av-bands li { display: grid; grid-template-columns: 48px minmax(0, 1fr) 24px; gap: 10px; align-items: center; font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
-.av-bands em { font-style: normal; }
+.av-art strong { font-weight: 800; color: var(--c-ink); font-variant-numeric: lining-nums; }
+.av-art em { font-style: normal; }
+
+/* 159 dots that fly in from all over and settle into a grid; the Prime Minister's team are gold. */
+.av-dotgrid { display: grid; grid-template-columns: repeat(auto-fill, 11px); gap: 5px; justify-content: start; }
+.av-dotgrid i { width: 11px; height: 11px; border-radius: 50%; background: #7B5BD6; transition: transform 1.05s cubic-bezier(0.2, 0.85, 0.25, 1), opacity 0.5s ease; transition-delay: calc(var(--k) * 5ms + 80ms); }
+.av-dotgrid i.pm { background: #E0A02B; }
+.av-crowd[data-go="0"] .av-dotgrid i { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.3); }
+.av-crowd[data-go="1"] .av-dotgrid i.pm { animation: avPop 0.7s ease calc(1.7s + var(--k) * 16ms); }
+@keyframes avPop { 40% { transform: scale(1.9); } }
+.av-crowd[data-hl="pm"] .av-dotgrid i:not(.pm), .av-crowd[data-hl="rest"] .av-dotgrid i.pm { opacity: 0.15; }
+.av-crowd[data-hl] .av-dotgrid i { transition-delay: 0s; transition-duration: 0.25s; animation: none; }
+.av-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; transition: opacity 0.6s ease 1.5s; }
+.av-legend span { display: inline-flex; align-items: center; gap: 6px; cursor: default; }
+.av-legend span::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--g); }
+.av-legend [data-g="pm"] { --g: #E0A02B; }
+.av-legend [data-g="rest"] { --g: #7B5BD6; }
+.av-crowd[data-go="0"] .av-legend { opacity: 0; }
+
+/* The pay bill as coins dropping into two piles; the extra coins in this year's pile are gold, and that is the rise. */
+.av-piles { display: grid; grid-template-columns: repeat(2, auto); justify-content: space-between; align-items: end; gap: 8px 20px; }
+.av-pilecol { display: grid; justify-items: center; gap: 8px; }
+.av-pile { display: grid; grid-template-columns: repeat(6, 18px); grid-template-rows: repeat(var(--rows), 18px); gap: 2px; }
+.av-coin, .av-pile i { grid-column: var(--c); grid-row: var(--r); position: relative; width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(90deg, var(--ink) 0 var(--b), #F2B33D var(--b) var(--n), transparent var(--n)); clip-path: inset(0 calc(100% - var(--n)) 0 0); transition: transform 0.75s cubic-bezier(0.34, 1.4, 0.5, 1), opacity 0.18s ease; transition-delay: var(--d); }
+.av-pile i::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.55) 0 12%, transparent 40%); box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.2), inset 0 -2px 0 rgba(0, 0, 0, 0.12); }
+.av-pile i.then { --ink: #9DB9E6; }
+.av-pile i.now { --ink: #3F78D4; }
+.av-coins[data-go="0"] .av-pile i { opacity: 0; transform: translateY(calc(-70px - var(--up) * 22px)); }
+.av-coins[data-go="1"] .av-pile i.gold { animation: avCoin 0.8s ease calc(var(--d) + 700ms); }
+@keyframes avCoin { 40% { transform: scale(1.3); } }
+.av-cap { display: grid; justify-items: center; gap: 2px; font: 700 12px/1.2 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.av-cap strong { font-size: 15px; }
+.av-gain { justify-self: start; padding: 3px 11px; border-radius: 999px; background: color-mix(in srgb, #F2B33D 30%, transparent); color: var(--c-ink); font-weight: 800; transition: opacity 0.5s ease var(--d), transform 0.5s cubic-bezier(0.34, 1.5, 0.5, 1) var(--d); }
+.av-coins[data-go="0"] .av-gain { opacity: 0; transform: scale(0.8); }
+.av-coinkey { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+.av-coinkey::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #3F78D4; box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.2); }
+
+/* The four pay bands on one pound scale, with a marker that sweeps across and then follows the pointer. */
+.av-bands { --lab: 46px; --cnt: 26px; --gap: 10px; cursor: ew-resize; }
+.av-read { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+.av-read strong { min-width: 4.4em; font: 700 24px/1 "Figures", "Newsreader", Georgia, serif; font-variant-numeric: lining-nums tabular-nums; }
+.av-read span { font: 600 12px/1.3 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); }
+.av-bands ul { position: relative; list-style: none; margin: 0; padding: 4px 0; display: grid; gap: 7px; }
+.av-bands li[data-lit] { display: grid; grid-template-columns: var(--lab) minmax(0, 1fr) var(--cnt); gap: var(--gap); align-items: center; font: 700 12px/1 "Figures", "Public Sans", system-ui, sans-serif; color: var(--c-ink-soft); transition: opacity 0.2s ease; }
+.av-bands li[data-lit="0"] { opacity: 0.38; }
 .av-bands b { text-align: right; }
 .av-track { display: block; height: 14px; border-radius: 7px; background: color-mix(in srgb, var(--c-ink) 6%, transparent); }
 .av-track i { display: block; height: 100%; border-radius: 7px; background: var(--c); transform-origin: left; transition: transform 0.8s var(--ease-out) calc(var(--k) * 170ms + 200ms); }
+.av-bands li[data-lit="1"] .av-track i { box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 30%, transparent); }
 .av-bands[data-go="0"] .av-track i { transform: scaleX(0); }
-.av-bands p { display: flex; justify-content: space-between; margin-left: 58px; margin-right: 34px; font-size: 11px; font-variant-numeric: lining-nums; }
-@media (prefers-reduced-motion: reduce) { .av-dotgrid i, .av-pay-track i, .av-pay p, .av-track i { transition: none; } }
-html[data-calm] .av-dotgrid i, html[data-calm] .av-pay-track i, html[data-calm] .av-pay p, html[data-calm] .av-track i { transition: none; }
+.av-mark { position: absolute; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; border-radius: 2px; background: var(--c-ink); pointer-events: none; list-style: none; left: calc(var(--lab) + var(--gap) + (100% - var(--lab) - var(--cnt) - 2 * var(--gap)) * var(--x)); transition: opacity 0.4s ease 0.6s; }
+.av-mark::before { content: ""; position: absolute; top: -4px; left: 50%; width: 9px; height: 9px; margin-left: -4.5px; border-radius: 50%; background: var(--c-ink); }
+.av-bands[data-go="0"] .av-mark { opacity: 0; }
+.av-axis { display: flex; justify-content: space-between; margin-left: calc(var(--lab) + var(--gap)); margin-right: calc(var(--cnt) + var(--gap)); font-size: 11px; font-variant-numeric: lining-nums; }
+.av-hint { font-size: 11px; font-style: italic; transition: opacity 0.6s ease; }
+.av-bands[data-played="0"] .av-hint { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .av-dotgrid i, .av-pile i, .av-track i, .av-legend, .av-gain, .av-mark, .av-hint, .av-bands li { transition: none; }
+  .av-crowd .av-dotgrid i, .av-coins .av-pile i { animation: none !important; }
+}
+html[data-calm] :is(.av-dotgrid i, .av-pile i, .av-track i, .av-legend, .av-gain, .av-mark, .av-hint, .av-bands li) { transition: none; }
+html[data-calm] :is(.av-crowd .av-dotgrid i, .av-coins .av-pile i) { animation: none !important; }
