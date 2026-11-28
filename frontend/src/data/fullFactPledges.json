@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-27",
+ "generatedAt": "2026-11-28",
  "source": "https://fullfact.org/government-tracker/",
  "pledges": [
   {
@@ -591,18 +591,18 @@
    "updated": "2026-09-24"
   },
   {
-   "slug": "net-migration-fall-labour-government",
-   "area": "Migration",
-   "pledge": "Labour will reduce net migration",
-   "status": "appears-on-track",
-   "updated": "2026-09-24"
-  },
-  {
    "slug": "1000-additional-returns-enforcement-staff",
    "area": "Migration",
    "pledge": "Labour will set up a new returns and enforcement unit, with an additional 1,000 staff, to fast-track removals to safe countries for people who do not have the right to stay here",
    "status": "not-kept",
    "updated": "2026-07-01"
+  },
+  {
+   "slug": "asylum-hotels",
+   "area": "Migration",
+   "pledge": "We will … end asylum hotels, saving the taxpayer billions of pounds",
+   "status": "in-progress",
+   "updated": "2026-11-27"
   },
   {
    "slug": "safe-third-countries",
